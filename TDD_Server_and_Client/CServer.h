@@ -14,9 +14,9 @@ public:
 	}
 
 	CServer(const string &ip) : context(1), socket(context,ZMQ_PULL),
-		port_(default_server_port)
+		ip_(ip), port_(default_server_port)
 	{
-		ip_ = ip;
+		//socket.bind(get_ip_address());
 	}
 
 	explicit CServer(const string &ip, const string &port) : context(1), socket(context, ZMQ_PULL),

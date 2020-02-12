@@ -41,10 +41,14 @@
     <LibraryPath>$(SolutionDir)packages\libzmq\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="CClient.h" />
     <ClInclude Include="CServer.h" />
+    <ClInclude Include="CTask.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CTask.cpp" />
+    <ClCompile Include="test_client.cpp" />
     <ClCompile Include="test_server.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -52,6 +56,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="test_server_and_client.cpp" />
+    <ClCompile Include="test_task.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -17,6 +17,7 @@ public:
 	CServer server_with_ip_and_port_set;
 };
 
+
 TEST_F(ServerTest, TestSetIPAndPort) {
 	EXPECT_EQ(server_with_ip_and_port_set.get_ip_address(), "tcp://127.0.0.1:8888");
 }

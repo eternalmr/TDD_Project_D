@@ -32,7 +32,7 @@ TEST_F(ClientRecordTest, SetATaskToClient) {
 }
 
 TEST_F(ClientRecordTest, SetClientStatusToFree) {
-	client.set_status_free();
+	client.set_free();
 	EXPECT_TRUE(client.is_free());
 }
 
@@ -48,15 +48,15 @@ TEST_F(ClientRecordTest, SetClientStatusToInComputing) {
 
 TEST_F(ClientRecordTest, ResetClientIdAfterInitialization) {
 	uint new_id = 5u;
-	client.set_client_id(new_id);
-	EXPECT_EQ(client.get_client_id(), new_id);
+	client.set_id(new_id);
+	EXPECT_EQ(client.get_id(), new_id);
 }
 
 TEST_F(ClientRecordTest, TestInitialStatus) {
-	EXPECT_EQ(client.get_client_status(), ClientRecord::kFree);
+	EXPECT_TRUE(client.is_free());
 	EXPECT_EQ(client.get_task(), nullptr);
 }
 
 TEST_F(ClientRecordTest, TestGetClientId) {
-	EXPECT_EQ(client.get_client_id(), 1);
+	EXPECT_EQ(client.get_id(), 1);
 }

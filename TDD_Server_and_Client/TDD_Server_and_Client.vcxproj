@@ -42,13 +42,16 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="CClient.h" />
+    <ClInclude Include="CClientRecord.h" />
     <ClInclude Include="CServer.h" />
     <ClInclude Include="CTask.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CClientRecord.cpp" />
     <ClCompile Include="CTask.cpp" />
     <ClCompile Include="test_client.cpp" />
+    <ClCompile Include="test_client_record.cpp" />
     <ClCompile Include="test_server.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

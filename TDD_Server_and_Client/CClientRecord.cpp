@@ -1,40 +1,45 @@
 #pragma warning(disable:4996)
 
-#include "client_class.h"
+#include "pch.h"
+#include "CClientRecord.h"
+
+const int ClientRecord::MAX_HEARTBEAT_TIMEOUT = 10000; //10 seconds
 
 // constructor
-Client::Client() : node_id_(0), node_status_(kFree), ptask_(nullptr) 
+ClientRecord::ClientRecord() : client_id_(0), client_status_(kFree), 
+								ptask_(nullptr) 
 {
-	//nothing
+	heartbeat_ = s_clock();
 }
 
-Client::Client(unsigned int id) : node_id_(id), node_status_(kFree), 
+ClientRecord::ClientRecord(uint id) : client_id_(id), client_status_(kFree), 
 								  ptask_(nullptr)
 {
 	heartbeat_ = s_clock();
 }
 
-// get functions
-unsigned int Client::get_node_id() const { return node_id_; }
-Client::NodeStatus Client::get_node_status() const { return node_status_; }
-Task* Client::get_task() const { return ptask_; }
-int64_t Client::get_heartbeat() const { return heartbeat_; }
+uint ClientRecord::get_client_id() const { return client_id_; }
+void ClientRecord::set_client_id(uint id) { client_id_ = id; }
 
-// set functions
-void Client::set_node_id(unsigned int id) { node_id_ = id; }
-void Client::set_node_status(NodeStatus status) { node_status_ = status; }
-void Client::set_task(Task *ptask) { ptask_ = ptask; }
-void Client::set_heartbeat(int64_t heartbeat) { heartbeat_ = heartbeat; }
+ClientRecord::ClientStatus ClientRecord::get_client_status() const { return client_status_; }
+void ClientRecord::set_client_status(ClientStatus status) { client_status_ = status; }
 
-void Client::set_breakdown() { node_status_ = kBreakdown; }
-void Client::set_status_free() { node_status_ = kFree; }
-void Client::set_in_computing() { node_status_ = kInComputing; }
+Task* ClientRecord::get_task() const { return ptask_; }
+void ClientRecord::set_task(Task *ptask) { ptask_ = ptask; }
 
-bool Client::is_breakdown() { return kBreakdown == node_status_; }
+void ClientRecord::set_breakdown() { set_client_status(kBreakdown); }
+void ClientRecord::set_status_free() { set_client_status(kFree); }
+void ClientRecord::set_in_computing() { set_client_status(kInComputing); }
 
-bool Client::is_expiry()
+bool ClientRecord::is_free() { return kFree == client_status_; }
+bool ClientRecord::is_in_computing() { return kInComputing == client_status_; }
+bool ClientRecord::is_breakdown() { return kBreakdown == client_status_; }
+
+void ClientRecord::set_heartbeat(int64_t heartbeat) { heartbeat_ = heartbeat; }
+int64_t ClientRecord::get_heartbeat() const { return heartbeat_; }
+
+bool ClientRecord::is_timeout()
 {
-	const int HEARTBEAT_TIMEOUT = 10000; //millisecond
-	return (s_clock() - get_heartbeat() > HEARTBEAT_TIMEOUT); 
+	return (s_clock() - get_heartbeat() > MAX_HEARTBEAT_TIMEOUT); 
 }
 

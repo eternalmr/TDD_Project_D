@@ -14,14 +14,14 @@ public:
 
 
 TEST_F(TaskTest, TestStoreStatusAfterSet) {
-	task_with_id.set_task_result_saved();
+	task_with_id.set_result_saved();
 	EXPECT_TRUE(task_with_id.is_saved());
 }
 
 TEST_F(TaskTest, TestComputingStatusAfterSet) {
-	task_with_id.set_task_in_computing();
+	task_with_id.set_in_computing();
 	EXPECT_TRUE(task_with_id.is_in_computing());
-	task_with_id.set_task_finished();
+	task_with_id.set_finished();
 	EXPECT_TRUE(task_with_id.is_finished());
 }
 

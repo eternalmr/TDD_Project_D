@@ -7,6 +7,24 @@ public:
 	CServer server;
 };
 
+TEST_F(ServerAndClientTest, MarkBreakdownClientAndResetItsTask) {
+	auto this_moment = s_clock();
+	Task new_task(1);
+	server.add_new_client(2);
+	server.clients[2].set_heartbeat(this_moment - MAX_HEARTBEAT_TIMEOUT - 100);
+	server.clients[2].set_task(&new_task);
+
+	new_task.set_in_computing();
+
+	ASSERT_FALSE(server.clients[2].is_breakdown());
+	ASSERT_TRUE(new_task.is_in_computing());
+
+	server.mark_breakdown_client();
+
+	EXPECT_TRUE(server.clients[2].is_breakdown());
+	EXPECT_TRUE(new_task.is_not_start());
+}
+
 TEST_F(ServerAndClientTest, NoClientIsConnectedToServer) {
 	EXPECT_TRUE(server.is_not_connect_to_client(1));
 }

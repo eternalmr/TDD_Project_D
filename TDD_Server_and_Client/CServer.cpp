@@ -1,22 +1,11 @@
 #include "pch.h"
 #include "CServer.h"
 
-CServer::CServer() : context(1), heartbeat_receiver(context, ZMQ_PULL),
-	ip_(default_server_ip),port_(default_server_port)
-{
-	heartbeat_receiver.bind(get_ip_address());
-}
-
-CServer::CServer(const string &ip) : context(1), heartbeat_receiver(context,ZMQ_PULL),
-	ip_(ip), port_(default_server_port)
-{
-	//socket.bind(get_ip_address());
-}
-
-CServer::CServer(const string &ip, const string &port) : context(1), heartbeat_receiver(context, ZMQ_PULL),
+CServer::CServer(const string &ip, const string &port) : 
+	context(1), heartbeat_receiver(context, ZMQ_PULL),
 	ip_(ip), port_(port)
 {
-
+	heartbeat_receiver.bind(get_ip_address());
 }
 
 string CServer::get_ip_address()
@@ -92,4 +81,21 @@ bool CServer::is_not_connect_to_client(uint id)
 void CServer::add_new_client(uint id)
 {
 	clients[id] = ClientRecord(id);
+}
+
+void CServer::mark_breakdown_client()
+{
+	for (int i = 0; i < clients.size(); i++) {
+		if ( !clients[i].is_timeout() || clients[i].is_breakdown() )
+			continue;
+
+		clients[i].set_breakdown();
+		std::cout << "Client[" << clients[i].get_id() << "] is breakdown!" << std::endl;
+		
+		if (clients[i].get_task()) {
+			clients[i].get_task()->set_not_start();
+			std::cout << "Reset task[" << clients[i].get_task()->get_id()
+				<< "] status to not start" << std::endl;
+		}
+	}
 }

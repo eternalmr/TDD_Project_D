@@ -3,8 +3,6 @@
 #include "pch.h"
 #include "CClientRecord.h"
 
-const int ClientRecord::MAX_HEARTBEAT_TIMEOUT = 10000; //10 seconds
-
 // constructor
 ClientRecord::ClientRecord() : id_(0), status_(kFree), 
 								ptask_(nullptr) 

@@ -10,9 +10,8 @@ typedef std::map<uint, ClientRecord> ClientMap;
 
 class CServer {
 public:
-	CServer();
-	CServer(const string &ip);
-	CServer(const string &ip, const string &port);
+	CServer(const string &ip = default_server_ip, 
+		const string &port = default_server_port);
 
 	string get_ip_address();
 
@@ -25,11 +24,15 @@ public:
 	bool is_not_connect_to_client(uint id);
 	void add_new_client(uint id);
 
+	void mark_breakdown_client();
+
 private:
 	zmq::context_t context;
 	zmq::socket_t heartbeat_receiver;
 	string ip_;
 	string port_;
+
+public:
 	ClientMap clients;
 };
 

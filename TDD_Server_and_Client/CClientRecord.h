@@ -2,6 +2,7 @@
 #pragma warning(disable:4996)
 
 #include "CTask.h"
+#include "project_paramters.h"
 
 class ClientRecord
 {
@@ -38,6 +39,5 @@ private:
 	ClientStatus status_;
 	Task *ptask_;
 	int64_t heartbeat_;
-	static const int MAX_HEARTBEAT_TIMEOUT; //millisecond
 };
 

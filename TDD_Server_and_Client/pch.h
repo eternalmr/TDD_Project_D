@@ -9,5 +9,6 @@
 #include "gtest/gtest.h"
 #include "zhelpers.hpp"
 #include <string>
+#include <thread>
 
 using std::string;

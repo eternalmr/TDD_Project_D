@@ -1,9 +1,7 @@
 #pragma once
 #pragma warning(disable:4996)
 
-//#include "pch.h"
 #include "CTask.h"
-
 
 class ClientRecord
 {
@@ -36,7 +34,7 @@ private:
 	ClientStatus get_status() const;
 
 private:
-	uint32_t id_;
+	uint id_;
 	ClientStatus status_;
 	Task *ptask_;
 	int64_t heartbeat_;

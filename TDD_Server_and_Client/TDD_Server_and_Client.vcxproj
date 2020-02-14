@@ -46,9 +46,12 @@
     <ClInclude Include="CServer.h" />
     <ClInclude Include="CTask.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="project_paramters.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CClient.cpp" />
     <ClCompile Include="CClientRecord.cpp" />
+    <ClCompile Include="CServer.cpp" />
     <ClCompile Include="CTask.cpp" />
     <ClCompile Include="test_client.cpp" />
     <ClCompile Include="test_client_record.cpp" />

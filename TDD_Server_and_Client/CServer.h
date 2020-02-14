@@ -1,39 +1,35 @@
 #pragma once
 
 #include "pch.h"
+#include <regex>
+#include <map>
+#include "CClientRecord.h"
+#include "project_paramters.h"
 
-const string default_server_ip{ "127.0.0.1" };
-const string default_server_port{ "5555" };
+typedef std::map<uint, ClientRecord> ClientMap;
 
 class CServer {
 public:
-	CServer() : context(1), socket(context, ZMQ_PULL),
-		ip_(default_server_ip),port_(default_server_port)
-	{
-		//socket.bind(get_ip_address());
-	}
+	CServer();
+	CServer(const string &ip);
+	CServer(const string &ip, const string &port);
 
-	explicit CServer(const string &ip) : context(1), socket(context,ZMQ_PULL),
-		ip_(ip), port_(default_server_port)
-	{
-		//socket.bind(get_ip_address());
-	}
+	string get_ip_address();
 
-	CServer(const string &ip, const string &port) : context(1), socket(context, ZMQ_PULL),
-		ip_(ip), port_(port)
-	{
+	void receive_heartbeat();
+	void receive_heartbeat_test_only();
+	std::tuple<int, string> decode_signal(string &raw_signal);
+	std::vector<string> split_string(const string& in, const string& delim);
+	void update_client_heartbeat(uint id);
 
-	}
-
-	string get_ip_address()
-	{
-		return "tcp://" + ip_ + ":" + port_;
-	}
+	bool is_not_connect_to_client(uint id);
+	void add_new_client(uint id);
 
 private:
 	zmq::context_t context;
-	zmq::socket_t socket;
+	zmq::socket_t heartbeat_receiver;
 	string ip_;
 	string port_;
+	ClientMap clients;
 };
 

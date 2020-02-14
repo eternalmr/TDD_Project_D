@@ -1,40 +1,27 @@
 #pragma once
 
 #include "pch.h"
-
-const string default_client_ip{ "127.0.0.1" };
-const string default_client_port{ "5555" };
+#include "project_paramters.h"
 
 class CClient {
 public:
-	CClient() : context(1), socket(context, ZMQ_PUSH),
-		ip_(default_client_ip), port_(default_client_port)
-	{
-		//socket.bind(get_ip_address());
-	}
+	CClient();
+	CClient(const string &ip);
+	CClient(const string &ip, const string &port);
+	CClient(uint id);
 
-	explicit CClient(const string &ip) : context(1), socket(context, ZMQ_PUSH),
-		ip_(ip), port_(default_client_port)
-	{
-		//socket.bind(get_ip_address());
-	}
+	string get_ip_address();
 
-	CClient(const string &ip, const string &port) : context(1), socket(context, ZMQ_PUSH),
-		ip_(ip), port_(port)
-	{
-
-	}
-
-	string get_ip_address()
-	{
-		return "tcp://" + ip_ + ":" + port_;
-	}
+	void send_heartbeat();
+	void send_heartbeat_test_only();
 
 private:
 	uint id_;
 	zmq::context_t context;
-	zmq::socket_t socket;
+	zmq::socket_t heartbeat_sender;
 	string ip_;
 	string port_;
 };
+
+
 

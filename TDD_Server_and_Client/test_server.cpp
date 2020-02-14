@@ -17,6 +17,24 @@ public:
 	CServer server_with_ip_and_port_set;
 };
 
+TEST_F(ServerTest, DecodeRawSignalWithSpecificFormat) {
+	int client_id;
+	string signal;
+	string raw_signal = "Heartbeat_3";
+	std::tie(client_id, signal) = default_server.decode_signal(raw_signal);
+	EXPECT_EQ(client_id, 3);
+	EXPECT_EQ(signal, "Heartbeat");
+}
+
+TEST_F(ServerTest, SplitStringUsingGivenDelimitter) {
+	string str = "test_string/split function";
+	string delimitter = "[_/ ]+";
+	auto splitted_str = default_server.split_string(str, delimitter);
+	EXPECT_EQ(splitted_str[0], "test");
+	EXPECT_EQ(splitted_str[1], "string");
+	EXPECT_EQ(splitted_str[2], "split");
+	EXPECT_EQ(splitted_str[3], "function");
+}
 
 TEST_F(ServerTest, TestSetIPAndPort) {
 	EXPECT_EQ(server_with_ip_and_port_set.get_ip_address(), "tcp://127.0.0.1:8888");

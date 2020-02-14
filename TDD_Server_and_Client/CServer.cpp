@@ -34,7 +34,7 @@ void CServer::receive_heartbeat()
 	while (true) {
 		auto raw_signal = s_recv(heartbeat_receiver);
 		std::tie(id, heartbeat_signal) = decode_signal(raw_signal);
-		update_client_heartbeat(id);
+		update_heartbeat_of_client(id);
 	}
 }
 
@@ -51,10 +51,9 @@ void CServer::receive_heartbeat_test_only()
 		if (is_not_connect_to_client(id)){
 			add_new_client(id);
 		}
+		update_heartbeat_of_client(id);
 
-		update_client_heartbeat(id);
-
-		std::cout << "Heartbeat of client[" << clients[id].get_id() << "] : "
+		std::cout << "Heartbeat of client[" << id << "] : "
 			<< clients[id].get_heartbeat() << std::endl;
 
 		count++;
@@ -80,16 +79,14 @@ std::vector<string> CServer::split_string(const string& in, const string& delim)
 	};
 }
 
-void CServer::update_client_heartbeat(uint id)
+void CServer::update_heartbeat_of_client(uint id)
 {
-	int64_t this_moment = s_clock();//TODO : get heartbeat moment from client
-	clients[id].set_heartbeat(this_moment);
+	clients[id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
 }
 
 bool CServer::is_not_connect_to_client(uint id)
 {
-	auto it = clients.find(id);
-	return it == clients.end() ? true : false;
+	return clients.find(id) == clients.end() ? true : false;
 }
 
 void CServer::add_new_client(uint id)

@@ -7,8 +7,8 @@ const string port("8888");
 class ClientTest : public testing::Test
 {
 public:
-	ClientTest(): client_with_ip_set(ip),
-				  client_with_ip_and_port_set(ip, port)
+	ClientTest(): client_with_ip_set(1,ip),
+				  client_with_ip_and_port_set(1, ip, port)
 	{}
 
 public:

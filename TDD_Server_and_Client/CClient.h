@@ -5,10 +5,8 @@
 
 class CClient {
 public:
-	CClient();
-	CClient(const string &ip);
-	CClient(const string &ip, const string &port);
-	CClient(uint id);
+	CClient(uint id = 1, const string &ip = default_client_ip, 
+		const string &port = default_client_port);
 
 	string get_ip_address();
 

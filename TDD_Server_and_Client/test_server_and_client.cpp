@@ -29,11 +29,3 @@ TEST_F(ServerAndClientTest, TestHeartbeat) {
 	tClient2.join();
 }
 
-
-
-
-
-//TEST_F(ServerAndClientTest, AddClientsToServer) {
-//
-//}
-

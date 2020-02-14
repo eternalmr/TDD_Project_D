@@ -20,7 +20,7 @@ public:
 	void receive_heartbeat_test_only();
 	std::tuple<int, string> decode_signal(string &raw_signal);
 	std::vector<string> split_string(const string& in, const string& delim);
-	void update_client_heartbeat(uint id);
+	void update_heartbeat_of_client(uint id);
 
 	bool is_not_connect_to_client(uint id);
 	void add_new_client(uint id);

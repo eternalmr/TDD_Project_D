@@ -2,26 +2,9 @@
 #include "pch.h"
 #include "CClient.h"
 
-CClient::CClient() : context(1), heartbeat_sender(context, ZMQ_PUSH),
-					ip_(default_client_ip), port_(default_client_port)
-{
-	//socket.bind(get_ip_address());
-}
-
-CClient::CClient(const string &ip) : context(1), heartbeat_sender(context, ZMQ_PUSH),
-											ip_(ip), port_(default_client_port)
-{
-	//socket.bind(get_ip_address());
-}
-
-CClient::CClient(const string &ip, const string &port) : context(1), heartbeat_sender(context, ZMQ_PUSH),
-												ip_(ip), port_(port)
-{
-
-}
-
-CClient::CClient(uint id) : id_(id), context(1), heartbeat_sender(context, ZMQ_PUSH),
-							ip_(default_client_ip), port_(default_client_port) 
+CClient::CClient(uint id, const string &ip, const string &port) :
+	id_(id), context(1), heartbeat_sender(context, ZMQ_PUSH),
+							ip_(ip), port_(port) 
 {
 	heartbeat_sender.connect(get_ip_address());
 }

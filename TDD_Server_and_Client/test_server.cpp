@@ -13,6 +13,31 @@ public:
 	CServer default_server;
 };
 
+TEST_F(ServerTest, AddNewTaskIntoTaskPool) {
+	int num = 10;
+	for (int i = 1; i <= num; i++) {
+		default_server.add_new_task(Task(i));
+	}
+	EXPECT_EQ(num, default_server.tasks.size());
+}
+
+TEST_F(ServerTest, ReturnNullptrIfAllTasksIsCompleted) {
+	for (int i = 1; i <= 10; i++) {
+		default_server.add_new_task(Task(i));
+		default_server.tasks[i - 1].set_in_computing();
+	}
+	EXPECT_EQ(default_server.get_undo_task(), nullptr);
+}
+
+TEST_F(ServerTest, GetAnUndoTask) {
+	for (int i = 1; i <= 10; i++) {
+		default_server.add_new_task(Task(i));
+		default_server.tasks[i-1].set_in_computing();
+	}
+	default_server.tasks[6].set_not_start();
+	EXPECT_EQ(default_server.get_undo_task(), &default_server.tasks[6]);
+}
+
 TEST_F(ServerTest, DecodeRawSignalWithSpecificFormat) {
 	int client_id;
 	string signal;

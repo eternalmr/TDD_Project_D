@@ -35,15 +35,22 @@ TEST_F(ServerAndClientTest, AddNewClientToServer) {
 }
 
 TEST_F(ServerAndClientTest, TestHeartbeat) {
-	CClient client1(1);
-	CClient client2(2);
+	int max_num = 3;
+	const int client_num = 5;
+	CClient* client[client_num];
+	std::thread *client_thread[client_num];
 
-	std::thread tServer(&CServer::receive_heartbeat_test_only, &server);
-	std::thread tClient1(&CClient::send_heartbeat_test_only, &client1);
-	std::thread tClient2(&CClient::send_heartbeat_test_only, &client2);
+	std::thread server_thread(&CServer::receive_heartbeat, &server, client_num*max_num);
+	
+	for (int i = 0; i < client_num; i++) {
+		client[i] = new CClient(i + 1);
+		client_thread[i] = new std::thread(&CClient::send_heartbeat, client[i], max_num);
+	}
 
-	tServer.join();
-	tClient1.join();
-	tClient2.join();
+	for (int i = 0; i < client_num; i++) {
+		client_thread[i]->join();
+	}
+	server_thread.join();
+	//TODO : delete pointers
 }
 

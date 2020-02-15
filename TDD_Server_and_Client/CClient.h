@@ -10,8 +10,10 @@ public:
 
 	string get_ip_address();
 
-	void send_heartbeat();
-	void send_heartbeat_test_only();
+	void send_heartbeat(int max_num = REPEAT_FOREVER);
+
+private:
+	bool is_not_reach(int max_num, int &count);
 
 private:
 	uint id_;

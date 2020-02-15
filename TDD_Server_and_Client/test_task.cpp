@@ -34,6 +34,6 @@ TEST_F(TaskTest, TestInitialComputingStatusIsNotStart) {
 }
 
 TEST_F(TaskTest, TestIdOfTasksInTestSuite) {
-	EXPECT_EQ(task_with_no_parameter.get_id(), 0);
+	EXPECT_EQ(task_with_no_parameter.get_id(), 1);
 	EXPECT_EQ(task_with_id.get_id(), 1);
 }

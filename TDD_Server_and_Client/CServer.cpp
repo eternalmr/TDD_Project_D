@@ -13,27 +13,13 @@ string CServer::get_ip_address()
 	return "tcp://" + ip_ + ":" + port_;
 }
 
-void CServer::receive_heartbeat()
+void CServer::receive_heartbeat(int max_num)
 {
 	int id;
-	string heartbeat_signal;
-
-	//heartbeat_receiver.bind("tcp://*:1217");
-
-	while (true) {
-		auto raw_signal = s_recv(heartbeat_receiver);
-		std::tie(id, heartbeat_signal) = decode_signal(raw_signal);
-		update_heartbeat_of_client(id);
-	}
-}
-
-void CServer::receive_heartbeat_test_only()
-{
-	int id;
-	string heartbeat_signal;
-
 	int count = 0;
-	while (count < 6) {
+	string heartbeat_signal;
+
+	while (is_not_reach(max_num, count)) {
 		auto raw_signal = s_recv(heartbeat_receiver);
 		std::tie(id, heartbeat_signal) = decode_signal(raw_signal);
 
@@ -44,11 +30,13 @@ void CServer::receive_heartbeat_test_only()
 
 		std::cout << "Heartbeat of client[" << id << "] : "
 			<< clients[id].get_heartbeat() << std::endl;
-
-		count++;
 	}
-
 	heartbeat_receiver.close();
+}
+
+bool CServer::is_not_reach(int max_num, int &count)
+{
+	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
 }
 
 std::tuple<int, string> CServer::decode_signal(string &raw_signal)
@@ -83,6 +71,11 @@ void CServer::add_new_client(uint id)
 	clients[id] = ClientRecord(id);
 }
 
+void CServer::add_new_task(Task task)
+{
+	tasks.push_back(task);
+}
+
 void CServer::mark_breakdown_client()
 {
 	for (int i = 0; i < clients.size(); i++) {
@@ -90,12 +83,25 @@ void CServer::mark_breakdown_client()
 			continue;
 
 		clients[i].set_breakdown();
-		std::cout << "Client[" << clients[i].get_id() << "] is breakdown!" << std::endl;
+		std::cout << "Client[" << clients[i].get_id() 
+				  << "] is breakdown!" << std::endl;
 		
 		if (clients[i].get_task()) {
 			clients[i].get_task()->set_not_start();
 			std::cout << "Reset task[" << clients[i].get_task()->get_id()
-				<< "] status to not start" << std::endl;
+					  << "] status to not start" << std::endl;
 		}
 	}
+}
+
+Task* CServer::get_undo_task()
+{
+	Task *ptask = nullptr;
+	for (int i = 0; i < tasks.size(); i++) {
+		if (tasks[i].is_not_start()) {
+			ptask = &tasks[i];
+			break;
+		}
+	}
+	return ptask;
 }

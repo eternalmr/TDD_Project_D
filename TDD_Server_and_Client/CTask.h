@@ -1,10 +1,6 @@
 #pragma once
 #pragma warning(disable:4996)
 
-
-
-//typedef unsigned int uint;
-
 class Task
 {
 private:
@@ -12,8 +8,7 @@ private:
 	enum   StoreStatus { kNotSave = 0, kSaved };
 
 public:
-	Task();
-	Task(uint id);
+	explicit Task(uint id = 1);
 	int get_id() const;
 
 	void set_not_start();

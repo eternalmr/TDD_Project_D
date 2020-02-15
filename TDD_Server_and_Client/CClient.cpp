@@ -14,14 +14,12 @@ string CClient::get_ip_address()
 	return "tcp://" + ip_ + ":" + port_;
 }
 
-void CClient::send_heartbeat()
+void CClient::send_heartbeat(int max_num)
 {
-	//zmq::socket_t heartbeat_sender(context, ZMQ_PUSH);
-	//heartbeat_sender.connect("tcp://localhost:1217");
-
+	int count = 0;
 	std::string signal = "HEARTBEAT_" + std::to_string(id_);
-	// send heartbeat at regular interval
-	while (true) {
+
+	while (is_not_reach(max_num, count)) {
 		s_send(heartbeat_sender, signal);
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
 	}
@@ -29,16 +27,7 @@ void CClient::send_heartbeat()
 	heartbeat_sender.close();
 }
 
-void CClient::send_heartbeat_test_only()
+bool CClient::is_not_reach(int max_num, int &count)
 {
-	std::string signal = "HEARTBEAT_" + std::to_string(id_);
-	// send heartbeat at regular interval
-	int count = 0;
-	while (count < 3) {
-		s_send(heartbeat_sender, signal);
-		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
-		count++;
-	}
-
-	heartbeat_sender.close();
+	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
 }

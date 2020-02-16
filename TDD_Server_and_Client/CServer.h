@@ -13,6 +13,9 @@ public:
 	CServer(const string &ip = default_server_ip, 
 		const string &port = default_server_port);
 
+	void bind_sockets_to_ip();
+	void unbind_sockets_to_ip();
+
 	string get_ip_address();
 
 	void receive_heartbeat(int max_num = REPEAT_FOREVER);
@@ -24,8 +27,12 @@ public:
 	void add_new_client(uint id);
 	void add_new_task(Task task);
 
+	void assign_tasks();
 	void mark_breakdown_client();
 	Task* get_undo_task();
+
+	void send_command_to_client(uint id, string command);
+	void send_command_to_all_client(string command);
 
 private:
 	bool CServer::is_not_reach(int max_num, int &count);
@@ -33,6 +40,8 @@ private:
 private:
 	zmq::context_t context;
 	zmq::socket_t heartbeat_receiver;
+	zmq::socket_t task_assigner;
+	zmq::socket_t command_sender;
 	string ip_;
 	string port_;
 	

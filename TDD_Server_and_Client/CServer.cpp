@@ -2,10 +2,30 @@
 #include "CServer.h"
 
 CServer::CServer(const string &ip, const string &port) : 
-	context(1), heartbeat_receiver(context, ZMQ_PULL),
-	ip_(ip), port_(port)
+	context(1), 
+	heartbeat_receiver(context, ZMQ_PULL),
+	task_assigner(context, ZMQ_REP), 
+	command_sender(context, ZMQ_PUB),
+	ip_(ip), 
+	port_(port)
+{
+	//heartbeat_receiver.unbind()
+}
+
+
+
+void CServer::bind_sockets_to_ip()
 {
 	heartbeat_receiver.bind(get_ip_address());
+	command_sender.bind("tcp://127.0.0.1:5556");
+	task_assigner.bind("tcp://127.0.0.1:5560"); //TODO : 
+}
+
+void CServer::unbind_sockets_to_ip()
+{
+	heartbeat_receiver.unbind(get_ip_address());
+	command_sender.unbind("tcp://127.0.0.1:5556");
+	task_assigner.unbind("tcp://127.0.0.1:5560"); //TODO : 
 }
 
 string CServer::get_ip_address()
@@ -13,6 +33,17 @@ string CServer::get_ip_address()
 	return "tcp://" + ip_ + ":" + port_;
 }
 
+void CServer::add_new_client(uint id)
+{
+	clients[id] = ClientRecord(id);
+}
+
+void CServer::add_new_task(Task task)
+{
+	tasks.push_back(task);
+}
+
+//========================= heartbeat related functions ==================================
 void CServer::receive_heartbeat(int max_num)
 {
 	int id;
@@ -66,16 +97,7 @@ bool CServer::is_not_connect_to_client(uint id)
 	return clients.find(id) == clients.end() ? true : false;
 }
 
-void CServer::add_new_client(uint id)
-{
-	clients[id] = ClientRecord(id);
-}
-
-void CServer::add_new_task(Task task)
-{
-	tasks.push_back(task);
-}
-
+//======================= assign task related functions ==========================
 void CServer::mark_breakdown_client()
 {
 	for (int i = 0; i < clients.size(); i++) {
@@ -104,4 +126,57 @@ Task* CServer::get_undo_task()
 		}
 	}
 	return ptask;
+}
+
+void CServer::send_command_to_client(uint id, string command)
+{
+	// publish start command to client(id)
+	s_send(command_sender, command + "_" + std::to_string(id));
+}
+
+void CServer::send_command_to_all_client(string command)
+{
+	// publish start command to all clients
+	s_send(command_sender, command);
+}
+
+void CServer::assign_tasks()
+{
+	// TODO : check tasks and clients status
+
+	int workload = 0;
+	Task* undo_task_pointer;
+	Task* ptask;
+	while (true) {//TODO : simulation is finished
+		// update tasks and clients status
+		mark_breakdown_client();
+
+		// get a undo task
+		undo_task_pointer = get_undo_task();
+		if (!undo_task_pointer) break; // all task is completed and stored, than break
+
+		// TODO : a_free_worker = get_free_worker(workers queue)
+		string reply = s_recv(task_assigner);//reply client id
+		uint id = stoi(reply);
+		clients[id].set_free();
+		std::cout << "Receive request from client[" << reply << "]" << std::endl;
+
+		ptask = clients[id].get_task();
+		if (ptask != nullptr && (ptask->is_in_computing())) {
+			ptask->set_finished();
+			std::cout << "Task[" << ptask->get_id() << "] is accomplished by client["
+				<< id << "]" << std::endl;
+		}
+
+		// TODO : assign_task_to(a_free_worker, a_undo_task)
+		clients[id].set_task(undo_task_pointer);//update clients
+		workload = undo_task_pointer->get_id();
+		s_send(task_assigner, std::to_string(workload));
+		undo_task_pointer->set_in_computing();
+		clients[id].set_in_computing();
+		std::cout << "Task[" << undo_task_pointer->get_id() << "] is assigned to client["
+			<< id << "]" << std::endl;
+	}// end of while
+
+	std::cout << "All tasks is finished!" << std::endl;
 }

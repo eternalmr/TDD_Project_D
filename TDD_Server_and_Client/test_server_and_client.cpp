@@ -1,11 +1,70 @@
 #include "pch.h"
 #include "CServer.h"
 #include "CClient.h"
+#include <future>
 
 class ServerAndClientTest : public testing::Test {
 public:
 	CServer server;
+public:
+	void SetUp() override {
+		server.bind_sockets_to_ip();
+	}
+
+	void TearDown() override {
+		//server.unbind_sockets_to_ip();
+	}
 };
+
+TEST_F(ServerAndClientTest, StartAllClient) {
+	CClient client1(1);
+	CClient client2(2);
+
+	std::future<CClient::SignalSet> fu1 =
+		std::async(std::launch::async, &CClient::listen_from_server, &client1);
+
+	std::future<CClient::SignalSet> fu2 =
+		std::async(std::launch::async, &CClient::listen_from_server, &client2);
+
+	Sleep(100);
+	server.send_command_to_all_client("start");
+	
+	EXPECT_EQ(fu1.get(), CClient::kStart);
+	EXPECT_EQ(fu2.get(), CClient::kStart);
+}
+
+TEST_F(ServerAndClientTest, StartASpecificClient) {
+	CClient client1(1);
+	CClient client2(2);
+
+	std::future<CClient::SignalSet> fu1 =
+		std::async(std::launch::async, &CClient::listen_from_server, &client1);
+
+	std::future<CClient::SignalSet> fu2 =
+		std::async(std::launch::async, &CClient::listen_from_server, &client2);
+
+	Sleep(100);
+	server.send_command_to_client(1, "start");
+
+	EXPECT_EQ(fu1.get(), CClient::kStart);
+	EXPECT_NE(fu2.get(), CClient::kStart);
+}
+
+
+TEST_F(ServerAndClientTest, AssignTaskToClient) {
+	CClient client(1);
+
+	server.add_new_client(1);
+	server.add_new_task(Task(1));
+
+	client.start_flag = 1;
+
+	std::thread task_thread(&CServer::assign_tasks, &server);
+	std::thread sim_thread(&CClient::simulation_wrap, &client, 1);
+
+	task_thread.join();
+	sim_thread.join();
+}
 
 TEST_F(ServerAndClientTest, MarkBreakdownClientAndResetItsTask) {
 	auto this_moment = s_clock();

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "CServer.h"
+#include "../Server/CServer.h"
 
 const string ip("127.0.0.1");
 const string port("8888");

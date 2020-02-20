@@ -1,6 +1,6 @@
 #pragma warning(disable:4996)
 
-#include "pch.h"
+#include "server_pch.h"
 #include "CClientRecord.h"
 
 // constructor

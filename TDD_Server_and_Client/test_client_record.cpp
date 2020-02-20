@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "CClientRecord.h"
+#include "../Server/CClientRecord.h"
 
 class ClientRecordTest : public testing::Test
 {

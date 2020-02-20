@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "CTask.h"
+#include "../Server/CTask.h"
 
 
 class TaskTest : public testing::Test

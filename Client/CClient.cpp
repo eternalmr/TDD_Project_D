@@ -1,5 +1,5 @@
 
-#include "pch.h"
+#include "client_pch.h"
 #include "CClient.h"
 
 CClient::CClient(uint id, const string &ip, const string &port) :
@@ -54,7 +54,6 @@ bool CClient::is_not_reach(int max_num, int &count)
 	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
 }
 
-
 bool simulation_is_not_finished(int	task_num, int &count)
 {
 	return task_num == 0 ? true : count++ < task_num;
@@ -62,7 +61,7 @@ bool simulation_is_not_finished(int	task_num, int &count)
 
 bool has_reached_endpoint(int input, int result)
 {
-	return (result - input == 10);
+	return (result - input == 5);
 }
 
 void CClient::simulation_wrap(int task_num)
@@ -89,10 +88,10 @@ void CClient::simulation_wrap(int task_num)
 			break;
 		}
 
-		////Send results to sink
-		//string result_info = "Result of task[" + new_task
-		//	+ "] is: " + std::to_string(result);
-		//s_send(result_sender, result_info);
+		//Send results to sink
+		string result_info = "Result of task[" + new_task
+			+ "] is: " + std::to_string(result);
+		s_send(result_sender, result_info);
 
 		std::cout << "**********************************************" << std::endl;
 	}//end of while
@@ -117,7 +116,7 @@ int CClient::simulation(int input)
 		}
 
 		result++;
-		Sleep(100);// sleep 1000 millisecond
+		Sleep(SIM_DELAY);// sleep 1000 millisecond
 		std::cout << "Result: " << result << std::endl;
 
 		if (has_reached_endpoint(input, result)) {
@@ -137,11 +136,14 @@ CClient::SignalSet CClient::listen_from_server()
 	if (command == "start" || 
 		command == "start_" + std::to_string(id_))
 		return kStart;
-	if (command == "pause")
+	if (command == "pause" || 
+		command == "pause_" + std::to_string(id_))
 		return kPause;
-	if (command == "stop")
+	if (command == "stop" ||
+		command == "stop_" + std::to_string(id_))
 		return kStop;
-	if (command == "continue")
+	if (command == "continue" || 
+		command == "continue_" + std::to_string(id_))
 		return kContinue;
 	return kUnknow;
 }
@@ -159,7 +161,7 @@ bool CClient::is_irrelevant(const SignalSet &signal) const
 	return true;
 }
 
-void CClient::execute_control_command(SignalSet &control_signal)
+void CClient::execute_control_command(SignalSet control_signal)
 {
 	switch (control_signal) {
 	case kStart: {

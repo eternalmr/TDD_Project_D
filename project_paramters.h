@@ -15,3 +15,5 @@ const int HEARTBEAT_INTERVAL = 100;
 const int MAX_HEARTBEAT_TIMEOUT = 10000; //10 seconds
 
 const int REPEAT_FOREVER = 0;
+
+const int SIM_DELAY = 10; //ms

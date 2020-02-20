@@ -34,25 +34,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)packages\libzmq\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)packages\libzmq\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)packages\libzmq\lib;$(SolutionDir)Client\x64\Debug;$(SolutionDir)Server\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)packages\libzmq\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)packages\libzmq\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)packages\libzmq\lib;$(SolutionDir)Client\x64\Debug;$(SolutionDir)Server\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="CClient.h" />
-    <ClInclude Include="CClientRecord.h" />
-    <ClInclude Include="CServer.h" />
-    <ClInclude Include="CTask.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="project_paramters.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CClient.cpp" />
-    <ClCompile Include="CClientRecord.cpp" />
-    <ClCompile Include="CServer.cpp" />
-    <ClCompile Include="CTask.cpp" />
     <ClCompile Include="test_client.cpp" />
     <ClCompile Include="test_client_record.cpp" />
     <ClCompile Include="test_server.cpp" />
@@ -103,7 +94,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>libzmq-v141-mt-4_3_2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libzmq-v141-mt-4_3_2.lib;CClient.obj;CServer.obj;CClientRecord.obj;CTask.obj;client_pch.obj;server_pch.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,7 +127,7 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>libzmq-v141-mt-4_3_2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libzmq-v141-mt-4_3_2.lib;CClient.obj;CServer.obj;CClientRecord.obj;CTask.obj;client_pch.obj;server_pch.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

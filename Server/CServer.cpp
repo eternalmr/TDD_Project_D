@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "server_pch.h"
 #include "CServer.h"
 
 CServer::CServer(const string &ip, const string &port) : 
@@ -6,19 +6,19 @@ CServer::CServer(const string &ip, const string &port) :
 	heartbeat_receiver(context, ZMQ_PULL),
 	task_assigner(context, ZMQ_REP), 
 	command_sender(context, ZMQ_PUB),
+	result_collector(context, ZMQ_PULL),
 	ip_(ip), 
 	port_(port)
 {
 	//heartbeat_receiver.unbind()
 }
 
-
-
 void CServer::bind_sockets_to_ip()
 {
 	heartbeat_receiver.bind(get_ip_address());
 	command_sender.bind("tcp://127.0.0.1:5556");
 	task_assigner.bind("tcp://127.0.0.1:5560"); //TODO : 
+	result_collector.bind("tcp://127.0.0.1:5558");
 }
 
 void CServer::unbind_sockets_to_ip()
@@ -179,4 +179,15 @@ void CServer::assign_tasks()
 	}// end of while
 
 	std::cout << "All tasks is finished!" << std::endl;
+}
+
+void CServer::collect_result(uint max_num)
+{
+	int count = 0;
+	// Collect result from workers
+	std::string result;
+	while (is_not_reach(max_num, count)) {
+		result = s_recv(result_collector);
+		std::cout << result << std::endl;
+	}
 }

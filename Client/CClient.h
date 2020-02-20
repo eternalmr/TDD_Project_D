@@ -1,7 +1,7 @@
 #pragma once
 
-#include "pch.h"
-#include "project_paramters.h"
+#include "client_pch.h"
+#include "../project_paramters.h"
 
 class CClient {
 
@@ -19,7 +19,7 @@ public:
 
 	SignalSet listen_from_server();
 	bool is_irrelevant(const SignalSet &signal) const;
-	void execute_control_command(SignalSet &control_signal);
+	void execute_control_command(SignalSet control_signal);
 
 	string get_ip_address();
 
@@ -27,8 +27,6 @@ public:
 
 	void simulation_wrap(int task_num);
 	int simulation(int input);
-
-
 
 private:
 	bool is_not_reach(int max_num, int &count);

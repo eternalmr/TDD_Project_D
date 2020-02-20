@@ -2,7 +2,7 @@
 #pragma warning(disable:4996)
 
 #include "CTask.h"
-#include "project_paramters.h"
+#include "../project_paramters.h"
 
 class ClientRecord
 {

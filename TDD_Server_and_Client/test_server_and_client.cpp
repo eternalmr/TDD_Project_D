@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "CServer.h"
-#include "CClient.h"
+#include "../Server/CServer.h"
+#include "../Client/CClient.h"
 #include <future>
 
 class ServerAndClientTest : public testing::Test {
@@ -15,6 +15,76 @@ public:
 		//server.unbind_sockets_to_ip();
 	}
 };
+
+class ServerAndClientTestWithParams : public testing::TestWithParam<string> {
+public:
+	CServer server;
+};
+
+INSTANTIATE_TEST_CASE_P(VOIP, ServerAndClientTestWithParams,
+	testing::Values("start"));
+
+//, "pause", "stop", "continue"
+
+//TEST_P(ServerAndClientTestWithParams, DISABLED_ExecuteAllControlCommands) {
+//	auto command = GetParam();
+//
+//	CClient client1(1);
+//	CClient client2(2);
+//
+//	std::future<CClient::SignalSet> fu1 =
+//		std::async(std::launch::deferred, &CClient::listen_from_server, &client1);
+//
+//	std::future<CClient::SignalSet> fu2 =
+//		std::async(std::launch::deferred, &CClient::listen_from_server, &client2);
+//
+//	Sleep(2000);
+//	server.send_command_to_all_client(command);
+//
+//	//for (int i = 0; i < 3; i++) {
+//	//	Sleep(2000);
+//	//	server.send_command_to_all_client(command);
+//	//}
+//	
+//	EXPECT_EQ(fu1.get(), CClient::kStart);
+//	EXPECT_EQ(fu2.get(), CClient::kStart);
+//}
+
+
+
+TEST_F(ServerAndClientTest, PauseAllClient) {
+	CClient client1(1);
+	CClient client2(2);
+
+	std::future<CClient::SignalSet> fu1 =
+		std::async(std::launch::deferred, &CClient::listen_from_server, &client1);
+
+	std::future<CClient::SignalSet> fu2 =
+		std::async(std::launch::async, &CClient::listen_from_server, &client2);
+
+	Sleep(100);
+	server.send_command_to_all_client("pause");
+
+	EXPECT_EQ(fu1.get(), CClient::kPause);
+	EXPECT_EQ(fu2.get(), CClient::kPause);
+}
+
+TEST_F(ServerAndClientTest, PauseOneClient) {
+	CClient client1(1);
+	CClient client2(2);
+
+	std::future<CClient::SignalSet> fu1 =
+		std::async(std::launch::async, &CClient::listen_from_server, &client1);
+
+	std::future<CClient::SignalSet> fu2 =
+		std::async(std::launch::async, &CClient::listen_from_server, &client2);
+
+	Sleep(100);
+	server.send_command_to_client(1,"pause");
+
+	EXPECT_EQ(fu1.get(), CClient::kPause);
+	EXPECT_NE(fu2.get(), CClient::kPause);
+}
 
 TEST_F(ServerAndClientTest, StartAllClient) {
 	CClient client1(1);
@@ -50,20 +120,33 @@ TEST_F(ServerAndClientTest, StartASpecificClient) {
 	EXPECT_NE(fu2.get(), CClient::kStart);
 }
 
+TEST_F(ServerAndClientTest, ServerAssignTaskToClientAndGetResultBack) {
+	const int task_num = 1;
+	const int client_num = 3;
+	CClient client[client_num];
+	std::thread client_thread[client_num];
 
-TEST_F(ServerAndClientTest, AssignTaskToClient) {
-	CClient client(1);
+	for (int i = 0; i<task_num*client_num;i++) {
+		server.add_new_task(Task(i + 1));
+	}
 
-	server.add_new_client(1);
-	server.add_new_task(Task(1));
-
-	client.start_flag = 1;
+	for (int i = 0; i < client_num; i++) {
+		server.add_new_client(i+1);
+		client[i] =  CClient(i + 1);
+		client[i].start_flag = 1;
+	}
 
 	std::thread task_thread(&CServer::assign_tasks, &server);
-	std::thread sim_thread(&CClient::simulation_wrap, &client, 1);
+	for (int i = 0; i < client_num; i++) {
+		client_thread[i] = std::thread(&CClient::simulation_wrap, &client[i], task_num);
+	}
+	std::thread result_thread(&CServer::collect_result, &server, task_num*client_num);
 
 	task_thread.join();
-	sim_thread.join();
+	for (int i = 0; i < client_num; i++) {
+		client_thread[i].join();
+	}
+	result_thread.join();
 }
 
 TEST_F(ServerAndClientTest, MarkBreakdownClientAndResetItsTask) {

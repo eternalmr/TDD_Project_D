@@ -1,10 +1,10 @@
 #pragma once
 
-#include "pch.h"
+#include "server_pch.h"
 #include <regex>
 #include <map>
 #include "CClientRecord.h"
-#include "project_paramters.h"
+#include "../project_paramters.h"
 
 typedef std::map<uint, ClientRecord> ClientMap;
 
@@ -34,14 +34,19 @@ public:
 	void send_command_to_client(uint id, string command);
 	void send_command_to_all_client(string command);
 
+	void collect_result(uint max_num = REPEAT_FOREVER);
+
+
 private:
-	bool CServer::is_not_reach(int max_num, int &count);
+	bool is_not_reach(int max_num, int &count);
 
 private:
 	zmq::context_t context;
 	zmq::socket_t heartbeat_receiver;
 	zmq::socket_t task_assigner;
 	zmq::socket_t command_sender;
+	zmq::socket_t result_collector;
+
 	string ip_;
 	string port_;
 	

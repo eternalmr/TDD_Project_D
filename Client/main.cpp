@@ -1,12 +1,33 @@
 ﻿// Client.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 #include "client_pch.h"
-#include <iostream>
+#include "CClient.h"
 
-int main()
+
+int main(int argc, char* argv[])
 {
-	int i;
-    std::cout << "Hello World!\n";
+	// get client id from argv
+	uint32_t id = std::atoi(argv[1]);
+	cout << "client_id: " << id << endl;
+
+	CClient client(id);
+	Command command;
+
+	std::thread simulation_thread(&CClient::simulation_wrap, &client, 0);
+	std::thread heartbeat_thread(&CClient::send_heartbeat, &client, 0);
+
+	while (true)
+	{
+		command = client.listen_from_server();
+		if (client.is_irrelevant(command)) continue;
+		client.execute_control_command(command);
+		if(client.stop_flag) break;
+	}
+
+	simulation_thread.join();
+	heartbeat_thread.join();
+
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

@@ -49,5 +49,5 @@ public:
 	int stop_flag;
 };
 
-
+typedef CClient::SignalSet Command;
 

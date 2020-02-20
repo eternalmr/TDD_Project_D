@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
 {
 	// get client id from argv
 	uint32_t id = std::atoi(argv[1]);
+	//uint32_t id = 1;
 	cout << "client_id: " << id << endl;
 
 	CClient client(id);
@@ -16,8 +17,7 @@ int main(int argc, char* argv[])
 	std::thread simulation_thread(&CClient::simulation_wrap, &client, 0);
 	std::thread heartbeat_thread(&CClient::send_heartbeat, &client, 0);
 
-	while (true)
-	{
+	while (true) {
 		command = client.listen_from_server();
 		if (client.is_irrelevant(command)) continue;
 		client.execute_control_command(command);

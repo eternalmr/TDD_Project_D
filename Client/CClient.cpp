@@ -11,12 +11,16 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	ip_(ip), port_(port),
 	start_flag(0), pause_flag(0), stop_flag(0)
 {
-	heartbeat_sender.connect(get_ip_address());
+	connect_to_ip_address();
+	subscribe_specific_signal();
+}
+
+void CClient::connect_to_ip_address()
+{
+	heartbeat_sender.connect("tcp://localhost:1217");
 	task_requester.connect("tcp://localhost:5560");
 	result_sender.connect("tcp://localhost:5558");
-	command_receiver.connect("tcp://localhost:5556");
-
-	subscribe_specific_signal();
+	command_receiver.connect("tcp://localhost:5555");
 }
 
 string CClient::get_ip_address()

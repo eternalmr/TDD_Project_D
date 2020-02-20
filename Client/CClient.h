@@ -15,6 +15,8 @@ public:
 	CClient(uint id = 1, const string &ip = default_client_ip, 
 		const string &port = default_client_port);
 
+	void connect_to_ip_address();
+
 	void subscribe_specific_signal();
 
 	SignalSet listen_from_server();

@@ -127,7 +127,7 @@ TEST_F(ServerAndClientTest, ServerAssignTaskToClientAndGetResultBack) {
 	std::thread client_thread[client_num];
 
 	for (int i = 0; i<task_num*client_num;i++) {
-		server.add_new_task(Task(i + 1));
+		server.add_new_task(i+1);
 	}
 
 	for (int i = 0; i < client_num; i++) {

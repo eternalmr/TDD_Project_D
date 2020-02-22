@@ -47,6 +47,7 @@ void CClient::send_heartbeat(int max_num)
 
 	while (is_not_reach(max_num, count)) {
 		s_send(heartbeat_sender, signal);
+		//cout << "send heartbeat to server: " << id_ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
 	}
 

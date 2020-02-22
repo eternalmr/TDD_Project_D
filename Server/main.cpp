@@ -1,19 +1,62 @@
 ﻿// Server.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 #include "server_pch.h"
+#include "CServer.h"
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	CServer server;
+
+	int task_num = 20;
+	for (int i = 1; i <= task_num; i++) {
+		server.add_new_task(i);
+	} 
+
+	//cout << "client size: " << server.clients.size() << endl;
+
+	//int client_num = 1;
+	//for (int i = 1; i <= client_num; i++) {
+	//	server.add_new_client(i);
+	//}
+	//server.add_new_client(2);
+
+	server.bind_sockets_to_ip();
+
+	std::thread      task_thread(&CServer::assign_tasks,	  &server);
+	std::thread    result_thread(&CServer::collect_result,    &server, REPEAT_FOREVER);
+	std::thread heartbeat_thread(&CServer::receive_heartbeat, &server, REPEAT_FOREVER);
+
+	//cout << "client size: " << server.clients.size() << endl;
+
+	char command;
+	while (true) {
+		std::cout << "Please input your command: ";
+		std::cin >> command;
+
+		if (command == 's') {
+			server.send_command_to_all_client("start");
+		}
+		else if (command == 'c') {
+			server.send_command_to_all_client("continue");
+		}
+		else if (command == 'p') {
+			server.send_command_to_all_client("pause");
+		}
+		else if (command == 'e') {
+			server.send_command_to_all_client("stop");
+			std::cout << "Simulation stop!" << std::endl;
+			break;
+		}
+		else {
+			std::cout << "Wrong command!" << std::endl;
+			continue;
+		}
+	}
+
+	task_thread.join();
+	result_thread.join();
+	heartbeat_thread.join();
+
+	return 0;
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门使用技巧: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件

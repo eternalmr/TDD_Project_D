@@ -7,16 +7,16 @@ CServer::CServer(const string &ip, const string &port) :
 	task_assigner(context, ZMQ_REP), 
 	command_sender(context, ZMQ_PUB),
 	result_collector(context, ZMQ_PULL),
-	ip_(ip), 
-	port_(port)
+	ip_(ip), port_(port), clients({})
 {
+	//clients[1] = ClientRecord(1);
 	//heartbeat_receiver.unbind()
 }
 
 void CServer::bind_sockets_to_ip()
 {
-	heartbeat_receiver.bind(get_ip_address());
-	command_sender.bind("tcp://127.0.0.1:5556");
+	heartbeat_receiver.bind("tcp://127.0.0.1:1217");
+	command_sender.bind("tcp://127.0.0.1:5555");
 	task_assigner.bind("tcp://127.0.0.1:5560"); //TODO : 
 	result_collector.bind("tcp://127.0.0.1:5558");
 }
@@ -35,18 +35,18 @@ string CServer::get_ip_address()
 
 void CServer::add_new_client(uint id)
 {
-	clients[id] = ClientRecord(id);
+	clients.insert(ClientMap::value_type(id, ClientRecord(id)));
 }
 
-void CServer::add_new_task(Task task)
+void CServer::add_new_task(uint i)
 {
-	tasks.push_back(task);
+	tasks.push_back(Task(i));
 }
 
 //========================= heartbeat related functions ==================================
 void CServer::receive_heartbeat(int max_num)
 {
-	int id;
+	uint id;
 	int count = 0;
 	string heartbeat_signal;
 
@@ -59,8 +59,10 @@ void CServer::receive_heartbeat(int max_num)
 		}
 		update_heartbeat_of_client(id);
 
-		std::cout << "Heartbeat of client[" << id << "] : "
-			<< clients[id].get_heartbeat() << std::endl;
+		//std::cout << "Heartbeat of client[" << id << "] : "
+		//	<< clients[id].get_heartbeat() << std::endl;
+
+		//TODO : 加个线程的退出条件
 	}
 	heartbeat_receiver.close();
 }
@@ -83,7 +85,7 @@ std::vector<string> CServer::split_string(const string& in, const string& delim)
 	std::regex re{ delim };
 	return std::vector<string> {
 		std::sregex_token_iterator(in.begin(), in.end(), re, -1),
-			std::sregex_token_iterator()
+		std::sregex_token_iterator()
 	};
 }
 
@@ -116,10 +118,45 @@ void CServer::mark_breakdown_client()
 	}
 }
 
-Task* CServer::get_undo_task()
+void CServer::mark_breakdown_client_test()
+{
+	
+	//for (auto &client : clients) {
+	//	if (!client.second.is_timeout() || client.second.is_breakdown())
+	//		continue;
+
+	//	client.second.set_breakdown();
+	//	std::cout << "Client[" << client.second.get_id()
+	//		<< "] is breakdown!" << std::endl;
+
+	//	if (client.second.get_task()) {
+	//		client.second.get_task()->set_not_start();
+	//		std::cout << "Reset task[" << client.second.get_task()->get_id()
+	//			<< "] status to not start" << std::endl;
+	//	}
+	//}
+	ClientRecord *pClient;
+	for (auto &client : clients) {
+		pClient = &(client.second);
+		if (!pClient->is_timeout() || pClient->is_breakdown())
+			continue;
+
+		pClient->set_breakdown();
+		std::cout << "Client[" << pClient->get_id()
+			<< "] is breakdown!" << std::endl;
+
+		if (pClient->get_task()) {
+			pClient->get_task()->set_not_start();
+			std::cout << "Reset task[" << pClient->get_task()->get_id()
+				<< "] status to not start" << std::endl;
+		}
+	}
+}
+
+Task* CServer::get_undo_task() 
 {
 	Task *ptask = nullptr;
-	for (int i = 0; i < tasks.size(); i++) {
+	for (int i = 0; i < tasks.size(); i++) {//TODO : 可以优化不用每次从头开始查找
 		if (tasks[i].is_not_start()) {
 			ptask = &tasks[i];
 			break;
@@ -149,7 +186,7 @@ void CServer::assign_tasks()
 	Task* ptask;
 	while (true) {//TODO : simulation is finished
 		// update tasks and clients status
-		mark_breakdown_client();
+		mark_breakdown_client_test(); //TODO : 根据单一责任原理，这个函数应该移除这里
 
 		// get a undo task
 		undo_task_pointer = get_undo_task();
@@ -158,14 +195,20 @@ void CServer::assign_tasks()
 		// TODO : a_free_worker = get_free_worker(workers queue)
 		string reply = s_recv(task_assigner);//reply client id
 		uint id = stoi(reply);
-		clients[id].set_free();
-		std::cout << "Receive request from client[" << reply << "]" << std::endl;
 
-		ptask = clients[id].get_task();
-		if (ptask != nullptr && (ptask->is_in_computing())) {
-			ptask->set_finished();
-			std::cout << "Task[" << ptask->get_id() << "] is accomplished by client["
-				<< id << "]" << std::endl;
+		if (is_not_connect_to_client(id)) { //new client
+			add_new_client(id);
+		}
+		else { // ready in clients pool
+			clients[id].set_free();
+			std::cout << "Receive request from client[" << reply << "]" << std::endl;
+
+			ptask = clients[id].get_task();
+			if (ptask != nullptr && (ptask->is_in_computing())) {
+				ptask->set_finished();
+				std::cout << "Task[" << ptask->get_id() << "] is accomplished by client["
+					<< id << "]" << std::endl;
+			}
 		}
 
 		// TODO : assign_task_to(a_free_worker, a_undo_task)

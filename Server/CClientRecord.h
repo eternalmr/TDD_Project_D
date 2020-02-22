@@ -11,7 +11,7 @@ private:
 
 public:
 	ClientRecord();
-	ClientRecord(uint id);
+	explicit ClientRecord(uint id);
 
 	uint get_id() const;
 

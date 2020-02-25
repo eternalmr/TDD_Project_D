@@ -200,3 +200,46 @@ void CServer::collect_result(uint max_num)
 		std::cout << result << std::endl;
 	}
 }
+
+void CServer::add_tasks(int num)
+{
+	for (int i = 1; i <= num; i++) {
+		add_new_task(i);
+	}
+}
+
+void CServer::start_simulation()
+{
+	std::thread      task_thread(&CServer::assign_tasks, this);
+	std::thread    result_thread(&CServer::collect_result, this, REPEAT_FOREVER);
+	std::thread heartbeat_thread(&CServer::receive_heartbeat, this, REPEAT_FOREVER);
+
+	char command;
+	while (true) {
+		std::cout << "Please input your command: ";
+		std::cin >> command;
+
+		if (command == 's') {
+			send_command_to_all_client("start");
+		}
+		else if (command == 'c') {
+			send_command_to_all_client("continue");
+		}
+		else if (command == 'p') {
+			send_command_to_all_client("pause");
+		}
+		else if (command == 'e') {
+			send_command_to_all_client("stop");
+			std::cout << "Simulation stop!" << std::endl;
+			break;
+		}
+		else {
+			std::cout << "Wrong command!" << std::endl;
+			continue;
+		}
+	}
+
+	task_thread.join();
+	result_thread.join();
+	heartbeat_thread.join();
+}

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "../Server/CClientRecord.h"
+#include "../project_paramters.h"
 
 class ClientRecordTest : public testing::Test
 {
@@ -12,10 +13,10 @@ public:
 
 TEST_F(ClientRecordTest, ClientIsTimeoutIfHeartbeatExceedLimit) {
 	int64_t this_moment = s_clock();
-	client.set_heartbeat(this_moment - 10001); // MAX_HEARTBEAT_TIMEOUT = 10000
+	client.set_heartbeat(this_moment - MAX_HEARTBEAT_TIMEOUT - 1); // MAX_HEARTBEAT_TIMEOUT = 10000
 	EXPECT_TRUE(client.is_timeout());
 
-	client.set_heartbeat(this_moment - 9999); // MAX_HEARTBEAT_TIMEOUT = 10000
+	client.set_heartbeat(this_moment - MAX_HEARTBEAT_TIMEOUT + 1); // MAX_HEARTBEAT_TIMEOUT = 10000
 	EXPECT_FALSE(client.is_timeout());
 }
 

@@ -36,6 +36,9 @@ public:
 
 	void collect_result(uint max_num = REPEAT_FOREVER);
 
+	void add_tasks(int num);
+	void start_simulation();
+
 
 private:
 	bool is_not_reach(int max_num, int &count);

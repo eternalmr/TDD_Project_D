@@ -36,6 +36,7 @@
 #define IDC_TAB                         1003
 #define IDC_CLIENT_TAB                  1003
 #define IDC_BUTTON4                     1003
+#define IDC_BUTTON5                     1004
 
 // Next default values for new objects
 // 

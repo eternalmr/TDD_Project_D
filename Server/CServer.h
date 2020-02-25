@@ -37,7 +37,8 @@ public:
 	void collect_result(uint max_num = REPEAT_FOREVER);
 
 	void add_tasks(int num);
-	void start_simulation();
+	void start_simulation();//console use only
+	void start_threads();//
 
 
 private:

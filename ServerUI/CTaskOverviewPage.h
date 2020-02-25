@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "..\Server\CServer.h"
 
 // CTaskOverviewPage 对话框
 
@@ -22,4 +23,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton5();
+	CServer server;
+
+	std::thread sim_thread;
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
+	afx_msg void OnBnClickedButton4();
 };

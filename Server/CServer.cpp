@@ -243,3 +243,14 @@ void CServer::start_simulation()
 	result_thread.join();
 	heartbeat_thread.join();
 }
+
+void CServer::start_threads()
+{
+	std::thread      task_thread(&CServer::assign_tasks, this);
+	std::thread    result_thread(&CServer::collect_result, this, REPEAT_FOREVER);
+	std::thread heartbeat_thread(&CServer::receive_heartbeat, this, REPEAT_FOREVER);
+
+	if (task_thread.joinable()) task_thread.join();
+	if (result_thread.joinable()) result_thread.join();
+	if (heartbeat_thread.joinable()) heartbeat_thread.join();
+}

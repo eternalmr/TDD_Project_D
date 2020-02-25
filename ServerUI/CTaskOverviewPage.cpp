@@ -5,7 +5,7 @@
 #include "ServerUI.h"
 #include "CTaskOverviewPage.h"
 #include "afxdialogex.h"
-
+#include "..\Server\CServer.h"
 
 // CTaskOverviewPage 对话框
 
@@ -28,7 +28,14 @@ void CTaskOverviewPage::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CTaskOverviewPage, CDialogEx)
+	ON_BN_CLICKED(IDC_BUTTON1, &CTaskOverviewPage::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
 // CTaskOverviewPage 消息处理程序
+
+
+void CTaskOverviewPage::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}

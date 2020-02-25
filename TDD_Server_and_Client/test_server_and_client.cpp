@@ -8,7 +8,7 @@ public:
 	CServer server;
 public:
 	void SetUp() override {
-		server.bind_sockets_to_ip();
+		//server.bind_sockets_to_ip();
 	}
 
 	void TearDown() override {

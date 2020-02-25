@@ -4,14 +4,8 @@
 #include "CClientRecord.h"
 
 // constructor
-//ClientRecord::ClientRecord() : id_(0), status_(kFree), 
-//								ptask_(nullptr) 
-//{
-//	heartbeat_ = s_clock();
-//}
-
 ClientRecord::ClientRecord(uint id) : id_(id), status_(kFree), 
-								  ptask_(nullptr)
+									  ptask_(nullptr)
 {
 	heartbeat_ = s_clock();
 	cout << "client[" << id_ << "] is added to server." << endl;

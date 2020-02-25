@@ -29,7 +29,6 @@ public:
 
 	void assign_tasks();
 	void mark_breakdown_client();
-	void mark_breakdown_client_test();
 	Task* get_undo_task();
 
 	void send_command_to_client(uint id, string command);

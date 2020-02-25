@@ -9,8 +9,7 @@ CServer::CServer(const string &ip, const string &port) :
 	result_collector(context, ZMQ_PULL),
 	ip_(ip), port_(port), clients({})
 {
-	//clients[1] = ClientRecord(1);
-	//heartbeat_receiver.unbind()
+	bind_sockets_to_ip();
 }
 
 void CServer::bind_sockets_to_ip()
@@ -100,41 +99,8 @@ bool CServer::is_not_connect_to_client(uint id)
 }
 
 //======================= assign task related functions ==========================
-void CServer::mark_breakdown_client()
+void CServer::mark_breakdown_client() //TODO:添加测试
 {
-	for (int i = 0; i < clients.size(); i++) {
-		if ( !clients[i].is_timeout() || clients[i].is_breakdown() )
-			continue;
-
-		clients[i].set_breakdown();
-		std::cout << "Client[" << clients[i].get_id() 
-				  << "] is breakdown!" << std::endl;
-		
-		if (clients[i].get_task()) {
-			clients[i].get_task()->set_not_start();
-			std::cout << "Reset task[" << clients[i].get_task()->get_id()
-					  << "] status to not start" << std::endl;
-		}
-	}
-}
-
-void CServer::mark_breakdown_client_test()
-{
-	
-	//for (auto &client : clients) {
-	//	if (!client.second.is_timeout() || client.second.is_breakdown())
-	//		continue;
-
-	//	client.second.set_breakdown();
-	//	std::cout << "Client[" << client.second.get_id()
-	//		<< "] is breakdown!" << std::endl;
-
-	//	if (client.second.get_task()) {
-	//		client.second.get_task()->set_not_start();
-	//		std::cout << "Reset task[" << client.second.get_task()->get_id()
-	//			<< "] status to not start" << std::endl;
-	//	}
-	//}
 	ClientRecord *pClient;
 	for (auto &client : clients) {
 		pClient = &(client.second);
@@ -186,7 +152,7 @@ void CServer::assign_tasks()
 	Task* ptask;
 	while (true) {//TODO : simulation is finished
 		// update tasks and clients status
-		mark_breakdown_client_test(); //TODO : 根据单一责任原理，这个函数应该移除这里
+		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移除这里
 
 		// get a undo task
 		undo_task_pointer = get_undo_task();

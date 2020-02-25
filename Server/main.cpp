@@ -13,21 +13,10 @@ int main()
 		server.add_new_task(i);
 	} 
 
-	//cout << "client size: " << server.clients.size() << endl;
-
-	//int client_num = 1;
-	//for (int i = 1; i <= client_num; i++) {
-	//	server.add_new_client(i);
-	//}
-	//server.add_new_client(2);
-
-	server.bind_sockets_to_ip();
 
 	std::thread      task_thread(&CServer::assign_tasks,	  &server);
 	std::thread    result_thread(&CServer::collect_result,    &server, REPEAT_FOREVER);
 	std::thread heartbeat_thread(&CServer::receive_heartbeat, &server, REPEAT_FOREVER);
-
-	//cout << "client size: " << server.clients.size() << endl;
 
 	char command;
 	while (true) {

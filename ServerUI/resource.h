@@ -29,14 +29,14 @@
 #define IDD_TASK_DETAIL                 320
 #define IDD_CLIENT_OVERVIEW             321
 #define IDD_CLIENT_DETAIL               325
-#define IDC_BUTTON1                     1000
+#define IDC_START                       1000
 #define IDC_BUTTON2                     1001
 #define IDC_TASK_TAB                    1002
 #define IDC_BUTTON3                     1002
 #define IDC_TAB                         1003
 #define IDC_CLIENT_TAB                  1003
 #define IDC_BUTTON4                     1003
-#define IDC_BUTTON5                     1004
+#define IDC_THREAD                      1004
 
 // Next default values for new objects
 // 

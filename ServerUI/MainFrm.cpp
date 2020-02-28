@@ -27,8 +27,14 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 
-	ON_MESSAGE(NM_TASK,	  OnMyChange)
-	ON_MESSAGE(NM_CLIENT, OnMyChange)
+	ON_MESSAGE(NM_TASK,	  ShiftPage)
+	ON_MESSAGE(NM_CLIENT, ShiftPage)
+
+	ON_MESSAGE(NM_THREAD, ControlServer)
+	ON_MESSAGE(NM_START, ControlServer)
+	ON_MESSAGE(NM_PAUSE, ControlServer)
+	ON_MESSAGE(NM_CONTINUE, ControlServer)
+	ON_MESSAGE(NM_STOP, ControlServer)
 
 END_MESSAGE_MAP()
 
@@ -187,7 +193,7 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
-	//// TODO: 在此添加专用代码和/或调用基类
+	// TODO: 在此添加专用代码和/或调用基类
 	CRect rect;
 	GetClientRect(&rect); //获得用户窗口的矩形坐标
 	//GetWindowRect(&rect);
@@ -220,7 +226,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	return TRUE; //不使用默认拆分
 }
 
-LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 {
 	CRect rect;
 	GetClientRect(&rect);
@@ -251,6 +257,32 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_RightWindowSplitter.RecalcLayout();
 		pNewView->OnInitialUpdate();
 		m_RightWindowSplitter.SetActivePane(0, 0);
+	}
+
+	return 0;
+}
+
+LRESULT CMainFrame::ControlServer(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam == NM_THREAD) {
+		//启动线程
+		MessageBox(TEXT("启动线程:1"));
+	}
+	if (wParam == NM_START) {
+		//启动线程
+		MessageBox(TEXT("开始任务"));
+	}
+	if (wParam == NM_PAUSE) {
+		//启动线程
+		MessageBox(TEXT("暂停任务"));
+	}
+	if (wParam == NM_CONTINUE) {
+		//启动线程
+		MessageBox(TEXT("继续任务"));
+	}
+	if (wParam == NM_STOP) {
+		//启动线程
+		MessageBox(TEXT("结束任务"));
 	}
 
 	return 0;

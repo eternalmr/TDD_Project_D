@@ -57,6 +57,15 @@ void CTaskOverviewPage::OnBnClickedButton5()
 
 	sim_thread = std::thread(&CServer::start_threads, &server);
 
+
+	//std::thread      task_thread(&CServer::assign_tasks, &server);
+	//std::thread    result_thread(&CServer::collect_result, &server, REPEAT_FOREVER);
+	//std::thread heartbeat_thread(&CServer::receive_heartbeat, &server, REPEAT_FOREVER);
+
+	//if (task_thread.joinable()) task_thread.join();
+	//if (result_thread.joinable()) result_thread.join();
+	//if (heartbeat_thread.joinable()) heartbeat_thread.join();
+
 	//std::thread run_sim(&CServer::start_threads, &server);
 	//run_sim.join();
 }

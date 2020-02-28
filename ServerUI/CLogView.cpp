@@ -26,8 +26,8 @@ void CLogView::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CLogView, CFormView)
-	ON_BN_CLICKED(IDC_BUTTON1, &CLogView::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &CLogView::OnBnClickedButton2)
+//	ON_BN_CLICKED(IDC_BUTTON1, &CLogView::OnBnClickedButton1)
+//	ON_BN_CLICKED(IDC_BUTTON2, &CLogView::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -51,27 +51,27 @@ void CLogView::Dump(CDumpContext& dc) const
 // CLogView 消息处理程序
 
 
-void CLogView::OnBnClickedButton1()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CRect rect;
-	GetClientRect(&rect);
-	int w = rect.Width();
-	int h = rect.Height();
-	CString str;
-	str.Format(TEXT("%d, %d"), w, h);
-	MessageBox(str);
-}
+//void CLogView::OnBnClickedButton1()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	CRect rect;
+//	GetClientRect(&rect);
+//	int w = rect.Width();
+//	int h = rect.Height();
+//	CString str;
+//	str.Format(TEXT("%d, %d"), w, h);
+//	MessageBox(str);
+//}
 
 
-void CLogView::OnBnClickedButton2()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CRect rect;
-	GetWindowRect(&rect);
-	int w = rect.Width();
-	int h = rect.Height();
-	CString str;
-	str.Format(TEXT("%d, %d"), w, h);
-	MessageBox(str);
-}
+//void CLogView::OnBnClickedButton2()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	CRect rect;
+//	GetWindowRect(&rect);
+//	int w = rect.Width();
+//	int h = rect.Height();
+//	CString str;
+//	str.Format(TEXT("%d, %d"), w, h);
+//	MessageBox(str);
+//}

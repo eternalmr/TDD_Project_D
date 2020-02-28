@@ -48,9 +48,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 
-private:
+public:
 	CSplitterWnd m_WholeWindowSplitter;
 	CSplitterWnd m_RightWindowSplitter;
+
+private:
 	CServer server;
 	std::thread sim_thread;
 

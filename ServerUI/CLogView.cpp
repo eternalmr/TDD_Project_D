@@ -6,6 +6,7 @@
 #include "CLogView.h"
 
 
+
 // CLogView
 
 IMPLEMENT_DYNCREATE(CLogView, CFormView)
@@ -23,11 +24,16 @@ CLogView::~CLogView()
 void CLogView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LOGBOARD, m_log);
 }
 
 BEGIN_MESSAGE_MAP(CLogView, CFormView)
-//	ON_BN_CLICKED(IDC_BUTTON1, &CLogView::OnBnClickedButton1)
-//	ON_BN_CLICKED(IDC_BUTTON2, &CLogView::OnBnClickedButton2)
+
+	ON_MESSAGE(NW_DEBUG_LOG,  &CLogView::OnNwWritelog)
+	ON_MESSAGE(NW_DETAIL_LOG, &CLogView::OnNwWritelog)
+	ON_MESSAGE(NW_NORMAL_LOG, &CLogView::OnNwWritelog)
+	ON_MESSAGE(NW_ERROR_LOG,  &CLogView::OnNwWritelog)
+
 END_MESSAGE_MAP()
 
 
@@ -47,31 +53,31 @@ void CLogView::Dump(CDumpContext& dc) const
 #endif
 #endif //_DEBUG
 
-
 // CLogView 消息处理程序
 
-
-//void CLogView::OnBnClickedButton1()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	CRect rect;
-//	GetClientRect(&rect);
-//	int w = rect.Width();
-//	int h = rect.Height();
-//	CString str;
-//	str.Format(TEXT("%d, %d"), w, h);
-//	MessageBox(str);
-//}
+void CLogView::OnInitialUpdate()
+{
+	CFormView::OnInitialUpdate();
+	LogThread = std::thread(&CTLogEdit::TLogEditThreadSTL, &m_log); //启动日志接受线程
+}
 
 
-//void CLogView::OnBnClickedButton2()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	CRect rect;
-//	GetWindowRect(&rect);
-//	int w = rect.Width();
-//	int h = rect.Height();
-//	CString str;
-//	str.Format(TEXT("%d, %d"), w, h);
-//	MessageBox(str);
-//}
+afx_msg LRESULT CLogView::OnNwWritelog(WPARAM wParam, LPARAM lParam)
+{
+	CString *str = (CString*)lParam;
+	if (wParam == NW_DEBUG_LOG) {
+		m_log.AddLine(*str, TLP_DEBUG);
+	}
+	if (wParam == NW_DETAIL_LOG) {
+		m_log.AddLine(*str, TLP_DETAIL);
+	}
+	if (wParam == NW_NORMAL_LOG) {
+		m_log.AddLine(*str, TLP_NORMAL);
+	}
+	if (wParam == NW_ERROR_LOG) {
+		m_log.AddLine(*str, TLP_ERROR);
+	}
+	delete str;
+	
+	return 0;
+}

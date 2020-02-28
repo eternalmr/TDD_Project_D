@@ -203,6 +203,7 @@
     <ClInclude Include="CTaskDetailPage.h" />
     <ClInclude Include="CTaskDlg.h" />
     <ClInclude Include="CTaskOverviewPage.h" />
+    <ClInclude Include="CTLogEdit.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="pch.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="CTaskDetailPage.cpp" />
     <ClCompile Include="CTaskDlg.cpp" />
     <ClCompile Include="CTaskOverviewPage.cpp" />
+    <ClCompile Include="CTLogEdit.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

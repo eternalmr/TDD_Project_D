@@ -84,7 +84,7 @@ BOOL CServerUIApp::InitInstance()
 	EnableTaskbarInteraction(FALSE);
 
 	// 使用 RichEdit 控件需要 AfxInitRichEdit2()
-	// AfxInitRichEdit2();
+	 AfxInitRichEdit2();
 
 	// 标准初始化
 	// 如果未使用这些功能并希望减小

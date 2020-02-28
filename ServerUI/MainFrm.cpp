@@ -266,22 +266,28 @@ LRESULT CMainFrame::ControlServer(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam == NM_THREAD) {
 		//启动线程
-		MessageBox(TEXT("启动线程:1"));
+		MessageBox(TEXT("启动线程"));
+		server.add_tasks(10);
+		sim_thread = std::thread(&CServer::start_threads, &server);
 	}
 	if (wParam == NM_START) {
 		//启动线程
 		MessageBox(TEXT("开始任务"));
+		server.send_command_to_all_client("start");
 	}
 	if (wParam == NM_PAUSE) {
 		//启动线程
+		server.send_command_to_all_client("pause");
 		MessageBox(TEXT("暂停任务"));
 	}
 	if (wParam == NM_CONTINUE) {
 		//启动线程
+		server.send_command_to_all_client("continue");
 		MessageBox(TEXT("继续任务"));
 	}
 	if (wParam == NM_STOP) {
 		//启动线程
+		server.send_command_to_all_client("stop");
 		MessageBox(TEXT("结束任务"));
 	}
 

@@ -24,9 +24,6 @@ protected:
 public:
 	afx_msg void OnBnClickedStart();
 	afx_msg void OnBnClickedThreadBtn();
-	CServer server;
-
-	std::thread sim_thread;
 	afx_msg void OnBnClickedPause();
 	afx_msg void OnBnClickedContinue();
 	afx_msg void OnBnClickedStop();

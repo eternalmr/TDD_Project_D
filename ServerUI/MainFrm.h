@@ -51,11 +51,13 @@ protected:
 private:
 	CSplitterWnd m_WholeWindowSplitter;
 	CSplitterWnd m_RightWindowSplitter;
-	//CServer server;
+	CServer server;
+	std::thread sim_thread;
 
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	afx_msg LRESULT ShiftPage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT ControlServer(WPARAM wParam, LPARAM lParam);
+
 };
 
 

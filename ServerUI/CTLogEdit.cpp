@@ -2,7 +2,6 @@
 //
 
 #include "pch.h"
-//#include "TestLogOutput.h"
 #include "CTLogEdit.h"
 
 COLORREF TLP_DEBUG_COLOR = RGB(0, 0, 0);   //black

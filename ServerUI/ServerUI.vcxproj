@@ -204,6 +204,7 @@
     <ClInclude Include="CTaskDlg.h" />
     <ClInclude Include="CTaskOverviewPage.h" />
     <ClInclude Include="CTLogEdit.h" />
+    <ClInclude Include="CUserMessage.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="pch.h" />

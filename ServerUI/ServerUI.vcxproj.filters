@@ -72,6 +72,9 @@
     <ClInclude Include="CTLogEdit.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CUserMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerUI.cpp">

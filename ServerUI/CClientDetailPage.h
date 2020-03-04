@@ -1,5 +1,7 @@
 ﻿#pragma once
+#include "CClientItem.h"
 
+#define CLIENT_NUM 10
 
 // CClientDetailPage 对话框
 
@@ -20,4 +22,11 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+
+public:
+
+	CClientItem m_ClientItems[CLIENT_NUM];
+	virtual BOOL OnInitDialog();
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };

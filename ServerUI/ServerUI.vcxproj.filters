@@ -78,6 +78,9 @@
     <ClInclude Include="CTaskItem.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CClientItem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerUI.cpp">
@@ -129,6 +132,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CTaskItem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientItem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

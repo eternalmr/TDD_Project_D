@@ -30,6 +30,8 @@ void CTaskDetailPage::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CTaskDetailPage, CDialogEx)
 
+	ON_WM_VSCROLL()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 
@@ -38,17 +40,111 @@ BOOL CTaskDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	RECT rect;
+	GetClientRect(&rect);
+	SetScrollRange(SB_VERT, 0, rect.bottom - rect.top, TRUE);
+
 	CString str;
 	for (int i = 0; i < TASK_NUM; i++)
 	{
 		str.Format(TEXT("第%d个任务"), i);
-		m_TaskItem[i].Create(IDD_TASK_ITEM, this);
-		m_TaskItem[i].MoveWindow(0, 100 * i + 1 * i, 500, 100);
-		m_TaskItem[i].m_id = i;
-		m_TaskItem[i].m_TaskName.SetWindowTextW(str);
-		m_TaskItem[i].ShowWindow(SW_SHOWNORMAL);
+		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
+		m_TaskItems[i].MoveWindow(0, 100 * i + 1 * i, 350, 100);
+		m_TaskItems[i].m_id = i;
+		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
+		m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
+}
+
+
+void CTaskDetailPage::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	SCROLLINFO scrollInfo;
+	GetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+	int ScrollStep = 10;
+	switch (nSBCode)
+	{
+	case SB_LINEUP:
+		scrollInfo.nPos -= 1;
+		if (scrollInfo.nPos < scrollInfo.nMin)
+		{
+			scrollInfo.nPos = scrollInfo.nMin;
+			break;
+		}
+		SetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+		ScrollWindow(0, 1);
+		break;
+	case SB_LINEDOWN:
+		scrollInfo.nPos += 1;
+		if (scrollInfo.nPos > scrollInfo.nMax)
+		{
+			scrollInfo.nPos = scrollInfo.nMax;
+			break;
+		}
+		SetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+		ScrollWindow(0, -1);
+		break;
+	case SB_TOP:
+		ScrollWindow(0, (scrollInfo.nPos - scrollInfo.nMin) * 1);
+		scrollInfo.nPos = scrollInfo.nMin;
+		SetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+		break;
+	case SB_BOTTOM:
+		ScrollWindow(0, -(scrollInfo.nMax - scrollInfo.nPos) * 1);
+		scrollInfo.nPos = scrollInfo.nMax;
+		SetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+		break;
+	case SB_PAGEUP:
+		scrollInfo.nPos -= ScrollStep;
+		if (scrollInfo.nPos < scrollInfo.nMin)
+		{
+			scrollInfo.nPos = scrollInfo.nMin;
+			break;
+		}
+		SetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+		ScrollWindow(0, 1 * ScrollStep);
+		break;
+	case SB_PAGEDOWN:
+		scrollInfo.nPos += ScrollStep;
+		if (scrollInfo.nPos > scrollInfo.nMax)
+		{
+			scrollInfo.nPos = scrollInfo.nMax;
+			break;
+		}
+		SetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+		ScrollWindow(0, -1 * ScrollStep);
+		break;
+	case SB_ENDSCROLL:
+		break;
+	case SB_THUMBPOSITION:
+		break;
+	case SB_THUMBTRACK:
+		CString str;
+		str.Format(TEXT("nPos1:%d nPos1:%d/n", scrollInfo.nPos, nPos));
+		OutputDebugString(str);
+		ScrollWindow(0, (scrollInfo.nPos - nPos));
+		scrollInfo.nPos = nPos;
+		SetScrollInfo(SB_VERT, &scrollInfo, SIF_ALL);
+		break;
+	}
+
+	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	if (zDelta == 120)
+	{
+		OnVScroll(SB_PAGEUP, GetScrollPos(SB_VERT), GetScrollBarCtrl(SB_VERT));
+	}
+	else if (zDelta == -120)
+	{
+		OnVScroll(SB_PAGEDOWN, GetScrollPos(SB_VERT), GetScrollBarCtrl(SB_VERT));
+	}
+
+	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }

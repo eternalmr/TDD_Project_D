@@ -30,6 +30,7 @@
 #define IDD_CLIENT_OVERVIEW             321
 #define IDD_CLIENT_DETAIL               325
 #define IDD_TASK_ITEM                   327
+#define IDD_CLIENT_ITEM                 329
 #define IDC_START                       1000
 #define IDC_PAUSE                       1001
 #define IDC_TASK_TAB                    1002
@@ -45,17 +46,28 @@
 #define IDC_BUTTON3                     1007
 #define IDC_TASK_COMPUTE_STATUS         1007
 #define IDC_BUTTON4                     1008
-#define IDC_TASK_NAME3                  1008
 #define IDC_TASK_STORE_STATUS           1008
 #define IDC_PROGRESS1                   1009
+#define IDC_BTN_START_CLIENT            1010
+#define IDC_BTN_PAUSE_CLIENT            1011
+#define IDC_BTN_STOP_CLIENT             1012
+#define IDC_CLIENT_NAME                 1013
+#define IDC_CLIENT_STATUS               1014
+#define IDC_CLIENT_CPU                  1015
+#define IDC_LOAD                        1015
+#define IDC_CLIENT_MEMORY               1016
+#define IDC_BUTTON6                     1016
+#define IDC_BUTTON7                     1017
+#define IDC_BUTTON8                     1018
+#define IDC_BUTTON9                     1019
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        329
+#define _APS_NEXT_RESOURCE_VALUE        331
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1010
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           312
 #endif
 #endif

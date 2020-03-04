@@ -195,6 +195,7 @@
   <ItemGroup>
     <ClInclude Include="CClientDetailPage.h" />
     <ClInclude Include="CClientDlg.h" />
+    <ClInclude Include="CClientItem.h" />
     <ClInclude Include="CClientOverviewPage.h" />
     <ClInclude Include="CDisplayView.h" />
     <ClInclude Include="CLogView.h" />
@@ -218,6 +219,7 @@
   <ItemGroup>
     <ClCompile Include="CClientDetailPage.cpp" />
     <ClCompile Include="CClientDlg.cpp" />
+    <ClCompile Include="CClientItem.cpp" />
     <ClCompile Include="CClientOverviewPage.cpp" />
     <ClCompile Include="CDisplayView.cpp" />
     <ClCompile Include="CLogView.cpp" />

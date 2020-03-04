@@ -33,7 +33,7 @@ public:
 	CTLogEdit m_log;
 	std::thread LogThread;
 	virtual void OnInitialUpdate();
-//	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+
 protected:
 	afx_msg LRESULT OnNwWritelog(WPARAM wParam, LPARAM lParam);
 public:

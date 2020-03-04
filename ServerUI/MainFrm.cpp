@@ -210,8 +210,8 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 										m_WholeWindowSplitter.IdFromRowCol(0, 1));
 
 	m_WholeWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(0.15*w, h), pContext);//左侧是CSelectView的实例，大小为200X600
-	m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(0.85*w, 0.6*h), pContext);//右侧是CDisplayView的实例，大小为760X600
-	m_RightWindowSplitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(0.85*w, 0.4*h), pContext);//右侧是CDisplayView的实例，大小为760X600
+	m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(0.85*w, 0.6*h), pContext);//右上是CDisplayView的实例，大小为760X600
+	m_RightWindowSplitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(0.85*w, 0.4*h), pContext);//右下是CLogView的实例，大小为760X600
 	
 	m_WholeWindowSplitter.SetColumnInfo(0, 0.15*w, 100);
 	m_WholeWindowSplitter.SetColumnInfo(1, 0.85*w, 100);

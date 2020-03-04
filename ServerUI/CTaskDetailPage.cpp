@@ -20,6 +20,7 @@ CTaskDetailPage::CTaskDetailPage(CWnd* pParent /*=nullptr*/)
 
 CTaskDetailPage::~CTaskDetailPage()
 {
+
 }
 
 void CTaskDetailPage::DoDataExchange(CDataExchange* pDX)

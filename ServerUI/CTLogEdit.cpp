@@ -79,10 +79,10 @@ void CTLogEdit::SetLogLineColor(long lPos, TLOGPRIORITY tlp)
 
 void CTLogEdit::AddLine(LPCTSTR lpTLogLine, TLOGPRIORITY tlp)
 {
-	EnterCriticalSection(&m_csTLogEdit);
 	PTLOGITEM pItem = new TLOGITEM;
 	pItem->line = lpTLogLine;
 	pItem->tlp = tlp;
+	EnterCriticalSection(&m_csTLogEdit);
 	m_TLogItemQue.AddTail(pItem);
 	LeaveCriticalSection(&m_csTLogEdit);
 }

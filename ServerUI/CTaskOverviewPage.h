@@ -27,4 +27,10 @@ public:
 	afx_msg void OnBnClickedPause();
 	afx_msg void OnBnClickedContinue();
 	afx_msg void OnBnClickedStop();
+
+	HWND GetLogWndHandle();
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
+	afx_msg void OnBnClickedButton4();
 };

@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CLogView, CFormView)
 	ON_MESSAGE(NW_NORMAL_LOG, &CLogView::OnNwWritelog)
 	ON_MESSAGE(NW_ERROR_LOG,  &CLogView::OnNwWritelog)
 
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -59,6 +60,7 @@ void CLogView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 	LogThread = std::thread(&CTLogEdit::TLogEditThreadSTL, &m_log); //启动日志接受线程
+	//TODO: 这里应该要有线程退出，LogThread.join()或者LogTread.detach()
 }
 
 
@@ -80,4 +82,11 @@ afx_msg LRESULT CLogView::OnNwWritelog(WPARAM wParam, LPARAM lParam)
 	delete str;
 	
 	return 0;
+}
+
+
+void CLogView::OnSize(UINT nType, int cx, int cy)
+{
+	CFormView::OnSize(nType, cx, cy);
+	ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。
 }

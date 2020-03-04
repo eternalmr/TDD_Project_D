@@ -1,5 +1,8 @@
 ﻿#pragma once
+#include "CTaskItem.h"
 
+
+#define TASK_NUM 5
 
 // CTaskDetailPage 对话框
 
@@ -21,11 +24,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedButton1();
+	virtual BOOL OnInitDialog();
+	CTaskItem m_TaskItem[TASK_NUM];
 
-	HWND GetLogWndHandle();
-
-	afx_msg void OnBnClickedButton2();
-	afx_msg void OnBnClickedButton3();
-	afx_msg void OnBnClickedButton4();
 };

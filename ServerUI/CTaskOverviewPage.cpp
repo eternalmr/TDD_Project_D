@@ -34,6 +34,12 @@ BEGIN_MESSAGE_MAP(CTaskOverviewPage, CDialogEx)
 	ON_BN_CLICKED(IDC_PAUSE,    &CTaskOverviewPage::OnBnClickedPause)
 	ON_BN_CLICKED(IDC_CONTINUE, &CTaskOverviewPage::OnBnClickedContinue)
 	ON_BN_CLICKED(IDC_STOP,     &CTaskOverviewPage::OnBnClickedStop)
+
+	//日志测试函数
+	ON_BN_CLICKED(IDC_BUTTON1, &CTaskOverviewPage::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CTaskOverviewPage::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CTaskOverviewPage::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &CTaskOverviewPage::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -59,8 +65,43 @@ void CTaskOverviewPage::OnBnClickedContinue()
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_CONTINUE, (WPARAM)NM_CONTINUE, (LPARAM)0);
 }
 
-
 void CTaskOverviewPage::OnBnClickedStop()
 {
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_STOP, (WPARAM)NM_STOP, (LPARAM)0);
+}
+
+
+
+//日志测试函数
+HWND CTaskOverviewPage::GetLogWndHandle()
+{
+	CMainFrame*  pMain = (CMainFrame*)AfxGetMainWnd();
+	CWnd *pWnd = pMain->m_RightWindowSplitter.GetPane(1, 0);
+	return pWnd->GetSafeHwnd(); //TODO: 找个更加直接的获取窗口句柄的方法
+}
+
+void CTaskOverviewPage::OnBnClickedButton1()
+{
+	CString *str = new CString(TEXT("Test Debug Log\r\n"));
+	::PostMessage(GetLogWndHandle(), NW_DEBUG_LOG, (WPARAM)NW_DEBUG_LOG, (LPARAM)str);
+}
+
+void CTaskOverviewPage::OnBnClickedButton2()
+{
+	CString *str = new CString(TEXT("Test Detail Log\r\n"));
+	::PostMessage(GetLogWndHandle(), NW_DETAIL_LOG, (WPARAM)NW_DETAIL_LOG, (LPARAM)str);
+}
+
+
+void CTaskOverviewPage::OnBnClickedButton3()
+{
+	CString *str = new CString(TEXT("Test Normal Log\r\n"));
+	::PostMessage(GetLogWndHandle(), NW_NORMAL_LOG, (WPARAM)NW_NORMAL_LOG, (LPARAM)str);
+}
+
+
+void CTaskOverviewPage::OnBnClickedButton4()
+{
+	CString *str = new CString(TEXT("Test Error Log\r\n"));
+	::PostMessage(GetLogWndHandle(), NW_ERROR_LOG, (WPARAM)NW_ERROR_LOG, (LPARAM)str);
 }

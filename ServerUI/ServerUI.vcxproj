@@ -202,6 +202,7 @@
     <ClInclude Include="CTabSheet.h" />
     <ClInclude Include="CTaskDetailPage.h" />
     <ClInclude Include="CTaskDlg.h" />
+    <ClInclude Include="CTaskItem.h" />
     <ClInclude Include="CTaskOverviewPage.h" />
     <ClInclude Include="CTLogEdit.h" />
     <ClInclude Include="CUserMessage.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="CTabSheet.cpp" />
     <ClCompile Include="CTaskDetailPage.cpp" />
     <ClCompile Include="CTaskDlg.cpp" />
+    <ClCompile Include="CTaskItem.cpp" />
     <ClCompile Include="CTaskOverviewPage.cpp" />
     <ClCompile Include="CTLogEdit.cpp" />
     <ClCompile Include="MainFrm.cpp" />

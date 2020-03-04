@@ -47,3 +47,4 @@ void CDisplayView::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 // CDisplayView 消息处理程序
+

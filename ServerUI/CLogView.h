@@ -36,6 +36,8 @@ public:
 //	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 protected:
 	afx_msg LRESULT OnNwWritelog(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 

@@ -27,6 +27,7 @@ void CTaskDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CTaskDlg, CFormView)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -60,4 +61,11 @@ void CTaskDlg::OnInitialUpdate()
 	m_tab.CreatePage();
 	m_tab.Show(0);
 	//m_tab.SetCurSel(0);
+}
+
+
+void CTaskDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CFormView::OnSize(nType, cx, cy);
+	ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。
 }

@@ -35,6 +35,7 @@ private:
 	CClientDetailPage detailPage;
 public:
 	virtual void OnInitialUpdate();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 

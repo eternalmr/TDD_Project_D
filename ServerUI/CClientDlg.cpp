@@ -27,6 +27,7 @@ void CClientDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CClientDlg, CFormView)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -60,4 +61,13 @@ void CClientDlg::OnInitialUpdate()
 	m_tab.CreatePage();
 	m_tab.Show(0);
 
+}
+
+
+void CClientDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CFormView::OnSize(nType, cx, cy);
+
+	// TODO: 在此处添加消息处理程序代码
+	ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。
 }

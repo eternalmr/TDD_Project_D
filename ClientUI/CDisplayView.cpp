@@ -63,6 +63,8 @@ void CDisplayView::OnBnClickedButton1()
 	// TODO: 在此添加控件通知处理程序代码
 	CString *str = new CString(TEXT("Test Debug Log\r\n"));
 	::PostMessage(GetLogWndHandle(), NW_DEBUG_LOG, (WPARAM)NW_DEBUG_LOG, (LPARAM)str);
+	CClientTest &client = CClientTest::getInstance();
+	client.startSim();
 }
 
 

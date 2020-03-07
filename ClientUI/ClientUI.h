@@ -2,6 +2,7 @@
 // ClientUI.h: ClientUI 应用程序的主头文件
 //
 #pragma once
+#include "CClientTest.h"
 
 #ifndef __AFXWIN_H__
 	#error "include 'pch.h' before including this file for PCH"
@@ -28,6 +29,9 @@ public:
 // 实现
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
+
+public:
+	//CClientTest &client;
 };
 
 extern CClientUIApp theApp;

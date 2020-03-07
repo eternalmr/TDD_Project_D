@@ -121,6 +121,8 @@ BOOL CClientUIApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
+	CClientTest &client = CClientTest::getInstance();
+
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;
 	int Height = 600;

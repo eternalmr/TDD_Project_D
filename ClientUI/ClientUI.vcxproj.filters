@@ -51,6 +51,9 @@
     <ClInclude Include="CUserDefineMsg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CClientTest.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientUI.cpp">
@@ -75,6 +78,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CTLogEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

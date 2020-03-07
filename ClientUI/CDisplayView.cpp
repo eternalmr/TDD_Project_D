@@ -51,22 +51,22 @@ void CDisplayView::Dump(CDumpContext& dc) const
 
 void CDisplayView::OnBnClickedButton1()
 {
-	CTLogEdit::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DEBUG);
+	CLogShow::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DEBUG);
 	CClientTest &client = CClientTest::getInstance();
 	client.startSim();
 }
 
 void CDisplayView::OnBnClickedButton2()
 {
-	CTLogEdit::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DETAIL);
+	CLogShow::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DETAIL);
 }
 
 void CDisplayView::OnBnClickedButton3()
 {
-	CTLogEdit::GetInstance().AddLine(TEXT("Test Normal Log\r\n"), TLP_NORMAL);
+	CLogShow::GetInstance().AddLine(TEXT("Test Normal Log\r\n"), TLP_NORMAL);
 }
 
 void CDisplayView::OnBnClickedButton4()
 {
-	CTLogEdit::GetInstance().AddLine(TEXT("Test Error Log\r\n"), TLP_ERROR);
+	CLogShow::GetInstance().AddLine(TEXT("Test Error Log\r\n"), TLP_ERROR);
 }

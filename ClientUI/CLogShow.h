@@ -1,5 +1,4 @@
 ﻿#pragma once
-//#include "CTLog.h"
 
 extern COLORREF TLP_DEBUG_COLOR;
 extern COLORREF TLP_DETAIL_COLOR;
@@ -7,8 +6,7 @@ extern COLORREF TLP_NORMAL_COLOR;
 extern COLORREF TLP_ERROR_COLOR;
 
 // CTLogEdit 视图
-
-enum  TLOGPRIORITY
+enum  LOG_LEVEL
 {
 	TLP_DEBUG = 0,
 	TLP_DETAIL,
@@ -19,22 +17,20 @@ enum  TLOGPRIORITY
 typedef struct _TLOGITEM
 {
 	CString line;
-	TLOGPRIORITY tlp;
+	LOG_LEVEL tlp;
 } TLOGITEM, *PTLOGITEM;
 
-class CTLogEdit : public CRichEditCtrl
+// log显示单例类
+class CLogShow : public CRichEditCtrl
 {
-	DECLARE_DYNCREATE(CTLogEdit)
-
-protected:
+	DECLARE_DYNCREATE(CLogShow)
 
 private:
-	CTLogEdit();           // 动态创建所使用的受保护的构造函数
-	virtual ~CTLogEdit();
+	CLogShow();           // 将Log类声明成一个单例类
+	virtual ~CLogShow();
 
 public:
-	static CTLogEdit& GetInstance();
-
+	static CLogShow& GetInstance(); 
 
 public:
 #ifdef _DEBUG
@@ -48,8 +44,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	void SetLogLineColor(long lPos, TLOGPRIORITY tlp);
-	void AddLine(LPCTSTR lpTLogLine, TLOGPRIORITY tlp = TLP_NORMAL);
+	void SetLogLineColor(long lPos, LOG_LEVEL tlp);
+	void AddLine(LPCTSTR lpTLogLine, LOG_LEVEL tlp = TLP_NORMAL);
 	void LimitLine();
 	int TLogEditThreadSTL();
 

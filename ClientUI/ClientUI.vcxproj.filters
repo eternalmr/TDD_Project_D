@@ -45,13 +45,13 @@
     <ClInclude Include="CDisplayView.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CTLogEdit.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CUserDefineMsg.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CClientTest.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CLogShow.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,10 +77,10 @@
     <ClCompile Include="CDisplayView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CTLogEdit.cpp">
+    <ClCompile Include="CClientTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CClientTest.cpp">
+    <ClCompile Include="CLogShow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

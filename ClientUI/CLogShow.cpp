@@ -2,7 +2,7 @@
 //
 
 #include "pch.h"
-#include "CTLogEdit.h"
+#include "CLogShow.h"
 
 COLORREF TLP_DEBUG_COLOR = RGB(0, 0, 0);   //black
 COLORREF TLP_DETAIL_COLOR = RGB(0, 255, 0);  //green
@@ -11,9 +11,9 @@ COLORREF TLP_ERROR_COLOR = RGB(255, 0, 0);   //red
 
 // CTLogEdit
 
-IMPLEMENT_DYNCREATE(CTLogEdit, CRichEditCtrl)
+IMPLEMENT_DYNCREATE(CLogShow, CRichEditCtrl)
 
-CTLogEdit::CTLogEdit() :
+CLogShow::CLogShow() :
 	m_bRun(TRUE),
 	m_nLineLimit(30),
 	m_bAutoScroll(TRUE)
@@ -21,36 +21,36 @@ CTLogEdit::CTLogEdit() :
 	InitializeCriticalSection(&m_csTLogEdit);
 }
 
-CTLogEdit::~CTLogEdit()
+CLogShow::~CLogShow()
 {
 
 }
 
-CTLogEdit& CTLogEdit::GetInstance()
+CLogShow& CLogShow::GetInstance()
 {
-	static CTLogEdit logger;
+	static CLogShow logger;
 	return logger;
 }
 
-BEGIN_MESSAGE_MAP(CTLogEdit, CRichEditCtrl)
+BEGIN_MESSAGE_MAP(CLogShow, CRichEditCtrl)
 END_MESSAGE_MAP()
 
 
 // CTLogEdit 诊断
 
 #ifdef _DEBUG
-void CTLogEdit::AssertValid() const
+void CLogShow::AssertValid() const
 {
 	CRichEditCtrl::AssertValid();
 }
 
 #ifndef _WIN32_WCE
-void CTLogEdit::Dump(CDumpContext& dc) const
+void CLogShow::Dump(CDumpContext& dc) const
 {
 	CRichEditCtrl::Dump(dc);
 }
 
-void CTLogEdit::SetLogLineColor(long lPos, TLOGPRIORITY tlp)
+void CLogShow::SetLogLineColor(long lPos, LOG_LEVEL tlp)
 {
 	SetSel(lPos, lPos);
 	CHARFORMAT2 cf;
@@ -83,7 +83,7 @@ void CTLogEdit::SetLogLineColor(long lPos, TLOGPRIORITY tlp)
 	SetSelectionCharFormat(cf);
 }
 
-void CTLogEdit::AddLine(LPCTSTR lpTLogLine, TLOGPRIORITY tlp)
+void CLogShow::AddLine(LPCTSTR lpTLogLine, LOG_LEVEL tlp)
 {
 	PTLOGITEM pItem = new TLOGITEM;
 	pItem->line = lpTLogLine;
@@ -93,7 +93,7 @@ void CTLogEdit::AddLine(LPCTSTR lpTLogLine, TLOGPRIORITY tlp)
 	LeaveCriticalSection(&m_csTLogEdit);
 }
 
-void CTLogEdit::LimitLine()
+void CLogShow::LimitLine()
 {
 	if (GetLineCount() - 1 > m_nLineLimit)
 	{
@@ -103,7 +103,7 @@ void CTLogEdit::LimitLine()
 }
 
 
-int CTLogEdit::TLogEditThreadSTL()
+int CLogShow::TLogEditThreadSTL()
 {
 	PTLOGITEM pItem;
 	long pos;

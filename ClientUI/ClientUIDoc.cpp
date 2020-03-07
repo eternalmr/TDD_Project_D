@@ -1,5 +1,5 @@
 ﻿
-// ServerUIDoc.cpp: CServerUIDoc 类的实现
+// ClientUIDoc.cpp: CClientUIDoc 类的实现
 //
 
 #include "pch.h"
@@ -7,10 +7,10 @@
 // SHARED_HANDLERS 可以在实现预览、缩略图和搜索筛选器句柄的
 // ATL 项目中进行定义，并允许与该项目共享文档代码。
 #ifndef SHARED_HANDLERS
-#include "ServerUI.h"
+#include "ClientUI.h"
 #endif
 
-#include "ServerUIDoc.h"
+#include "ClientUIDoc.h"
 
 #include <propkey.h>
 
@@ -18,33 +18,34 @@
 #define new DEBUG_NEW
 #endif
 
-// CServerUIDoc
+// CClientUIDoc
 
-IMPLEMENT_DYNCREATE(CServerUIDoc, CDocument)
+IMPLEMENT_DYNCREATE(CClientUIDoc, CDocument)
 
-BEGIN_MESSAGE_MAP(CServerUIDoc, CDocument)
+BEGIN_MESSAGE_MAP(CClientUIDoc, CDocument)
 END_MESSAGE_MAP()
 
 
-// CServerUIDoc 构造/析构
+// CClientUIDoc 构造/析构
 
-CServerUIDoc::CServerUIDoc() noexcept
+CClientUIDoc::CClientUIDoc() noexcept
 {
 	// TODO: 在此添加一次性构造代码
 
 }
 
-CServerUIDoc::~CServerUIDoc()
+CClientUIDoc::~CClientUIDoc()
 {
 }
 
-BOOL CServerUIDoc::OnNewDocument()
+BOOL CClientUIDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
 	// TODO: 在此添加重新初始化代码
-	SetTitle(TEXT("并行管控系统服务器端"));
+	// (SDI 文档将重用该文档)
+	SetTitle(TEXT("并行推演管控客户端"));
 
 	return TRUE;
 }
@@ -52,9 +53,9 @@ BOOL CServerUIDoc::OnNewDocument()
 
 
 
-// CServerUIDoc 序列化
+// CClientUIDoc 序列化
 
-void CServerUIDoc::Serialize(CArchive& ar)
+void CClientUIDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
@@ -69,7 +70,7 @@ void CServerUIDoc::Serialize(CArchive& ar)
 #ifdef SHARED_HANDLERS
 
 // 缩略图的支持
-void CServerUIDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
+void CClientUIDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 {
 	// 修改此代码以绘制文档数据
 	dc.FillSolidRect(lprcBounds, RGB(255, 255, 255));
@@ -90,7 +91,7 @@ void CServerUIDoc::OnDrawThumbnail(CDC& dc, LPRECT lprcBounds)
 }
 
 // 搜索处理程序的支持
-void CServerUIDoc::InitializeSearchContent()
+void CClientUIDoc::InitializeSearchContent()
 {
 	CString strSearchContent;
 	// 从文档数据设置搜索内容。
@@ -100,7 +101,7 @@ void CServerUIDoc::InitializeSearchContent()
 	SetSearchContent(strSearchContent);
 }
 
-void CServerUIDoc::SetSearchContent(const CString& value)
+void CClientUIDoc::SetSearchContent(const CString& value)
 {
 	if (value.IsEmpty())
 	{
@@ -120,19 +121,19 @@ void CServerUIDoc::SetSearchContent(const CString& value)
 
 #endif // SHARED_HANDLERS
 
-// CServerUIDoc 诊断
+// CClientUIDoc 诊断
 
 #ifdef _DEBUG
-void CServerUIDoc::AssertValid() const
+void CClientUIDoc::AssertValid() const
 {
 	CDocument::AssertValid();
 }
 
-void CServerUIDoc::Dump(CDumpContext& dc) const
+void CClientUIDoc::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
 
 
-// CServerUIDoc 命令
+// CClientUIDoc 命令

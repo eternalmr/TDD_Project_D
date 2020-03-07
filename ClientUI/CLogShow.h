@@ -44,8 +44,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	void SetLogLineColor(long lPos, LOG_LEVEL tlp);
-	void AddLine(LPCTSTR lpTLogLine, LOG_LEVEL tlp = TLP_NORMAL);
+	void SetLogLineColor(long lPos, LOG_LEVEL level);
+	void AddLine(LPCTSTR lpTLogLine, LOG_LEVEL level = TLP_NORMAL);
 	void LimitLine();
 	int TLogEditThreadSTL();
 

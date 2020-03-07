@@ -114,16 +114,14 @@ BOOL CClientUIApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-
-
 	// 调度在命令行中指定的命令。  如果
 	// 用 /RegServer、/Register、/Unregserver 或 /Unregister 启动应用程序，则返回 FALSE。
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
 	// 初始化客户端和日志单例
-	CClientTest &client = CClientTest::getInstance();
-	CLogShow &logger = CLogShow::GetInstance();
+	CClientTest::getInstance();
+	CLogShow::GetInstance();
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;

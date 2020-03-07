@@ -26,6 +26,12 @@ CTLogEdit::~CTLogEdit()
 
 }
 
+CTLogEdit& CTLogEdit::GetInstance()
+{
+	static CTLogEdit logger;
+	return logger;
+}
+
 BEGIN_MESSAGE_MAP(CTLogEdit, CRichEditCtrl)
 END_MESSAGE_MAP()
 

@@ -121,7 +121,9 @@ BOOL CClientUIApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
+	// 初始化客户端和日志单例
 	CClientTest &client = CClientTest::getInstance();
+	CTLogEdit &logger = CTLogEdit::GetInstance();
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;
@@ -139,6 +141,8 @@ int CClientUIApp::ExitInstance()
 {
 	//TODO: 处理可能已添加的附加资源
 	AfxOleTerm(FALSE);
+
+	CTLogEdit::GetInstance().m_bRun = FALSE;
 
 	return CWinApp::ExitInstance();
 }

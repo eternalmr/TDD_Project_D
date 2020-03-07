@@ -28,9 +28,13 @@ class CTLogEdit : public CRichEditCtrl
 
 protected:
 
-public:
+private:
 	CTLogEdit();           // 动态创建所使用的受保护的构造函数
 	virtual ~CTLogEdit();
+
+public:
+	static CTLogEdit& GetInstance();
+
 
 public:
 #ifdef _DEBUG
@@ -50,10 +54,8 @@ public:
 	int TLogEditThreadSTL();
 
 	BOOL m_bRun;
-	//static CRITICAL_SECTION m_csTLogEditStatic;
 
 private:
-	//static CPtrList m_TLogItemQueStatic;
 	CRITICAL_SECTION m_csTLogEdit;
 	CPtrList m_TLogItemQue;
 	int m_nLineLimit;

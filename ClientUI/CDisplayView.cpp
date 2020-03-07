@@ -49,42 +49,24 @@ void CDisplayView::Dump(CDumpContext& dc) const
 #endif
 #endif //_DEBUG
 
-
-// CDisplayView 消息处理程序
-HWND CDisplayView::GetLogWndHandle()
-{
-	CMainFrame*  pMain = (CMainFrame*)AfxGetMainWnd();
-	CWnd *pWnd = pMain->m_splitter.GetPane(1, 0);
-	return pWnd->GetSafeHwnd(); //TODO: 找个更加直接的获取窗口句柄的方法
-}
-
 void CDisplayView::OnBnClickedButton1()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	CString *str = new CString(TEXT("Test Debug Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_DEBUG_LOG, (WPARAM)NW_DEBUG_LOG, (LPARAM)str);
+	CTLogEdit::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DEBUG);
 	CClientTest &client = CClientTest::getInstance();
 	client.startSim();
 }
 
-
 void CDisplayView::OnBnClickedButton2()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	CString *str = new CString(TEXT("Test Debug Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_DETAIL_LOG, (WPARAM)NW_DETAIL_LOG, (LPARAM)str);
+	CTLogEdit::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DETAIL);
 }
 
 void CDisplayView::OnBnClickedButton3()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	CString *str = new CString(TEXT("Test Debug Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_NORMAL_LOG, (WPARAM)NW_NORMAL_LOG, (LPARAM)str);
+	CTLogEdit::GetInstance().AddLine(TEXT("Test Normal Log\r\n"), TLP_NORMAL);
 }
 
 void CDisplayView::OnBnClickedButton4()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	CString *str = new CString(TEXT("Test Debug Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_ERROR_LOG, (WPARAM)NW_ERROR_LOG, (LPARAM)str);
+	CTLogEdit::GetInstance().AddLine(TEXT("Test Error Log\r\n"), TLP_ERROR);
 }

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <thread>
-#include "CTLogEdit.h"
 
 // CLogView 窗体视图
 
@@ -29,10 +28,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CTLogEdit m_log;
+	//CTLogEdit m_log;
 	std::thread LogThread;
 	virtual void OnInitialUpdate();
-	afx_msg LRESULT OnNwWritelog(WPARAM wParam, LPARAM lParam);
 };
 
 

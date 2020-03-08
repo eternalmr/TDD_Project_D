@@ -1,4 +1,4 @@
-﻿// CTLogEdit.cpp: 实现文件
+﻿// CLogShow.cpp: 实现文件
 //
 
 #include "pch.h"
@@ -9,7 +9,7 @@ COLORREF TLP_DETAIL_COLOR = RGB(0, 255, 0);  //green
 COLORREF TLP_NORMAL_COLOR = RGB(0, 0, 255);  //blue
 COLORREF TLP_ERROR_COLOR = RGB(255, 0, 0);   //red
 
-// CTLogEdit
+// CLogShow
 
 IMPLEMENT_DYNCREATE(CLogShow, CRichEditCtrl)
 
@@ -36,7 +36,7 @@ BEGIN_MESSAGE_MAP(CLogShow, CRichEditCtrl)
 END_MESSAGE_MAP()
 
 
-// CTLogEdit 诊断
+// CLogShow 诊断
 
 #ifdef _DEBUG
 void CLogShow::AssertValid() const
@@ -133,4 +133,4 @@ int CLogShow::TLogEditThreadSTL()
 #endif //_DEBUG
 
 
-// CTLogEdit 消息处理程序
+// CLogShow 消息处理程序

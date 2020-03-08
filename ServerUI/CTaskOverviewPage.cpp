@@ -47,61 +47,55 @@ END_MESSAGE_MAP()
 void CTaskOverviewPage::OnBnClickedThreadBtn()
 {
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_THREAD, (WPARAM)NM_THREAD, (LPARAM)0);
+	AddLog(TEXT("启动线程\r\n"), TLP_NORMAL);
 }
 
 void CTaskOverviewPage::OnBnClickedStart()
 {
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_START, (WPARAM)NM_START, (LPARAM)0);
+	AddLog(TEXT("开始仿真\r\n"), TLP_NORMAL);
 }
 
 void CTaskOverviewPage::OnBnClickedPause()
 {
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_PAUSE, (WPARAM)NM_PAUSE, (LPARAM)0);
+	AddLog(TEXT("暂停所有仿真\r\n"), TLP_NORMAL);
 }
 
 
 void CTaskOverviewPage::OnBnClickedContinue()
 {
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_CONTINUE, (WPARAM)NM_CONTINUE, (LPARAM)0);
+	AddLog(TEXT("继续仿真\r\n"), TLP_NORMAL);
 }
 
 void CTaskOverviewPage::OnBnClickedStop()
 {
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_STOP, (WPARAM)NM_STOP, (LPARAM)0);
+	AddLog(TEXT("结束仿真\r\n"), TLP_NORMAL);
 }
 
 
 
 //日志测试函数
-HWND CTaskOverviewPage::GetLogWndHandle()
-{
-	CMainFrame*  pMain = (CMainFrame*)AfxGetMainWnd();
-	CWnd *pWnd = pMain->m_RightWindowSplitter.GetPane(1, 0);
-	return pWnd->GetSafeHwnd(); //TODO: 找个更加直接的获取窗口句柄的方法
-}
-
 void CTaskOverviewPage::OnBnClickedButton1()
 {
-	CString *str = new CString(TEXT("Test Debug Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_DEBUG_LOG, (WPARAM)NW_DEBUG_LOG, (LPARAM)str);
+	AddLog(TEXT("测试Debug\r\n"), TLP_DEBUG);
 }
 
 void CTaskOverviewPage::OnBnClickedButton2()
 {
-	CString *str = new CString(TEXT("Test Detail Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_DETAIL_LOG, (WPARAM)NW_DETAIL_LOG, (LPARAM)str);
+	AddLog(TEXT("测试Detail\r\n"), TLP_DETAIL);
 }
 
 
 void CTaskOverviewPage::OnBnClickedButton3()
 {
-	CString *str = new CString(TEXT("Test Normal Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_NORMAL_LOG, (WPARAM)NW_NORMAL_LOG, (LPARAM)str);
+	AddLog(TEXT("测试Normal\r\n"), TLP_NORMAL);
 }
 
 
 void CTaskOverviewPage::OnBnClickedButton4()
 {
-	CString *str = new CString(TEXT("Test Error Log\r\n"));
-	::PostMessage(GetLogWndHandle(), NW_ERROR_LOG, (WPARAM)NW_ERROR_LOG, (LPARAM)str);
+	AddLog(TEXT("测试Error\r\n"), TLP_ERROR);
 }

@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <thread>
 #include "CUserMessage.h"
 
 // CLogView 窗体视图
@@ -31,9 +32,10 @@ public:
 	virtual void OnInitialUpdate();
 
 protected:
-	afx_msg LRESULT OnNwWritelog(WPARAM wParam, LPARAM lParam);
+	//afx_msg LRESULT OnNwWritelog(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	std::thread LogThread;
 };
 
 

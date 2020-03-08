@@ -16,9 +16,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{975C899D-D496-4A34-A410-916748408762}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerUI", "ServerUI\ServerUI.vcxproj", "{F4FDE29D-EEEE-42A7-B30D-8481A801F34D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{975C899D-D496-4A34-A410-916748408762} = {975C899D-D496-4A34-A410-916748408762}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClientUI", "ClientUI\ClientUI.vcxproj", "{748AE8DE-EA60-437E-8574-17E0246A7B5E}"
 EndProject

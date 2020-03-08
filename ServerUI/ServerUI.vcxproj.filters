@@ -125,9 +125,6 @@
     <ClCompile Include="CTaskOverviewPage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CTLogEdit.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CTaskItem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -135,6 +132,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CLogShow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CLogView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

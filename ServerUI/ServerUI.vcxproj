@@ -198,6 +198,7 @@
     <ClInclude Include="CClientItem.h" />
     <ClInclude Include="CClientOverviewPage.h" />
     <ClInclude Include="CDisplayView.h" />
+    <ClInclude Include="CLogShow.h" />
     <ClInclude Include="CLogView.h" />
     <ClInclude Include="CSelectView.h" />
     <ClInclude Include="CTabSheet.h" />
@@ -205,7 +206,6 @@
     <ClInclude Include="CTaskDlg.h" />
     <ClInclude Include="CTaskItem.h" />
     <ClInclude Include="CTaskOverviewPage.h" />
-    <ClInclude Include="CTLogEdit.h" />
     <ClInclude Include="CUserMessage.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
@@ -222,7 +222,7 @@
     <ClCompile Include="CClientItem.cpp" />
     <ClCompile Include="CClientOverviewPage.cpp" />
     <ClCompile Include="CDisplayView.cpp" />
-    <ClCompile Include="CLogView.cpp" />
+    <ClCompile Include="CLogShow.cpp" />
     <ClCompile Include="CSelectView.cpp" />
     <ClCompile Include="CTabSheet.cpp" />
     <ClCompile Include="CTaskDetailPage.cpp" />

@@ -23,6 +23,7 @@ CDisplayView::~CDisplayView()
 void CDisplayView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_PROGRESS, m_progressBar);
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)

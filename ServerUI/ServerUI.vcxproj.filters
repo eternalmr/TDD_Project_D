@@ -69,9 +69,6 @@
     <ClInclude Include="CTaskOverviewPage.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CTLogEdit.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CUserMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -79,6 +76,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CClientItem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CLogShow.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,9 +102,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CDisplayView.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CLogView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CTaskDlg.cpp">
@@ -135,6 +132,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CClientItem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CLogShow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

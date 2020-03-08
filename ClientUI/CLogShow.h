@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#define AddLog(str,level) (CLogShow::GetInstance().AddLine(str,level))
+
 extern COLORREF TLP_DEBUG_COLOR;
 extern COLORREF TLP_DETAIL_COLOR;
 extern COLORREF TLP_NORMAL_COLOR;

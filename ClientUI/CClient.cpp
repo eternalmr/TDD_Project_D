@@ -2,8 +2,9 @@
 #include "pch.h"
 #include "CClient.h"
 #include "CLogShow.h"
+#include "resource.h"
 
-#define AddLog(str,level) (CLogShow::GetInstance().AddLine(str,level))
+//#define AddLog(str,level) (CLogShow::GetInstance().AddLine(str,level))
 
 CClient::CClient(uint id, const string &ip, const string &port) :
 	id_(id), context(1),
@@ -147,6 +148,11 @@ int CClient::simulation(int input)
 {
 	int result = input;
 
+	//CProgressCtrl* pProg = (CProgressCtrl*)GetDlgItem(IDC_PROGRESS);
+	//pProg->SetRange(0, 5);
+	//pProg->SetPos(0);
+	//pProg->SetStep(1);
+
 	while (!start_flag) {
 		std::this_thread::yield();
 	}
@@ -162,6 +168,8 @@ int CClient::simulation(int input)
 		result++;
 		Sleep(SIM_DELAY);// sleep 1000 millisecond
 		std::cout << "Result: " << result << std::endl;
+		//pProg->StepIt();
+
 
 		if (has_reached_endpoint(input, result)) {
 			stop_flag = 1;

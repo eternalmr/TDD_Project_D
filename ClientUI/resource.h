@@ -9,7 +9,8 @@
 #define IDR_ClientUITYPE                130
 #define IDD_LOGVIEW                     310
 #define IDD_DISPLAYVIEW                 311
-#define IDC_PROGRESS1                   1000
+//#define IDC_PROGRESS1                   1000
+#define IDC_PROGRESS                    1000
 #define IDC_RICHEDIT21                  1001
 #define IDC_BUTTON1                     1004
 #define IDC_BUTTON2                     1005

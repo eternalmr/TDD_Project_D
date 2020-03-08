@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <thread>
-#include "CTLogEdit.h"
 #include "CUserMessage.h"
 
 // CLogView 窗体视图
@@ -30,8 +28,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CTLogEdit m_log;
-	std::thread LogThread;
 	virtual void OnInitialUpdate();
 
 protected:

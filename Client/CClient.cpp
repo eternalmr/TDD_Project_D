@@ -2,6 +2,8 @@
 #include "client_pch.h"
 #include "CClient.h"
 
+
+
 CClient::CClient(uint id, const string &ip, const string &port) :
 	id_(id), context(1),
 	heartbeat_sender(context, ZMQ_PUSH),
@@ -13,6 +15,27 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
+}
+
+CClient& CClient::get_instance()
+{
+	static CClient client;
+	return client;
+}
+
+void CClient::set_id(uint id)
+{
+	id_ = id;
+}
+
+uint CClient::get_id()
+{
+	return id_;
+}
+
+void CClient::set_ip_address(const string ip)
+{
+	ip_ = ip;
 }
 
 void CClient::connect_to_ip_address()

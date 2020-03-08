@@ -4,6 +4,8 @@
 const string ip("127.0.0.1");
 const string port("8888");
 //string ip_address = "tcp://" + ip + ":" + port;
+
+
 class ClientTest : public testing::Test
 {
 public:
@@ -16,6 +18,19 @@ public:
 	CClient client_with_ip_set;
 	CClient client_with_ip_and_port_set;
 };
+
+TEST_F(ClientTest, SetClientId) {
+	CClient &client1 = CClient::get_instance();
+	ASSERT_EQ(client1.get_id(), 1);
+	client1.set_id(3);
+	ASSERT_EQ(client1.get_id(), 3);
+}
+
+TEST_F(ClientTest, ReturnTheSameInstanceFromGetInstance) {
+	CClient &client1 = CClient::get_instance();
+	CClient &client2 = CClient::get_instance();
+	ASSERT_EQ(&client1, &client2);
+}
 
 TEST_F(ClientTest, ExecuteContinueCommand) {
 	client.execute_control_command(CClient::kStart);

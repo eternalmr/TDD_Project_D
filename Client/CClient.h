@@ -11,9 +11,15 @@ public:
 		kContinue = 444, kUnknow = 555
 	};
 
+	
 public:
 	CClient(uint id = 1, const string &ip = default_client_ip, 
 		const string &port = default_client_port);
+	static CClient& get_instance();//singleton class entrance
+
+	void set_id(uint id);
+	uint get_id();
+	void set_ip_address(const string ip);
 
 	void connect_to_ip_address();
 

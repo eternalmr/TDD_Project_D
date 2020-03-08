@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-
-
 // CDisplayView 窗体视图
 
 class CDisplayView : public CFormView
@@ -33,8 +31,6 @@ public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton4();
-
-	HWND GetLogWndHandle();
 };
 
 

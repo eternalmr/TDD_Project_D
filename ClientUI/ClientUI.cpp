@@ -1,6 +1,7 @@
 ﻿
 // ClientUI.cpp: 定义应用程序的类行为。
 //
+#pragma warning(disable:4996)
 
 #include "pch.h"
 #include "framework.h"
@@ -12,9 +13,13 @@
 #include "ClientUIDoc.h"
 #include "ClientUIView.h"
 
+#include "CClient.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+
 
 
 // CClientUIApp

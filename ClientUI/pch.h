@@ -7,9 +7,18 @@
 #ifndef PCH_H
 #define PCH_H
 
+#pragma warning(disable:4996)
+
 // 添加要在此处预编译的标头
 #include "framework.h"
 #include <afxext.h>
 #include <afxext.h>
+#include "zhelpers.hpp"
+#include <string>
+#include <thread>
+
+using std::string;
+using std::cout;
+using std::endl;
 
 #endif //PCH_H

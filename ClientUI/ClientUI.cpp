@@ -120,10 +120,12 @@ BOOL CClientUIApp::InitInstance()
 		return FALSE;
 
 	// 初始化客户端和日志单例
-	CClient::get_instance(); 
-	CClientTest::getInstance();
 	CLogShow::GetInstance();
-	
+
+	CClient &client = CClient::get_instance();
+	client.heartbeat_thread = std::thread(&CClient::send_heartbeat, &client, 0);
+	client.simulation_thread = std::thread(&CClient::simulation_wrap, &client, 0);
+	client.control_thread = std::thread(&CClient::receive_command, &client);
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;
@@ -143,6 +145,11 @@ int CClientUIApp::ExitInstance()
 	AfxOleTerm(FALSE);
 
 	CLogShow::GetInstance().m_bRun = FALSE;
+
+	CClient &client = CClient::get_instance();
+	client.simulation_thread.join();
+	client.control_thread.join();
+	//TODO: 退出heartbeat_thread
 
 	return CWinApp::ExitInstance();
 }

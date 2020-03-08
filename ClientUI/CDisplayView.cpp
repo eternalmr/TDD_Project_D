@@ -52,8 +52,6 @@ void CDisplayView::Dump(CDumpContext& dc) const
 void CDisplayView::OnBnClickedButton1()
 {
 	CLogShow::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DEBUG);
-	CClientTest &client = CClientTest::getInstance();
-	client.startSim();
 }
 
 void CDisplayView::OnBnClickedButton2()

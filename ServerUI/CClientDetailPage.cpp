@@ -124,7 +124,7 @@ void CClientDetailPage::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
 		break;
 	case SB_THUMBTRACK:
 		CString str;
-		str.Format(TEXT("nPos1:%d nPos1:%d/n", scrollInfo.nPos, nPos));
+		str.Format(TEXT("nPos1:%d nPos1:%d/n"), scrollInfo.nPos, nPos);
 		OutputDebugString(str);
 		ScrollWindow(0, (scrollInfo.nPos - nPos));
 		scrollInfo.nPos = nPos;

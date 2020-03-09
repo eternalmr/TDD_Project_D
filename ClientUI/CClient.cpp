@@ -4,8 +4,6 @@
 #include "CLogShow.h"
 #include "resource.h"
 
-//#define AddLog(str,level) (CLogShow::GetInstance().AddLine(str,level))
-
 CClient::CClient(uint id, const string &ip, const string &port) :
 	id_(id), context(1),
 	heartbeat_sender(context, ZMQ_PUSH),
@@ -118,7 +116,6 @@ void CClient::simulation_wrap(int task_num)
 		// Receive a task from server
 		string new_task = s_recv(task_requester);
 		std::cout << "**********************************************" << std::endl;
-		std::cout << "Receive a new task: " << new_task << std::endl;
 		CString str;
 		str.Format(TEXT("Receive a new task: %d \r\n"), std::atoi(new_task.c_str()));
 		AddLog(str, TLP_NORMAL);

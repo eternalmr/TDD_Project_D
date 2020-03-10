@@ -67,7 +67,7 @@ void CDisplayView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-	SetTimer(StatusRefreshTimer, 1000, NULL);//CPU、内存刷新计时器
+	SetTimer(StatusRefreshTimer, 1000, NULL);//启动CPU、内存状态刷新计时器
 }
 
 
@@ -97,27 +97,12 @@ void CDisplayView::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent)
 	{
 	case StatusRefreshTimer: {
-		CString str;
-		CClient &client = CClient::get_instance();
-		str.Format(TEXT("%.2lf"), client.get_cpu_status());
-		m_cpuStatus = CString("CPU状态：") + str + CString("%");
-		str.Format(TEXT("%.2lf"), client.get_memoery_status());
-		m_memoryStatus = CString("内存状态：") + str + CString("%");
-		UpdateData(FALSE);
+		RefreshCPUAndMemoryStatus();
 		break;
 	}
-	case 2:
-		//if (tmp1 >= 200)
-		//{
-		//	this->KillTimer(2);
-		//	MessageBox(_T("定时器2停止！"), NULL, NULL);
-		//	return;
-		//}
-		//Sleep(20);
-		//tmp1 += 1;
-		//m_value2.Format(_T("%d"), tmp1);
-		UpdateData(FALSE);
+	case 2: {
 		break;
+	}
 	default:
 		break;
 	}
@@ -125,4 +110,16 @@ void CDisplayView::OnTimer(UINT_PTR nIDEvent)
 	CFormView::OnTimer(nIDEvent);
 }
 
+void CDisplayView::RefreshCPUAndMemoryStatus()
+{
+	CString str;
+	CClient &client = CClient::get_instance();
+
+	str.Format(TEXT("%.2lf"), client.get_cpu_status());
+	m_cpuStatus = CString("CPU状态：") + str + CString("%");
+
+	str.Format(TEXT("%.2lf"), client.get_memoery_status());
+	m_memoryStatus = CString("内存状态：") + str + CString("%");
+	UpdateData(FALSE);
+}
 

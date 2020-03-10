@@ -39,6 +39,9 @@ public:
 	CString m_clientName;
 	CStatic m_currentTask;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+	void RefreshCPUAndMemoryStatus();
+
 	virtual void OnInitialUpdate();
 };
 

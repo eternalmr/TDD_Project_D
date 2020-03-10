@@ -164,7 +164,6 @@ int CClient::simulation(int input)
 	CString str;
 	str.Format(TEXT("当前计算任务：任务%d"), result);
 	pView->m_currentTask.SetWindowTextW(str);
-	//pView->UpdateData(FALSE);
 
 	while (!start_flag) {
 		std::this_thread::yield();

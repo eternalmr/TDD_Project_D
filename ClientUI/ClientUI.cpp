@@ -13,7 +13,7 @@
 #include "ClientUIDoc.h"
 #include "ClientUIView.h"
 
-#include "CClient.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

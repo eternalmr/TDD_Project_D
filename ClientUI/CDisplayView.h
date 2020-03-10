@@ -38,6 +38,8 @@ public:
 //	CString m_currentTask;
 	CString m_clientName;
 	CStatic m_currentTask;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	virtual void OnInitialUpdate();
 };
 
 

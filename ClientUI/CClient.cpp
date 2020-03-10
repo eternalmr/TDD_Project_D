@@ -18,6 +18,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
+	GetSystemTimes(&IdleTime, &KernelTime, &UserTime);
 }
 
 CClient& CClient::get_instance()
@@ -190,6 +191,38 @@ int CClient::simulation(int input)
 	}
 
 	return result;
+}
+
+unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime)
+{
+	unsigned long long nEndTime = (unsigned long long)ftEndTime.dwHighDateTime << 32 | ftEndTime.dwLowDateTime;
+	unsigned long long nStartTime = (unsigned long long)ftStartTime.dwHighDateTime << 32 | ftStartTime.dwLowDateTime;
+	return nEndTime - nStartTime;
+}
+
+double CClient::get_cpu_status()
+{
+	FILETIME CurrentIdleTime, CurrentKernelTime, CurrentUserTime;
+
+	GetSystemTimes(&CurrentIdleTime, &CurrentKernelTime, &CurrentUserTime);
+
+	unsigned long long nDeltaIdleTime = FileTimeSub(CurrentIdleTime, IdleTime);
+	unsigned long long nDeltaKernelTime = FileTimeSub(CurrentKernelTime, KernelTime);
+	unsigned long long nDeltaUserTime = FileTimeSub(CurrentUserTime, UserTime);
+
+	IdleTime = CurrentIdleTime;
+	KernelTime = CurrentKernelTime;
+	UserTime = CurrentUserTime;
+
+	if (nDeltaKernelTime + nDeltaUserTime == 0) return 0;
+
+	double cpu_status = ((double)(nDeltaKernelTime + nDeltaUserTime - nDeltaIdleTime) * 100) / (nDeltaKernelTime + nDeltaUserTime);
+	return cpu_status;
+}
+
+double CClient::get_memoery_status()
+{
+	return 0;
 }
 
 CClient::SignalSet CClient::listen_from_server()

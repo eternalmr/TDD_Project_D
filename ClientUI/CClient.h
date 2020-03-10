@@ -36,6 +36,8 @@ public:
 
 	void simulation_wrap(int task_num);
 	int simulation(int input);
+	double get_cpu_status();
+	double get_memoery_status();
 
 private:
 	bool is_not_reach(int max_num, int &count);
@@ -51,6 +53,7 @@ private:
 	string ip_;
 	string port_;
 
+	FILETIME IdleTime, KernelTime, UserTime;
 
 public:
 	int start_flag;

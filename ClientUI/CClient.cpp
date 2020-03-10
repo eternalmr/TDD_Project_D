@@ -150,12 +150,20 @@ int CClient::simulation(int input)
 {
 	int result = input;
 
-	// 获取显示窗口指针，并设置进度条
+	// 获取显示窗口指针
 	CClientUIApp* pApp = (CClientUIApp*)AfxGetApp();
 	CMainFrame* pMain = (CMainFrame*)pApp->m_pMainWnd;
 	CDisplayView* pView = (CDisplayView*)pMain->m_pDisplayView;
+
+	//设置进度条
 	pView->m_progressBar.SetRange(0, 5);
 	pView->m_progressBar.SetStep(1);
+
+	//更新任务序号
+	CString str;
+	str.Format(TEXT("当前计算任务：任务%d"), result);
+	pView->m_currentTask.SetWindowTextW(str);
+	//pView->UpdateData(FALSE);
 
 	while (!start_flag) {
 		std::this_thread::yield();
@@ -170,7 +178,7 @@ int CClient::simulation(int input)
 		}
 
 		result++;
-		Sleep(SIM_DELAY);// sleep 1000 millisecond
+		Sleep(SIM_DELAY);
 		std::cout << "Result: " << result << std::endl;
 		pView->m_progressBar.StepIt();
 

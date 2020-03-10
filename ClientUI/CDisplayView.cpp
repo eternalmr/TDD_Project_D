@@ -9,7 +9,7 @@
 
 enum TimerSet
 {
-	CPUTimer = 1
+	StatusRefreshTimer = 1
 };
 
 IMPLEMENT_DYNCREATE(CDisplayView, CFormView)
@@ -63,6 +63,14 @@ void CDisplayView::Dump(CDumpContext& dc) const
 #endif
 #endif //_DEBUG
 
+void CDisplayView::OnInitialUpdate()
+{
+	CFormView::OnInitialUpdate();
+
+	SetTimer(StatusRefreshTimer, 1000, NULL);//CPU、内存刷新计时器
+}
+
+
 void CDisplayView::OnBnClickedButton1()
 {
 	CLogShow::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DEBUG);
@@ -84,16 +92,17 @@ void CDisplayView::OnBnClickedButton4()
 }
 
 
-
 void CDisplayView::OnTimer(UINT_PTR nIDEvent)
 {
 	switch (nIDEvent)
 	{
-	case 1: {
+	case StatusRefreshTimer: {
 		CString str;
-		double CPUStatus = CClient::get_instance().get_cpu_status();
-		str.Format(TEXT("CPU状态：%.2lf"), CPUStatus);
-		m_cpuStatus = str;
+		CClient &client = CClient::get_instance();
+		str.Format(TEXT("%.2lf"), client.get_cpu_status());
+		m_cpuStatus = CString("CPU状态：") + str + CString("%");
+		str.Format(TEXT("%.2lf"), client.get_memoery_status());
+		m_memoryStatus = CString("内存状态：") + str + CString("%");
 		UpdateData(FALSE);
 		break;
 	}
@@ -117,10 +126,3 @@ void CDisplayView::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-void CDisplayView::OnInitialUpdate()
-{
-	CFormView::OnInitialUpdate();
-
-	// TODO: 在此添加专用代码和/或调用基类
-	SetTimer(1, 100, NULL);
-}

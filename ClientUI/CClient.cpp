@@ -222,7 +222,7 @@ double CClient::get_cpu_status()
 
 double CClient::get_memoery_status()
 {
-	return 0;
+	return 60.25;
 }
 
 CClient::SignalSet CClient::listen_from_server()

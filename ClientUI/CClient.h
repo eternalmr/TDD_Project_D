@@ -40,7 +40,9 @@ public:
 	double get_memoery_status();
 
 private:
-	bool is_not_reach(int max_num, int &count);
+	bool is_not_reach(int max_num, int &count); 
+	unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime);
+
 
 private:
 	uint id_;

@@ -192,7 +192,7 @@ int CClient::simulation(int input)
 	return result;
 }
 
-unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime)
+unsigned long long CClient::FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime)
 {
 	unsigned long long nEndTime = (unsigned long long)ftEndTime.dwHighDateTime << 32 | ftEndTime.dwLowDateTime;
 	unsigned long long nStartTime = (unsigned long long)ftStartTime.dwHighDateTime << 32 | ftStartTime.dwLowDateTime;
@@ -221,7 +221,16 @@ double CClient::get_cpu_status()
 
 double CClient::get_memoery_status()
 {
-	return 60.25;
+	MEMORYSTATUSEX statex;
+	statex.dwLength = sizeof(statex);
+	GlobalMemoryStatusEx(&statex);
+
+	DWORDLONG physical_memory = statex.ullTotalPhys / (1024 * 1024);
+	DWORDLONG avalid_memory = statex.ullAvailPhys / (1024 * 1024);
+	DWORDLONG usePhys = physical_memory - avalid_memory;
+
+	double memory_status = ((double)usePhys / (double)physical_memory) * 100;
+	return memory_status;
 }
 
 CClient::SignalSet CClient::listen_from_server()

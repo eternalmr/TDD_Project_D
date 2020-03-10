@@ -12,6 +12,10 @@ IMPLEMENT_DYNCREATE(CDisplayView, CFormView)
 
 CDisplayView::CDisplayView()
 	: CFormView(IDD_DISPLAYVIEW)
+	, m_clientName(_T("推演节点："))
+	, m_currentTask(_T("当前计算任务："))
+	, m_cpuStatus(_T("CPU状态："))
+	, m_memoryStatus(_T("内存状态："))
 {
 
 }
@@ -24,6 +28,10 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PROGRESS, m_progressBar);
+	DDX_Text(pDX, IDC_MEMORY_STATUS, m_memoryStatus);
+	DDX_Text(pDX, IDC_CPU_STATUS, m_cpuStatus);
+	DDX_Text(pDX, IDC_CURRENT_TASK, m_currentTask);
+	DDX_Text(pDX, IDC_CLIENT_ID, m_clientName);
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)

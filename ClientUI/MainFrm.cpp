@@ -89,9 +89,8 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
-	// TODO: 在此添加专用代码和/或调用基类
 	CRect rect;
-	GetClientRect(&rect); //获得用户窗口的矩形坐标
+	GetClientRect(&rect);
 	int w = rect.Width();
 	int h = rect.Height();
 
@@ -102,6 +101,10 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 		m_splitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(w, (int)(0.5*h)), pContext);//左侧是CSelectView的实例，大小为200X600
 		m_splitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(w, (int)(0.5*h)), pContext);//右侧是CDisplayView的实例，大小为600X600
 	}
+	
+	//保存上下分割后的两个子窗口的指针
+	m_pDisplayView = m_splitter.GetPane(0, 0);
+	m_pLogView = m_splitter.GetPane(1, 0);
 
 	return m_isSplitted;
 	//return CFrameWnd::OnCreateClient(lpcs, pContext);
@@ -112,14 +115,13 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
 	CFrameWnd::OnSize(nType, cx, cy);
 
-	// TODO: 在此处添加消息处理程序代码
 	CRect rect;
 	GetClientRect(&rect);
 
 	if (m_isSplitted) {
 		m_splitter.SetColumnInfo(0, rect.Width(), 10);
-		m_splitter.SetRowInfo(0, rect.Height()*0.55, 10);
-		m_splitter.SetRowInfo(1, rect.Height()*0.45, 10);
+		m_splitter.SetRowInfo(0, rect.Height()*0.6, 10);
+		m_splitter.SetRowInfo(1, rect.Height()*0.4, 10);
 		m_splitter.RecalcLayout();
 	}
 }

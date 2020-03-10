@@ -3,6 +3,9 @@
 #include "CClient.h"
 #include "CLogShow.h"
 #include "resource.h"
+#include "ClientUI.h"
+#include "MainFrm.h"
+#include "CDisplayView.h"
 
 CClient::CClient(uint id, const string &ip, const string &port) :
 	id_(id), context(1),
@@ -109,6 +112,7 @@ void CClient::simulation_wrap(int task_num)
 	int task_input;
 	int result;
 	int count = 0;
+	CString str;
 	while (simulation_is_not_finished(task_num, count)) {
 		// Send client id to server
 		s_send(task_requester, std::to_string(id_));
@@ -116,7 +120,6 @@ void CClient::simulation_wrap(int task_num)
 		// Receive a task from server
 		string new_task = s_recv(task_requester);
 		std::cout << "**********************************************" << std::endl;
-		CString str;
 		str.Format(TEXT("Receive a new task: %d \r\n"), std::atoi(new_task.c_str()));
 		AddLog(str, TLP_NORMAL);
 
@@ -134,6 +137,8 @@ void CClient::simulation_wrap(int task_num)
 		string result_info = "Result of task[" + new_task
 			+ "] is: " + std::to_string(result);
 		s_send(result_sender, result_info);
+		str = CA2T(result_info.c_str()) + CString("\r\n");
+		AddLog(str, TLP_NORMAL);
 
 		std::cout << "**********************************************" << std::endl;
 	}//end of while
@@ -145,10 +150,12 @@ int CClient::simulation(int input)
 {
 	int result = input;
 
-	//CProgressCtrl* pProg = (CProgressCtrl*)GetDlgItem(IDC_PROGRESS);
-	//pProg->SetRange(0, 5);
-	//pProg->SetPos(0);
-	//pProg->SetStep(1);
+	// 获取显示窗口指针，并设置进度条
+	CClientUIApp* pApp = (CClientUIApp*)AfxGetApp();
+	CMainFrame* pMain = (CMainFrame*)pApp->m_pMainWnd;
+	CDisplayView* pView = (CDisplayView*)pMain->m_pDisplayView;
+	pView->m_progressBar.SetRange(0, 5);
+	pView->m_progressBar.SetStep(1);
 
 	while (!start_flag) {
 		std::this_thread::yield();
@@ -165,8 +172,7 @@ int CClient::simulation(int input)
 		result++;
 		Sleep(SIM_DELAY);// sleep 1000 millisecond
 		std::cout << "Result: " << result << std::endl;
-		//pProg->StepIt();
-
+		pView->m_progressBar.StepIt();
 
 		if (has_reached_endpoint(input, result)) {
 			stop_flag = 1;

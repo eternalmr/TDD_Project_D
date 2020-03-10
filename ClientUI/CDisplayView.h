@@ -32,6 +32,11 @@ public:
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton4();
 	CProgressCtrl m_progressBar;
+private:
+	CString m_memoryStatus;
+	CString m_cpuStatus;
+	CString m_currentTask;
+	CString m_clientName;
 };
 
 

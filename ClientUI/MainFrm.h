@@ -39,6 +39,8 @@ protected:
 
 public:
 	CSplitterWnd m_splitter;
+	CWnd* m_pDisplayView;
+	CWnd* m_pLogView;
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 
 private:

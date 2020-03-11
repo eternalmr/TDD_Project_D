@@ -5,7 +5,6 @@
 #include "ServerUI.h"
 #include "CTaskOverviewPage.h"
 #include "afxdialogex.h"
-#include "..\Server\CServer.h"
 #include "MainFrm.h"
 
 // CTaskOverviewPage 对话框

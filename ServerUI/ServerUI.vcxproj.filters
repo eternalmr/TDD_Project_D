@@ -81,6 +81,15 @@
     <ClInclude Include="CLogShow.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CClientRecord.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CTask.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerUI.cpp">
@@ -135,6 +144,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CLogView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientRecord.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CTask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

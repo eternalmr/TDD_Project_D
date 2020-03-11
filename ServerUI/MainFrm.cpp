@@ -36,6 +36,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_CONTINUE, ControlServer)
 	ON_MESSAGE(NM_STOP, ControlServer)
 
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -49,6 +50,11 @@ static UINT indicators[] =
 // CMainFrame 构造/析构
 
 CMainFrame::CMainFrame() noexcept
+	:m_bWholeWndIsSplitted(FALSE)
+	,m_bRightWndIsSplitted(FALSE)
+	,m_pSelectView(nullptr)
+	,m_pLogView(nullptr)
+	,m_pDisplayView(nullptr)
 {
 	// TODO: 在此添加成员初始化代码
 }
@@ -196,36 +202,56 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	// TODO: 在此添加专用代码和/或调用基类
 	CRect rect;
 	GetClientRect(&rect); //获得用户窗口的矩形坐标
-	//GetWindowRect(&rect);
 	int w = rect.Width();
 	int h = rect.Height();
 
-	//CString str;
-	//str.Format(TEXT("w = %d, h = %d"), w, h);
-	//MessageBox(str);
-
-	m_WholeWindowSplitter.CreateStatic(this, 1, 2);     // 切分成左右两部分
-	m_RightWindowSplitter.CreateStatic(&m_WholeWindowSplitter, 2, 1, // 将右侧分为上下两部分
+	m_bWholeWndIsSplitted = m_WholeWindowSplitter.CreateStatic(this, 1, 2);     // 切分成左右两部分
+	
+	if (!m_bWholeWndIsSplitted)
+		return m_bWholeWndIsSplitted;
+	
+	m_bRightWndIsSplitted = m_RightWindowSplitter.CreateStatic(&m_WholeWindowSplitter, 2, 1, // 将右侧分为上下两部分
 											WS_CHILD | WS_VISIBLE, 
 										m_WholeWindowSplitter.IdFromRowCol(0, 1));
+	if (!m_bRightWndIsSplitted)
+		return m_bRightWndIsSplitted;
 
-	m_WholeWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(0.15*w, h), pContext);//左侧是CSelectView的实例，大小为200X600
-	m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(0.85*w, 0.6*h), pContext);//右上是CDisplayView的实例，大小为760X600
-	m_RightWindowSplitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(0.85*w, 0.4*h), pContext);//右下是CLogView的实例，大小为760X600
-	
-	m_WholeWindowSplitter.SetColumnInfo(0, 0.15*w, 100);
-	m_WholeWindowSplitter.SetColumnInfo(1, 0.85*w, 100);
-	m_WholeWindowSplitter.SetRowInfo(0, h, 100);
+	m_WholeWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(int(0.15*w), h), pContext);//左侧是CSelectView的实例，大小为200X600
+	m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(int(0.85*w), int(0.6*h)), pContext);//右上是CDisplayView的实例，大小为760X600
+	m_RightWindowSplitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(int(0.85*w), int(0.4*h)), pContext);//右下是CLogView的实例，大小为760X600
 
-	m_RightWindowSplitter.SetColumnInfo(0, 0.85*w, 100);
-	m_RightWindowSplitter.SetRowInfo(0, 0.6*h, 100);
-	m_RightWindowSplitter.SetRowInfo(1, 0.4*h, 100);
+	m_pSelectView = m_WholeWindowSplitter.GetPane(0, 0);
+	m_pDisplayView = m_RightWindowSplitter.GetPane(0, 0);
+	m_pLogView = m_RightWindowSplitter.GetPane(1, 0);
 
-	RecalcLayout();
-
-	return TRUE; //不使用默认拆分
+	return TRUE; 
 }
 
+void CMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CFrameWnd::OnSize(nType, cx, cy);
+
+	CRect rect;
+	GetClientRect(&rect); //获得用户窗口的矩形坐标
+	int w = rect.Width();
+	int h = rect.Height();
+
+	if (m_bWholeWndIsSplitted) {
+		m_WholeWindowSplitter.SetColumnInfo(0, int(0.15*w), 10);
+		m_WholeWindowSplitter.SetColumnInfo(1, int(0.85*w), 10);
+		m_WholeWindowSplitter.SetRowInfo(0, h, 10);
+	}
+
+	if (m_bRightWndIsSplitted) {
+		m_RightWindowSplitter.SetColumnInfo(0, int(0.85*w), 10);
+		m_RightWindowSplitter.SetRowInfo(0, int(0.6*h), 10);
+		m_RightWindowSplitter.SetRowInfo(1, int(0.4*h), 10);
+	}
+
+	RecalcLayout();
+}
+
+// 切换任务和节点页
 LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 {
 	CRect rect;
@@ -240,7 +266,7 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView *)m_RightWindowSplitter.GetPane(0, 0);
 		m_RightWindowSplitter.DeleteView(0, 0);
-		m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CTaskDlg), CSize(0.85*w, 0.6*h), &Context);
+		m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CTaskDlg), CSize(int(0.85*w), int(0.6*h)), &Context);
 		CTaskDlg *pNewView = (CTaskDlg*)m_RightWindowSplitter.GetPane(0, 0);
 		m_RightWindowSplitter.RecalcLayout();
 		pNewView->OnInitialUpdate();
@@ -252,7 +278,7 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView *)m_RightWindowSplitter.GetPane(0, 0);
 		m_RightWindowSplitter.DeleteView(0, 0);
-		m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CClientDlg), CSize(0.85*w, 0.6*h), &Context);
+		m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CClientDlg), CSize(int(0.85*w), int(0.6*h)), &Context);
 		CClientDlg *pNewView = (CClientDlg*)m_RightWindowSplitter.GetPane(0, 0);
 		m_RightWindowSplitter.RecalcLayout();
 		pNewView->OnInitialUpdate();
@@ -264,6 +290,7 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 
 LRESULT CMainFrame::ControlServer(WPARAM wParam, LPARAM lParam)
 {
+	CServer &server = CServer::get_instance();
 	if (wParam == NM_THREAD) {
 		//启动线程
 		MessageBox(TEXT("启动线程"));
@@ -293,3 +320,6 @@ LRESULT CMainFrame::ControlServer(WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
+
+
+

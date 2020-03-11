@@ -9,6 +9,7 @@
 
 #include "resource.h"       // 主符号
 #include "CLogShow.h"
+#include "CServer.h"
 
 // CServerUIApp:
 // 有关此类的实现，请参阅 ServerUI.cpp

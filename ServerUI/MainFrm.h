@@ -2,7 +2,7 @@
 // MainFrm.h: CMainFrame 类的接口
 //
 #pragma once
-#include "..\Server\CServer.h"
+//#include "CServer.h"
 #include "CUserMessage.h"
 
 
@@ -41,19 +41,25 @@ protected:
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()
 
-
 public:
 	CSplitterWnd m_WholeWindowSplitter;
 	CSplitterWnd m_RightWindowSplitter;
+	CWnd* m_pSelectView;
+	CWnd* m_pLogView;
+	CWnd* m_pDisplayView;
 
 private:
-	CServer server;
+	//CServer server;
+	BOOL m_bWholeWndIsSplitted;
+	BOOL m_bRightWndIsSplitted;
 	std::thread sim_thread;
 
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	afx_msg LRESULT ShiftPage(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT ControlServer(WPARAM wParam, LPARAM lParam);
 
+public:
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 

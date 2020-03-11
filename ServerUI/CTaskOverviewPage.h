@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "..\Server\CServer.h"
-
 // CTaskOverviewPage 对话框
 
 class CTaskOverviewPage : public CDialogEx

@@ -34,13 +34,7 @@ BEGIN_MESSAGE_MAP(CTaskOverviewPage, CDialogEx)
 	ON_BN_CLICKED(IDC_PAUSE,    &CTaskOverviewPage::OnBnClickedPause)
 	ON_BN_CLICKED(IDC_CONTINUE, &CTaskOverviewPage::OnBnClickedContinue)
 	ON_BN_CLICKED(IDC_STOP,     &CTaskOverviewPage::OnBnClickedStop)
-
-	//日志测试函数
-	ON_BN_CLICKED(IDC_BUTTON1, &CTaskOverviewPage::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &CTaskOverviewPage::OnBnClickedButton2)
-	ON_BN_CLICKED(IDC_BUTTON3, &CTaskOverviewPage::OnBnClickedButton3)
-	ON_BN_CLICKED(IDC_BUTTON4, &CTaskOverviewPage::OnBnClickedButton4)
-	ON_BN_CLICKED(IDC_LOAD, &CTaskOverviewPage::OnBnClickedLoad)
+	ON_BN_CLICKED(IDC_LOAD,		&CTaskOverviewPage::OnBnClickedLoad)
 END_MESSAGE_MAP()
 
 
@@ -75,32 +69,6 @@ void CTaskOverviewPage::OnBnClickedStop()
 	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_STOP, (WPARAM)NM_STOP, (LPARAM)0);
 	AddLog(TEXT("结束仿真\r\n"), TLP_NORMAL);
 }
-
-
-
-//日志测试函数
-void CTaskOverviewPage::OnBnClickedButton1()
-{
-	AddLog(TEXT("测试Debug\r\n"), TLP_DEBUG);
-}
-
-void CTaskOverviewPage::OnBnClickedButton2()
-{
-	AddLog(TEXT("测试Detail\r\n"), TLP_DETAIL);
-}
-
-
-void CTaskOverviewPage::OnBnClickedButton3()
-{
-	AddLog(TEXT("测试Normal\r\n"), TLP_NORMAL);
-}
-
-
-void CTaskOverviewPage::OnBnClickedButton4()
-{
-	AddLog(TEXT("测试Error\r\n"), TLP_ERROR);
-}
-
 
 void CTaskOverviewPage::OnBnClickedLoad()
 {

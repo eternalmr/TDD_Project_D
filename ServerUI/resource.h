@@ -58,9 +58,13 @@
 #define IDC_LOAD                        1015
 #define IDC_CLIENT_MEMORY               1016
 #define IDC_BUTTON6                     1016
+#define IDC_TOTAL_TASK_NUM              1016
 #define IDC_BUTTON7                     1017
+#define IDC_COMPLETED_TASK_NUM          1017
 #define IDC_BUTTON8                     1018
+#define IDC_INCOMPUTING_TASK_NUM        1018
 #define IDC_BUTTON9                     1019
+#define IDC_UNDO_TASK_NUM               1019
 
 // Next default values for new objects
 // 

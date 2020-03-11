@@ -294,7 +294,6 @@ LRESULT CMainFrame::ControlServer(WPARAM wParam, LPARAM lParam)
 	if (wParam == NM_THREAD) {
 		//启动线程
 		MessageBox(TEXT("启动线程"));
-		server.add_tasks(10);
 		sim_thread = std::thread(&CServer::start_threads, &server);
 	}
 	if (wParam == NM_START) {

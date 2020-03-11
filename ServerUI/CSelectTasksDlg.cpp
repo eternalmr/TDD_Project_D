@@ -28,7 +28,18 @@ void CSelectTasksDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CSelectTasksDlg, CDialogEx)
+	ON_BN_CLICKED(IDOK, &CSelectTasksDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
 // CSelectTasksDlg 消息处理程序
+
+
+void CSelectTasksDlg::OnBnClickedOk()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CServer::get_instance().add_tasks(10);
+
+	MessageBox(TEXT("已添加10个新任务"));
+	CDialogEx::OnOK();
+}

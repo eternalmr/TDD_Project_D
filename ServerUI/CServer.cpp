@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CServer.h"
 #include "CClientRecord.h"
+#include "CLogShow.h"
 
 CServer::CServer(const string &ip, const string &port) : 
 	context(1), 
@@ -157,6 +158,8 @@ void CServer::assign_tasks()
 	int workload = 0;
 	Task* undo_task_pointer;
 	Task* ptask;
+	CString str;
+
 	while (true) {//TODO : simulation is finished
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移除这里
@@ -174,13 +177,16 @@ void CServer::assign_tasks()
 		}
 		else { // ready in clients pool
 			clients[id].set_free();
-			std::cout << "Receive request from client[" << reply << "]" << std::endl;
+			//str = CString(TEXT("Receive request from client[")) 
+			//	+ CA2T(reply.c_str()) + CString(TEXT("]\r\n"));
+			//AddLog(str, TLP_NORMAL);
 
 			ptask = clients[id].get_task();
 			if (ptask != nullptr && (ptask->is_in_computing())) {
 				ptask->set_finished();
-				std::cout << "Task[" << ptask->get_id() << "] is accomplished by client["
-					<< id << "]" << std::endl;
+				str.Format(TEXT("Task[%d] is accomplished by client[%d]\r\n"), 
+						  ptask->get_id(), id);
+				AddLog(str, TLP_NORMAL);
 			}
 		}
 
@@ -190,8 +196,9 @@ void CServer::assign_tasks()
 		s_send(task_assigner, std::to_string(workload));
 		undo_task_pointer->set_in_computing();
 		clients[id].set_in_computing();
-		std::cout << "Task[" << undo_task_pointer->get_id() << "] is assigned to client["
-			<< id << "]" << std::endl;
+		str.Format(TEXT("Task[%d] is assigned to client[%d]\r\n"), 
+					undo_task_pointer->get_id(), id);
+		AddLog(str, TLP_NORMAL);
 	}// end of while
 
 	std::cout << "All tasks is finished!" << std::endl;

@@ -31,6 +31,7 @@
 #define IDD_CLIENT_DETAIL               325
 #define IDD_TASK_ITEM                   327
 #define IDD_CLIENT_ITEM                 329
+#define IDD_SELECT_TASKS                331
 #define IDC_START                       1000
 #define IDC_PAUSE                       1001
 #define IDC_TASK_TAB                    1002
@@ -65,9 +66,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        331
+#define _APS_NEXT_RESOURCE_VALUE        333
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           312
 #endif
 #endif

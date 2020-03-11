@@ -201,6 +201,7 @@
     <ClInclude Include="CDisplayView.h" />
     <ClInclude Include="CLogShow.h" />
     <ClInclude Include="CLogView.h" />
+    <ClInclude Include="CSelectTasksDlg.h" />
     <ClInclude Include="CSelectView.h" />
     <ClInclude Include="CServer.h" />
     <ClInclude Include="CTabSheet.h" />
@@ -228,6 +229,7 @@
     <ClCompile Include="CDisplayView.cpp" />
     <ClCompile Include="CLogShow.cpp" />
     <ClCompile Include="CLogView.cpp" />
+    <ClCompile Include="CSelectTasksDlg.cpp" />
     <ClCompile Include="CSelectView.cpp" />
     <ClCompile Include="CServer.cpp" />
     <ClCompile Include="CTabSheet.cpp" />

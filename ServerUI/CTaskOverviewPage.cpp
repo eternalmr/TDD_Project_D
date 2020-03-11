@@ -6,6 +6,7 @@
 #include "CTaskOverviewPage.h"
 #include "afxdialogex.h"
 #include "MainFrm.h"
+#include "CSelectTasksDlg.h"
 
 // CTaskOverviewPage 对话框
 
@@ -39,6 +40,7 @@ BEGIN_MESSAGE_MAP(CTaskOverviewPage, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CTaskOverviewPage::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CTaskOverviewPage::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CTaskOverviewPage::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_LOAD, &CTaskOverviewPage::OnBnClickedLoad)
 END_MESSAGE_MAP()
 
 
@@ -97,4 +99,12 @@ void CTaskOverviewPage::OnBnClickedButton3()
 void CTaskOverviewPage::OnBnClickedButton4()
 {
 	AddLog(TEXT("测试Error\r\n"), TLP_ERROR);
+}
+
+
+void CTaskOverviewPage::OnBnClickedLoad()
+{
+	CSelectTasksDlg dlg;
+	dlg.DoModal();
+
 }

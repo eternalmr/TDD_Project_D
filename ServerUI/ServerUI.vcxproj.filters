@@ -90,6 +90,9 @@
     <ClInclude Include="CTask.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CSelectTasksDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerUI.cpp">
@@ -153,6 +156,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CTask.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSelectTasksDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

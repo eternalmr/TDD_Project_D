@@ -33,8 +33,8 @@ public:
 	afx_msg void OnBnClickedButton4();
 
 	CProgressCtrl m_progressBar;
-	CString m_memoryStatus;
-	CString m_cpuStatus;
+	CStatic m_memoryStatus;
+	CStatic m_cpuStatus;
 //	CString m_currentTask;
 	CString m_clientName;
 	CStatic m_currentTask;
@@ -43,6 +43,11 @@ public:
 	void RefreshCPUAndMemoryStatus();
 
 	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedConfirmidBtn();
+private:
+	int m_client_id;
+public:
+	CButton m_confirmIdBtn;
 };
 
 

@@ -19,6 +19,9 @@
 #define IDC_MEMORY_STATUS               1009
 #define IDC_CURRENT_TASK                1010
 #define IDC_CLIENT_ID                   1011
+#define IDC_TASKID_EDIT                 1012
+#define IDC_CLIENTID_EDIT               1012
+#define IDC_CONFIRMID_BTN               1013
 
 // Next default values for new objects
 // 
@@ -26,7 +29,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_CONTROL_VALUE         1014
 #define _APS_NEXT_SYMED_VALUE           312
 #endif
 #endif

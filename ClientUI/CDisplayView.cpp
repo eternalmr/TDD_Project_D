@@ -17,8 +17,9 @@ IMPLEMENT_DYNCREATE(CDisplayView, CFormView)
 CDisplayView::CDisplayView()
 	: CFormView(IDD_DISPLAYVIEW)
 	, m_clientName(_T("推演节点："))
-	, m_cpuStatus(_T("CPU状态："))
-	, m_memoryStatus(_T("内存状态："))
+	//, m_cpuStatus(_T("CPU状态："))
+	//, m_memoryStatus(_T("内存状态："))
+	, m_client_id(1)
 {
 	
 }
@@ -32,10 +33,13 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PROGRESS, m_progressBar);
-	DDX_Text(pDX, IDC_MEMORY_STATUS, m_memoryStatus);
-	DDX_Text(pDX, IDC_CPU_STATUS, m_cpuStatus);
+	DDX_Control(pDX, IDC_MEMORY_STATUS, m_memoryStatus);
+	DDX_Control(pDX, IDC_CPU_STATUS, m_cpuStatus);
 	DDX_Text(pDX, IDC_CLIENT_ID, m_clientName);
 	DDX_Control(pDX, IDC_CURRENT_TASK, m_currentTask);
+	DDX_Text(pDX, IDC_CLIENTID_EDIT, m_client_id);
+	DDV_MinMaxInt(pDX, m_client_id, 1, 100);
+	DDX_Control(pDX, IDC_CONFIRMID_BTN, m_confirmIdBtn);
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
@@ -44,6 +48,7 @@ BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDisplayView::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDisplayView::OnBnClickedButton4)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_CONFIRMID_BTN, &CDisplayView::OnBnClickedConfirmidBtn)
 END_MESSAGE_MAP()
 
 
@@ -116,10 +121,23 @@ void CDisplayView::RefreshCPUAndMemoryStatus()
 	CClient &client = CClient::get_instance();
 
 	str.Format(TEXT("%.2lf"), client.get_cpu_status());
-	m_cpuStatus = CString("CPU状态：") + str + CString("%");
+	str = CString("CPU状态：") + str + CString("%");
+	m_cpuStatus.SetWindowTextW(str);
 
 	str.Format(TEXT("%.2lf"), client.get_memoery_status());
-	m_memoryStatus = CString("内存状态：") + str + CString("%");
-	UpdateData(FALSE);
+	str = CString("内存状态：") + str + CString("%");
+	m_memoryStatus.SetWindowTextW(str);
 }
 
+
+void CDisplayView::OnBnClickedConfirmidBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	CString str;
+	str.Format(TEXT("推演节点%d: "), m_client_id);
+	CClient::get_instance().set_id(m_client_id);
+	m_clientName = str;
+	UpdateData(FALSE);
+	m_confirmIdBtn.EnableWindow(FALSE);
+}

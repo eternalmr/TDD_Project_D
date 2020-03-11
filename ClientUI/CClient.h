@@ -10,11 +10,12 @@ public:
 		kStart = 111, kStop = 222, kPause = 333,
 		kContinue = 444, kUnknow = 555
 	};
-
 	
-public:
+private:
 	CClient(uint id = 1, const string &ip = default_client_ip, 
 		const string &port = default_client_port);
+
+public:
 	static CClient& get_instance();//singleton class entrance
 
 	void set_id(uint id);

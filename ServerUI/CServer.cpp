@@ -53,6 +53,12 @@ void CServer::add_new_task(uint i)
 	total_task_num++;
 }
 
+void CServer::add_tasks(int num)
+{
+	for (int i = 1; i <= num; i++) {
+		add_new_task(i);
+	}
+}
 //========================= heartbeat related functions ==================================
 void CServer::receive_heartbeat(int max_num)
 {
@@ -241,13 +247,6 @@ void CServer::collect_result(uint max_num)
 		completed_task_num++;
 		mtx.unlock();
 		std::cout << result << std::endl;
-	}
-}
-
-void CServer::add_tasks(int num)
-{
-	for (int i = 1; i <= num; i++) {
-		add_new_task(i);
 	}
 }
 

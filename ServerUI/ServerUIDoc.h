@@ -1,9 +1,8 @@
 ﻿
 // ServerUIDoc.h: CServerUIDoc 类的接口
 //
-
-
 #pragma once
+
 
 
 class CServerUIDoc : public CDocument
@@ -14,6 +13,7 @@ protected: // 仅从序列化创建
 
 // 特性
 public:
+	CPtrList m_TaskItems;
 
 // 操作
 public:

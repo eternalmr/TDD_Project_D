@@ -41,19 +41,21 @@ BOOL CTaskDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	RECT rect;
+	CRect rect;
 	GetClientRect(&rect);
-	SetScrollRange(SB_VERT, 0, rect.bottom - rect.top, TRUE);
+	//SetScrollRange(SB_VERT, 0, rect.bottom - rect.top, TRUE);
 
 	CString str;
-	for (int i = 0; i < TASK_NUM; i++)
+
+	//int TaskNum = CServer::get_instance().tasks.size();
+	for (int i = 0; i < MAX_TASK_NUM; i++)
 	{
 		str.Format(TEXT("第%d个任务"), i);
 		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
-		m_TaskItems[i].MoveWindow(0, 100 * i + 1 * i, 350, 100);
+		m_TaskItems[i].MoveWindow(0, 80 * i + 1 * i, 600, 80);//TODO：确定合适的大小
 		m_TaskItems[i].m_id = i;
 		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
-		m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
+		//m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -135,7 +137,6 @@ void CTaskDetailPage::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
-
 BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	if (zDelta == 120)
@@ -148,4 +149,9 @@ BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	}
 
 	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+void CTaskDetailPage::AddNewTaskItem(Task *ptask)
+{
+
 }

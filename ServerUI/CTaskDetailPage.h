@@ -2,7 +2,7 @@
 #include "CTaskItem.h"
 
 
-#define TASK_NUM 5
+#define MAX_TASK_NUM 20
 
 // CTaskDetailPage 对话框
 
@@ -25,8 +25,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	CTaskItem m_TaskItems[TASK_NUM];
+	CTaskItem m_TaskItems[MAX_TASK_NUM];
+	CPtrList m_TaskList;
 
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+
+	void AddNewTaskItem(Task *ptask);
 };

@@ -3,7 +3,7 @@
 #include "CTask.h"
 
 // constructors
-Task::Task(uint id):id_(id)
+Task::Task(uint id):id_(id),task_progress(0)
 {
 	set_not_start();
 	set_result_not_saved();

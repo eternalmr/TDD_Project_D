@@ -30,5 +30,6 @@ private:
 	unsigned int id_;
 	ComputeStatus compute_status_;
 	StoreStatus store_status_;
+	int task_progress;
 };
 

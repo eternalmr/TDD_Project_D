@@ -66,7 +66,6 @@ void CLogView::OnInitialUpdate()
 	logger.MoveWindow(0, 0, rect.Width(), rect.Height());
 	LogThread = std::thread(&CLogShow::TLogEditThreadSTL, &logger); //启动日志接受线程
 	LogThread.detach();
-	//TODO: 这里应该要有线程退出，LogThread.join()或者LogTread.detach()
 }
 
 

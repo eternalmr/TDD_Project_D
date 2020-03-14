@@ -129,8 +129,8 @@ BOOL CClientUIApp::InitInstance()
 
 	CClient &client = CClient::get_instance();
 	client.heartbeat_thread = std::thread(&CClient::send_heartbeat, &client, 0);
-	client.simulation_thread = std::thread(&CClient::simulation_wrap, &client, 0);
-	client.control_thread = std::thread(&CClient::receive_command, &client);
+	client.heartbeat_thread.detach();
+
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;

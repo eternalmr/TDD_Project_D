@@ -55,6 +55,10 @@ void CClientDlg::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
+	CRect rect;
+	GetClientRect(&rect);
+	m_tab.MoveWindow(0, 0, rect.Width(), rect.Height());
+
 	// TODO: 在此添加专用代码和/或调用基类
 	m_tab.AddPage(TEXT("节点概况"), &overviewPage, IDD_CLIENT_OVERVIEW, true);
 	m_tab.AddPage(TEXT("节点详情"), &detailPage, IDD_CLIENT_DETAIL, true);

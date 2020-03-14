@@ -220,6 +220,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(int(0.85*w), int(0.6*h)), pContext);//右上是CDisplayView的实例，大小为760X600
 	m_RightWindowSplitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(int(0.85*w), int(0.4*h)), pContext);//右下是CLogView的实例，大小为760X600
 
+	// 保存分割窗口的指针
 	m_pSelectView = m_WholeWindowSplitter.GetPane(0, 0);
 	m_pDisplayView = m_RightWindowSplitter.GetPane(0, 0);
 	m_pLogView = m_RightWindowSplitter.GetPane(1, 0);

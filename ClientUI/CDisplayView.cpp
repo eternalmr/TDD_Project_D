@@ -132,12 +132,16 @@ void CDisplayView::RefreshCPUAndMemoryStatus()
 
 void CDisplayView::OnBnClickedConfirmidBtn()
 {
-	// TODO: 在此添加控件通知处理程序代码
 	UpdateData(TRUE);
 	CString str;
 	str.Format(TEXT("推演节点%d: "), m_client_id);
-	CClient::get_instance().set_id(m_client_id);
 	m_clientName = str;
+
+	CClient &client = CClient::get_instance();
+	client.set_id(m_client_id);
+	client.simulation_thread = std::thread(&CClient::simulation_wrap, &client, 0);
+	client.control_thread = std::thread(&CClient::receive_command, &client);
+
 	UpdateData(FALSE);
 	m_confirmIdBtn.EnableWindow(FALSE);
 }

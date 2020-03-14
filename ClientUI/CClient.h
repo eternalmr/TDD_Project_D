@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pch.h"
+#include <condition_variable>
 #include "../project_paramters.h"
 
 class CClient {

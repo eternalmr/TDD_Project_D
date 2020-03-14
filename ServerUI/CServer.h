@@ -33,6 +33,8 @@ public:
 
 	void assign_tasks();
 
+	void assign_task_to(uint id, Task* undo_task_pointer);
+
 	uint get_free_client();
 
 	void mark_breakdown_client();

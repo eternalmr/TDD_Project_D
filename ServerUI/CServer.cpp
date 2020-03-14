@@ -112,36 +112,29 @@ bool CServer::is_not_connect_to_client(uint id)
 //======================= assign task related functions ==========================
 void CServer::mark_breakdown_client() //TODO:添加测试
 {
+	CString str;
 	ClientRecord *pClient;
+
 	for (auto &client : clients) {
 		pClient = &(client.second);
 		if (!pClient->is_timeout() || pClient->is_breakdown())
 			continue;
 
 		pClient->set_breakdown();
-		std::cout << "Client[" << pClient->get_id()
-			<< "] is breakdown!" << std::endl;
+		str.Format(TEXT("Client[%d] is breakdown!\r\n"), pClient->get_id());
+		AddLog(str, TLP_ERROR);
 
 		if (pClient->get_task()) {
 			pClient->get_task()->set_not_start();
 			in_computing_task_num--;
-			std::cout << "Reset task[" << pClient->get_task()->get_id()
-				<< "] status to not start" << std::endl;
+			str.Format(TEXT("Reset task[%d] status to not start!\r\n"), 
+				pClient->get_task()->get_id());
+			AddLog(str, TLP_ERROR);
 		}
 	}
 }
 
-Task* CServer::get_undo_task()
-{
-	Task *ptask = nullptr;
-	for (int i = 0; i < tasks.size(); i++) {//TODO : 可以优化不用每次从头开始查找
-		if (tasks[i].is_not_start()) {
-			ptask = &tasks[i];
-			break;
-		}
-	}
-	return ptask;
-}
+
 
 void CServer::send_command_to_client(uint id, string command)
 {
@@ -159,9 +152,7 @@ void CServer::assign_tasks()
 {
 	// TODO : check tasks and clients status
 
-	int workload = 0;
 	Task* undo_task_pointer;
-	CString str;
 
 	while (true) {//TODO : simulation is finished
 		// update tasks and clients status
@@ -173,41 +164,43 @@ void CServer::assign_tasks()
 
 		uint id = get_free_client();
 
-		// TODO : assign_task_to(a_free_worker, a_undo_task)
-		clients[id].set_task(undo_task_pointer);//update clients
-		workload = undo_task_pointer->get_id();
-		s_send(task_assigner, std::to_string(workload));
-		undo_task_pointer->set_in_computing();
-		mtx.lock();
-		in_computing_task_num++;
-		mtx.unlock();
-		clients[id].set_in_computing();
-		str.Format(TEXT("Task[%d] is assigned to client[%d]\r\n"), 
-					undo_task_pointer->get_id(), id);
-		AddLog(str, TLP_NORMAL);
+		assign_task_to(id, undo_task_pointer);
+
 	}// end of while
 
 	std::cout << "All tasks is finished!" << std::endl;
 }
 
+Task* CServer::get_undo_task()
+{
+	Task *ptask = nullptr;
+	for (int i = 0; i < tasks.size(); i++) {//TODO : 可以优化不用每次从头开始查找
+		if (tasks[i].is_not_start()) {
+			ptask = &tasks[i];
+			break;
+		}
+	}
+	return ptask;
+}
+
 uint CServer::get_free_client()
 {
-	string reply = s_recv(task_assigner);//reply client id
-	uint id = stoi(reply);
 	Task* ptask;
 	CString str;
+
+	string reply = s_recv(task_assigner);//reply client id
+	uint id = stoi(reply);
+	//str = CString(TEXT("Receive request from client[")) 
+	//	+ CA2T(reply.c_str()) + CString(TEXT("]\r\n"));
+	//AddLog(str, TLP_NORMAL);
 
 	if (is_not_connect_to_client(id)) { //new client
 		add_new_client(id);
 	}
-	else 
-	{ // ready in clients pool
+	else { // already in clients pool
 		clients[id].set_free();
-		//str = CString(TEXT("Receive request from client[")) 
-		//	+ CA2T(reply.c_str()) + CString(TEXT("]\r\n"));
-		//AddLog(str, TLP_NORMAL);
-
 		ptask = clients[id].get_task();
+
 		if (ptask != nullptr && (ptask->is_in_computing())) {
 			ptask->set_finished();
 			str.Format(TEXT("Task[%d] is accomplished by client[%d]\r\n"),
@@ -216,6 +209,24 @@ uint CServer::get_free_client()
 		}
 	}		
 	return id;
+}
+
+void CServer::assign_task_to(uint id, Task* p_task)
+{
+	clients[id].set_task(p_task);//update clients
+	int workload = p_task->get_id();
+	s_send(task_assigner, std::to_string(workload));
+	p_task->set_in_computing();
+	clients[id].set_in_computing();
+
+	mtx.lock();
+	in_computing_task_num++;
+	mtx.unlock();
+
+	CString str;
+	str.Format(TEXT("Task[%d] is assigned to client[%d]\r\n"),
+		p_task->get_id(), id);
+	AddLog(str, TLP_NORMAL);
 }
 
 void CServer::collect_result(uint max_num)

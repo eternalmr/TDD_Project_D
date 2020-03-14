@@ -26,4 +26,11 @@ public:
 	afx_msg void OnBnClickedContinue();
 	afx_msg void OnBnClickedStop();
 	afx_msg void OnBnClickedLoad();
+	CButton m_TotalTaskNum;
+	CButton m_CompletedTaskNum;
+	CButton m_IncomputingTaskNum;
+	CButton m_UndoTaskNum;
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	CProgressCtrl m_ProgressBar;
 };

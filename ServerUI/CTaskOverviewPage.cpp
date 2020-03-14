@@ -25,6 +25,11 @@ CTaskOverviewPage::~CTaskOverviewPage()
 void CTaskOverviewPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_TOTAL_TASK_NUM, m_TotalTaskNum);
+	DDX_Control(pDX, IDC_COMPLETED_TASK_NUM, m_CompletedTaskNum);
+	DDX_Control(pDX, IDC_INCOMPUTING_TASK_NUM, m_IncomputingTaskNum);
+	DDX_Control(pDX, IDC_UNDO_TASK_NUM, m_UndoTaskNum);
+	DDX_Control(pDX, IDC_PROGRESS1, m_ProgressBar);
 }
 
 
@@ -35,6 +40,7 @@ BEGIN_MESSAGE_MAP(CTaskOverviewPage, CDialogEx)
 	ON_BN_CLICKED(IDC_CONTINUE, &CTaskOverviewPage::OnBnClickedContinue)
 	ON_BN_CLICKED(IDC_STOP,     &CTaskOverviewPage::OnBnClickedStop)
 	ON_BN_CLICKED(IDC_LOAD,		&CTaskOverviewPage::OnBnClickedLoad)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -74,5 +80,63 @@ void CTaskOverviewPage::OnBnClickedLoad()
 {
 	CSelectTasksDlg dlg;
 	dlg.DoModal();
+}
 
+
+BOOL CTaskOverviewPage::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此添加额外的初始化
+	CString str;
+	str.Format(TEXT("方案总数：\r\n"));
+	m_TotalTaskNum.SetWindowTextW(str);
+
+	str.Format(TEXT("已完成：\r\n"));
+	m_CompletedTaskNum.SetWindowTextW(str);
+
+	str.Format(TEXT("计算中：\r\n"));
+	m_IncomputingTaskNum.SetWindowTextW(str);
+
+	str.Format(TEXT("未开始：\r\n"));
+	m_UndoTaskNum.SetWindowTextW(str);
+
+	SetTimer(1, 1000, NULL);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 异常: OCX 属性页应返回 FALSE
+}
+
+
+void CTaskOverviewPage::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	switch (nIDEvent)
+	{
+	case 1: {
+		CString str;
+		int totalNum, completedNum, inComputingNum, undoNum;
+		CServer::get_instance().get_task_num_info(totalNum, 
+												completedNum, inComputingNum, undoNum);
+
+		str.Format(TEXT("方案总数：\r\n %d"), totalNum);
+		m_TotalTaskNum.SetWindowTextW(str);
+
+		str.Format(TEXT("已完成：\r\n %d"), completedNum);
+		m_CompletedTaskNum.SetWindowTextW(str);
+
+		str.Format(TEXT("计算中：\r\n %d"), inComputingNum);
+		m_IncomputingTaskNum.SetWindowTextW(str);
+
+		str.Format(TEXT("未开始：\r\n %d"), undoNum);
+		m_UndoTaskNum.SetWindowTextW(str);
+		
+		m_ProgressBar.SetRange(0, totalNum);
+		m_ProgressBar.SetPos(completedNum);
+	}
+	default:
+		break;
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
 }

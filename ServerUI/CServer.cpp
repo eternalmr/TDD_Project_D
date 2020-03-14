@@ -3,13 +3,15 @@
 #include "CClientRecord.h"
 #include "CLogShow.h"
 
-CServer::CServer(const string &ip, const string &port) : 
-	context(1), 
+CServer::CServer(const string &ip, const string &port) :
+	context(1),
 	heartbeat_receiver(context, ZMQ_PULL),
-	task_assigner(context, ZMQ_REP), 
+	task_assigner(context, ZMQ_REP),
 	command_sender(context, ZMQ_PUB),
 	result_collector(context, ZMQ_PULL),
-	ip_(ip), port_(port), clients({})
+	ip_(ip), port_(port), clients({}),
+	total_task_num(0), completed_task_num(0),
+	in_computing_task_num(0), undo_task_num(total_task_num)
 {
 	bind_sockets_to_ip();
 }
@@ -48,6 +50,7 @@ void CServer::add_new_client(uint id)
 void CServer::add_new_task(uint i)
 {
 	tasks.push_back(Task(i));
+	total_task_num++;
 }
 
 //========================= heartbeat related functions ==================================
@@ -121,13 +124,14 @@ void CServer::mark_breakdown_client() //TODO:添加测试
 
 		if (pClient->get_task()) {
 			pClient->get_task()->set_not_start();
+			in_computing_task_num--;
 			std::cout << "Reset task[" << pClient->get_task()->get_id()
 				<< "] status to not start" << std::endl;
 		}
 	}
 }
 
-Task* CServer::get_undo_task() 
+Task* CServer::get_undo_task()
 {
 	Task *ptask = nullptr;
 	for (int i = 0; i < tasks.size(); i++) {//TODO : 可以优化不用每次从头开始查找
@@ -141,13 +145,13 @@ Task* CServer::get_undo_task()
 
 void CServer::send_command_to_client(uint id, string command)
 {
-	// publish start command to client(id)
+	// publish command to client(id)
 	s_send(command_sender, command + "_" + std::to_string(id));
 }
 
 void CServer::send_command_to_all_client(string command)
 {
-	// publish start command to all clients
+	// publish command to all clients
 	s_send(command_sender, command);
 }
 
@@ -157,44 +161,26 @@ void CServer::assign_tasks()
 
 	int workload = 0;
 	Task* undo_task_pointer;
-	Task* ptask;
 	CString str;
 
 	while (true) {//TODO : simulation is finished
 		// update tasks and clients status
-		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移除这里
+		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
-		// get a undo task
 		undo_task_pointer = get_undo_task();
-		if (!undo_task_pointer) break; // all task is completed and stored, than break
+		if (!undo_task_pointer)
+			break; // all task is completed and stored, than break
 
-		// TODO : a_free_worker = get_free_worker(workers queue)
-		string reply = s_recv(task_assigner);//reply client id
-		uint id = stoi(reply);
-
-		if (is_not_connect_to_client(id)) { //new client
-			add_new_client(id);
-		}
-		else { // ready in clients pool
-			clients[id].set_free();
-			//str = CString(TEXT("Receive request from client[")) 
-			//	+ CA2T(reply.c_str()) + CString(TEXT("]\r\n"));
-			//AddLog(str, TLP_NORMAL);
-
-			ptask = clients[id].get_task();
-			if (ptask != nullptr && (ptask->is_in_computing())) {
-				ptask->set_finished();
-				str.Format(TEXT("Task[%d] is accomplished by client[%d]\r\n"), 
-						  ptask->get_id(), id);
-				AddLog(str, TLP_NORMAL);
-			}
-		}
+		uint id = get_free_client();
 
 		// TODO : assign_task_to(a_free_worker, a_undo_task)
 		clients[id].set_task(undo_task_pointer);//update clients
 		workload = undo_task_pointer->get_id();
 		s_send(task_assigner, std::to_string(workload));
 		undo_task_pointer->set_in_computing();
+		mtx.lock();
+		in_computing_task_num++;
+		mtx.unlock();
 		clients[id].set_in_computing();
 		str.Format(TEXT("Task[%d] is assigned to client[%d]\r\n"), 
 					undo_task_pointer->get_id(), id);
@@ -204,6 +190,34 @@ void CServer::assign_tasks()
 	std::cout << "All tasks is finished!" << std::endl;
 }
 
+uint CServer::get_free_client()
+{
+	string reply = s_recv(task_assigner);//reply client id
+	uint id = stoi(reply);
+	Task* ptask;
+	CString str;
+
+	if (is_not_connect_to_client(id)) { //new client
+		add_new_client(id);
+	}
+	else 
+	{ // ready in clients pool
+		clients[id].set_free();
+		//str = CString(TEXT("Receive request from client[")) 
+		//	+ CA2T(reply.c_str()) + CString(TEXT("]\r\n"));
+		//AddLog(str, TLP_NORMAL);
+
+		ptask = clients[id].get_task();
+		if (ptask != nullptr && (ptask->is_in_computing())) {
+			ptask->set_finished();
+			str.Format(TEXT("Task[%d] is accomplished by client[%d]\r\n"),
+				ptask->get_id(), id);
+			AddLog(str, TLP_NORMAL);
+		}
+	}		
+	return id;
+}
+
 void CServer::collect_result(uint max_num)
 {
 	int count = 0;
@@ -211,6 +225,10 @@ void CServer::collect_result(uint max_num)
 	std::string result;
 	while (is_not_reach(max_num, count)) {
 		result = s_recv(result_collector);
+		mtx.lock();
+		in_computing_task_num--;
+		completed_task_num++;
+		mtx.unlock();
 		std::cout << result << std::endl;
 	}
 }
@@ -267,4 +285,12 @@ void CServer::start_threads()
 	if (task_thread.joinable()) task_thread.join();
 	if (result_thread.joinable()) result_thread.join();
 	if (heartbeat_thread.joinable()) heartbeat_thread.join();
+}
+
+void CServer::get_task_num_info(int &total, int &completed, int &incomputing, int &undo)
+{
+	total = total_task_num;
+	completed = completed_task_num;
+	incomputing = in_computing_task_num;
+	undo = total - completed - incomputing;
 }

@@ -2,6 +2,7 @@
 
 #include <regex>
 #include <map>
+#include <mutex>
 #include "../project_paramters.h"
 
 class Task;
@@ -31,6 +32,9 @@ public:
 	void add_new_task(uint i);
 
 	void assign_tasks();
+
+	uint get_free_client();
+
 	void mark_breakdown_client();
 	Task* get_undo_task();
 
@@ -43,6 +47,7 @@ public:
 	void start_simulation();//console use only
 	void start_threads();//
 
+	void get_task_num_info(int &total, int &completed, int &incomputing, int &undo);
 
 private:
 	bool is_not_reach(int max_num, int &count);
@@ -56,7 +61,14 @@ private:
 
 	string ip_;
 	string port_;
+
+	int total_task_num;
+	int completed_task_num;
+	int in_computing_task_num;
+	int undo_task_num;
 	
+	std::mutex mtx;
+
 public:
 	ClientMap clients;
 	std::vector<Task> tasks;

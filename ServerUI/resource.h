@@ -42,11 +42,8 @@
 #define IDC_THREAD                      1004
 #define IDC_LOGBOARD                    1004
 #define IDC_BUTTON1                     1005
-#define IDC_BUTTON2                     1006
 #define IDC_TASK_NAME                   1006
-#define IDC_BUTTON3                     1007
 #define IDC_TASK_COMPUTE_STATUS         1007
-#define IDC_BUTTON4                     1008
 #define IDC_TASK_STORE_STATUS           1008
 #define IDC_PROGRESS1                   1009
 #define IDC_BTN_START_CLIENT            1010
@@ -57,14 +54,13 @@
 #define IDC_CLIENT_CPU                  1015
 #define IDC_LOAD                        1015
 #define IDC_CLIENT_MEMORY               1016
-#define IDC_BUTTON6                     1016
-#define IDC_TOTAL_TASK_NUM              1016
-#define IDC_BUTTON7                     1017
-#define IDC_COMPLETED_TASK_NUM          1017
-#define IDC_BUTTON8                     1018
-#define IDC_INCOMPUTING_TASK_NUM        1018
-#define IDC_BUTTON9                     1019
-#define IDC_UNDO_TASK_NUM               1019
+#define IDC_TOTAL_TASK_NUM              1017
+#define IDC_COMPLETED_TASK_NUM          1018
+#define IDC_INCOMPUTING_TASK_NUM        1019
+#define IDC_UNDO_TASK_NUM               1020
+#define IDC_BUTTON2						1021
+#define IDC_BUTTON3						1022
+#define IDC_BUTTON4						1023
 
 // Next default values for new objects
 // 

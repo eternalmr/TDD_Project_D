@@ -33,6 +33,8 @@ BEGIN_MESSAGE_MAP(CTaskDetailPage, CDialogEx)
 
 	ON_WM_VSCROLL()
 	ON_WM_MOUSEWHEEL()
+	ON_WM_ACTIVATE()
+	ON_WM_MDIACTIVATE()
 END_MESSAGE_MAP()
 
 
@@ -154,4 +156,24 @@ BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CTaskDetailPage::AddNewTaskItem(Task *ptask)
 {
 
+}
+
+
+void CTaskDetailPage::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+{
+	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
+
+	// TODO: 在此处添加消息处理程序代码
+	m_TaskItems[0].ShowWindow(TRUE);
+	OutputDebugString(TEXT("显示任务"));
+}
+
+
+void CTaskDetailPage::OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeactivateWnd)
+{
+	CDialogEx::OnMDIActivate(bActivate, pActivateWnd, pDeactivateWnd);
+
+	// TODO: 在此处添加消息处理程序代码
+	m_TaskItems[0].ShowWindow(TRUE);
+	OutputDebugString(TEXT("显示任务"));
 }

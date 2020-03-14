@@ -6,7 +6,8 @@
 #include "CSelectTasksDlg.h"
 #include "afxdialogex.h"
 #include "MainFrm.h"
-
+//#include "CTaskDetailPage.h"
+#include "CTaskDlg.h"
 
 // CSelectTasksDlg 对话框
 
@@ -40,11 +41,13 @@ void CSelectTasksDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CMainFrame *pMain = (CMainFrame*)AfxGetMainWnd();
+	CTaskDlg* pDlg = (CTaskDlg*)pMain->m_RightWindowSplitter.GetPane(0, 0);
 
 	for (int i = 0; i < 10 ; i++)
 	{
 		CServer::get_instance().add_new_task(i+1);
-		pMain->m_RightWindowSplitter.GetPane(0,0)->m_
+		BOOL  isShow = pDlg->detailPage.m_TaskItems[i].ShowWindow(TRUE);
+		//pDlg->detailPage.m_TaskItems[i].Get_
 	}
 	//CServer::get_instance().add_tasks(10);
 

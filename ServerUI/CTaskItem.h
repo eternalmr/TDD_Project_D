@@ -27,6 +27,7 @@ public:
 	CStatic m_TaskStoreStatus;
 	CProgressCtrl m_ProgessBar;
 	int m_id;
+	BOOL m_isShow;
 
 public:
 	virtual BOOL OnInitDialog();

@@ -263,9 +263,9 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 	CCreateContext Context;
 	if (wParam == NM_TASK)
 	{
-		Context.m_pNewViewClass = RUNTIME_CLASS(CTaskDlg);
-		Context.m_pCurrentFrame = this;
-		Context.m_pLastView = (CFormView *)m_RightWindowSplitter.GetPane(0, 0);
+		Context.m_pNewViewClass = RUNTIME_CLASS(CTaskDlg); //新建视图的动态创建类
+		Context.m_pCurrentFrame = this;//当前框架窗口
+		Context.m_pLastView = (CFormView *)m_RightWindowSplitter.GetPane(0, 0); //原先的视图类，通常在切分窗口的视图类中使用（splitterWnd）
 		m_RightWindowSplitter.DeleteView(0, 0);
 		m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CTaskDlg), CSize(int(0.85*w), int(0.6*h)), &Context);
 		CTaskDlg *pNewView = (CTaskDlg*)m_RightWindowSplitter.GetPane(0, 0);

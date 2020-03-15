@@ -35,6 +35,7 @@ private:
 	//CTaskDetailPage detailPage;
 public:
 	virtual void OnInitialUpdate();
+	void myInit(int num);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 
 	CTaskDetailPage detailPage;

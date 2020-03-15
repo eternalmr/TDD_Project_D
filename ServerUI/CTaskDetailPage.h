@@ -22,9 +22,12 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
+
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
+	void myInit(int num);
+	void UpdateShow(int num);
 	CTaskItem m_TaskItems[MAX_TASK_NUM];
 	CPtrList m_TaskList;
 
@@ -32,6 +35,7 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
 	void AddNewTaskItem(Task *ptask);
-	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
-	afx_msg void OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeactivateWnd);
+
+private:
+	int task_num;
 };

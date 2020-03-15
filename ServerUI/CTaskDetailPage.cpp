@@ -15,7 +15,7 @@ IMPLEMENT_DYNAMIC(CTaskDetailPage, CDialogEx)
 CTaskDetailPage::CTaskDetailPage(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_TASK_DETAIL, pParent)
 {
-
+	task_num = 0;
 }
 
 CTaskDetailPage::~CTaskDetailPage()
@@ -33,8 +33,8 @@ BEGIN_MESSAGE_MAP(CTaskDetailPage, CDialogEx)
 
 	ON_WM_VSCROLL()
 	ON_WM_MOUSEWHEEL()
-	ON_WM_ACTIVATE()
-	ON_WM_MDIACTIVATE()
+//	ON_WM_ACTIVATE()
+//	ON_WM_MDIACTIVATE()
 END_MESSAGE_MAP()
 
 
@@ -159,21 +159,17 @@ void CTaskDetailPage::AddNewTaskItem(Task *ptask)
 }
 
 
-void CTaskDetailPage::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+void CTaskDetailPage::myInit(int num)
 {
-	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
-
-	// TODO: 在此处添加消息处理程序代码
-	m_TaskItems[0].ShowWindow(TRUE);
-	OutputDebugString(TEXT("显示任务"));
+	task_num = num;
 }
 
-
-void CTaskDetailPage::OnMDIActivate(BOOL bActivate, CWnd* pActivateWnd, CWnd* pDeactivateWnd)
+void CTaskDetailPage::UpdateShow(int num)
 {
-	CDialogEx::OnMDIActivate(bActivate, pActivateWnd, pDeactivateWnd);
-
-	// TODO: 在此处添加消息处理程序代码
-	m_TaskItems[0].ShowWindow(TRUE);
-	OutputDebugString(TEXT("显示任务"));
+	task_num = num;
+	for(int i=0; i<num; i++)
+	{
+		m_TaskItems[i].ShowWindow(TRUE);
+	}
+	
 }

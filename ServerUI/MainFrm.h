@@ -48,6 +48,15 @@ public:
 	CWnd* m_pLogView;
 	CWnd* m_pDisplayView;
 
+	//CTaskDlg* m_pTaskDlg;
+	//CClientDlg* m_pClientDlg;
+
+	BOOL m_bTaskDlgIsCreated;
+	BOOL m_bClientDlgIsCreated;
+	int num_task;
+	int num_node;
+	
+
 private:
 	//CServer server;
 	BOOL m_bWholeWndIsSplitted;

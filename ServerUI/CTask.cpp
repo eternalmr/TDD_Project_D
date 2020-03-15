@@ -3,7 +3,7 @@
 #include "CTask.h"
 
 // constructors
-Task::Task(uint id):id_(id),task_progress(0)
+Task::Task(uint id):id_(id),progress_(0)
 {
 	set_not_start();
 	set_result_not_saved();
@@ -25,4 +25,7 @@ bool Task::is_not_start() { return kNotStart == compute_status_; }
 bool Task::is_in_computing() { return kInComputing == compute_status_; }
 bool Task::is_finished() { return kFinished == compute_status_; }
 bool Task::is_not_save() { return kNotSave == store_status_; }
-bool Task::is_saved(){ return kSaved == store_status_; }
+bool Task::is_saved() { return kSaved == store_status_; }
+
+uint Task::get_simulation_progress() { return progress_; }
+void Task::set_simulation_progress(uint progress) { progress_ = progress; }

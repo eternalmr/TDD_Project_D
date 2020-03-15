@@ -41,10 +41,13 @@ public:
 	double get_cpu_status();
 	double get_memoery_status();
 
+	uint get_progress();
+	void set_progress(uint percent);
+
 private:
 	bool is_not_reach(int max_num, int &count); 
 	unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime);
-
+	uint simulation_progress;
 
 private:
 	uint id_;

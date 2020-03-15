@@ -71,7 +71,7 @@ void CTaskDlg::OnInitialUpdate()
 	m_tab.Show(0);
 
 	//详情页更新内部数据
-	detailPage.UpdateShow(10);
+	//detailPage.UpdateShow(10);
 }
 
 
@@ -81,7 +81,7 @@ void CTaskDlg::OnSize(UINT nType, int cx, int cy)
 	ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。
 }
 
-void CTaskDlg::myInit(int num)
-{
-	detailPage.myInit(num);
-}
+//void CTaskDlg::myInit(int num)
+//{
+//	detailPage.myInit(num);
+//}

@@ -23,13 +23,16 @@ public:
 	bool is_not_save();
 	bool is_saved();
 
+	uint get_simulation_progress();
+	void set_simulation_progress(uint progress);
+
 private:
 	void set_id(uint id);
 
 private:
+	uint progress_;
 	unsigned int id_;
 	ComputeStatus compute_status_;
 	StoreStatus store_status_;
-	int task_progress;
 };
 

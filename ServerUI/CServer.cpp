@@ -63,17 +63,20 @@ void CServer::add_tasks(int num)
 void CServer::receive_heartbeat(int max_num)
 {
 	uint id;
+	uint simulation_progress;
 	int count = 0;
 	string heartbeat_signal;
 
 	while (is_not_reach(max_num, count)) {
 		auto raw_signal = s_recv(heartbeat_receiver);
 		std::tie(id, heartbeat_signal) = decode_signal(raw_signal);
+		std::tie(id, simulation_progress) = decode_signal_new(raw_signal);
 
 		if (is_not_connect_to_client(id)){
 			add_new_client(id);
 		}
-		update_heartbeat_of_client(id);
+		//update_heartbeat_of_client(id);
+		update_client_info(id, simulation_progress);
 
 		//std::cout << "Heartbeat of client[" << id << "] : "
 		//	<< clients[id].get_heartbeat() << std::endl;
@@ -94,6 +97,12 @@ std::tuple<int, string> CServer::decode_signal(string &raw_signal)
 	return std::make_tuple(std::stoi(signal[1]), signal[0]);//output is [client_id, signal]
 }
 
+std::tuple<int, int> CServer::decode_signal_new(string &raw_signal)
+{
+	auto signal = split_string(raw_signal, "_");
+	return std::make_tuple(std::stoi(signal[0]), std::stoi(signal[1]));//[client_id, simulation_progress]
+}
+
 //用delim指定的正则表达式将字符串in分割，返回分割后的字符串数组
 //delim 分割字符串的格式为："[_/ ]+"
 std::vector<string> CServer::split_string(const string& in, const string& delim)
@@ -108,6 +117,12 @@ std::vector<string> CServer::split_string(const string& in, const string& delim)
 void CServer::update_heartbeat_of_client(uint id)
 {
 	clients[id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
+}
+
+void CServer::update_client_info(uint id, uint progress)
+{
+	clients[id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
+	clients[id].get_task()->set_simulation_progress(progress);
 }
 
 bool CServer::is_not_connect_to_client(uint id)
@@ -242,6 +257,7 @@ void CServer::collect_result(uint max_num)
 	std::string result;
 	while (is_not_reach(max_num, count)) {
 		result = s_recv(result_collector);
+		// set task progress to 100%
 		mtx.lock();
 		in_computing_task_num--;
 		completed_task_num++;

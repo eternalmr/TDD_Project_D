@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "CLogView.h"
 #include "MainFrm.h"
+#include "CTask.h"
 
 // CTaskDetailPage 对话框
 
@@ -33,8 +34,8 @@ BEGIN_MESSAGE_MAP(CTaskDetailPage, CDialogEx)
 
 	ON_WM_VSCROLL()
 	ON_WM_MOUSEWHEEL()
-//	ON_WM_ACTIVATE()
-//	ON_WM_MDIACTIVATE()
+	ON_WM_TIMER()
+
 END_MESSAGE_MAP()
 
 
@@ -52,13 +53,15 @@ BOOL CTaskDetailPage::OnInitDialog()
 	//int TaskNum = CServer::get_instance().tasks.size();
 	for (int i = 0; i < MAX_TASK_NUM; i++)
 	{
-		str.Format(TEXT("第%d个任务"), i);
+		str.Format(TEXT("第%d个任务"), i+1);
 		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
 		m_TaskItems[i].MoveWindow(0, 80 * i + 1 * i, 600, 80);//TODO：确定合适的大小
 		m_TaskItems[i].m_id = i;
 		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
 		//m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
 	}
+
+	SetTimer(1, 500, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -153,11 +156,18 @@ BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }
 
-void CTaskDetailPage::AddNewTaskItem(Task *ptask)
+void CTaskDetailPage::UpdateTaskProgress()
 {
+	CServer &server = CServer::get_instance();
+	uint progress = 0;
 
+	for (int i = 0; i < task_num ; i++)
+	{
+		progress = server.tasks[i].get_simulation_progress();
+		m_TaskItems[i].m_ProgessBar.SetRange(0,100);
+		m_TaskItems[i].m_ProgessBar.SetPos(progress);
+	}
 }
-
 
 void CTaskDetailPage::myInit(int num)
 {
@@ -172,4 +182,21 @@ void CTaskDetailPage::UpdateShow(int num)
 		m_TaskItems[i].ShowWindow(TRUE);
 	}
 	
+}
+
+
+void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	switch (nIDEvent)
+	{
+	case 1: {
+		UpdateTaskProgress();
+		break;
+	}
+	default:
+		break;
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
 }

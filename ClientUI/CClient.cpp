@@ -15,6 +15,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	command_receiver(context, ZMQ_SUB),
 	ip_(ip), port_(port),
 	start_flag(0), pause_flag(0), stop_flag(0)
+	,simulation_progress(0)
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
@@ -70,9 +71,11 @@ void CClient::subscribe_specific_signal()
 void CClient::send_heartbeat(int max_num)
 {
 	int count = 0;
-	std::string signal = "HEARTBEAT_" + std::to_string(id_);
+	//std::string signal = "HEARTBEAT_" + std::to_string(id_);
+	std::string signal;
 
 	while (is_not_reach(max_num, count)) {
+		signal = std::to_string(id_) + "_" + std::to_string(simulation_progress);
 		s_send(heartbeat_sender, signal);
 		//cout << "send heartbeat to server: " << id_ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
@@ -181,6 +184,7 @@ int CClient::simulation(int input)
 		Sleep(SIM_DELAY);
 		std::cout << "Result: " << result << std::endl;
 		pView->m_progressBar.StepIt();
+		set_progress((result-input) * 100 / 5);
 
 		if (has_reached_endpoint(input, result)) {
 			stop_flag = 1;
@@ -231,6 +235,16 @@ double CClient::get_memoery_status()
 
 	double memory_status = ((double)usePhys / (double)physical_memory) * 100;
 	return memory_status;
+}
+
+uint CClient::get_progress()
+{
+	return simulation_progress;
+}
+
+void CClient::set_progress(uint percent)
+{
+	simulation_progress = percent;
 }
 
 CClient::SignalSet CClient::listen_from_server()

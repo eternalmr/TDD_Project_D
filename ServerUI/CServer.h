@@ -24,9 +24,11 @@ public:
 
 	void receive_heartbeat(int max_num = REPEAT_FOREVER);
 	std::tuple<int, string> decode_signal(string &raw_signal);
+	std::tuple<int, int> decode_signal_new(string &raw_signal);
 	std::vector<string> split_string(const string& in, const string& delim);
 	void update_heartbeat_of_client(uint id);
 
+	void update_client_info(uint id, uint progress);
 	bool is_not_connect_to_client(uint id);
 	void add_new_client(uint id);
 	void add_new_task(uint i);

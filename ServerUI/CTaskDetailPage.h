@@ -36,6 +36,10 @@ public:
 
 	void AddNewTaskItem(Task *ptask);
 
+	void UpdateTaskProgress();
+
 private:
 	int task_num;
+public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

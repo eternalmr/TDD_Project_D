@@ -10,6 +10,11 @@
 #include "MainFrm.h"
 #include "CTask.h"
 
+enum TimerType
+{
+	UpdateTaskProgressTimer = 1
+};
+
 // CTaskDetailPage 对话框
 
 IMPLEMENT_DYNAMIC(CTaskDetailPage, CDialogEx)
@@ -50,7 +55,7 @@ BOOL CTaskDetailPage::OnInitDialog()
 
 	int itemHeight = 80;
 	SetScrollRange(SB_VERT, 0, itemHeight * 10, TRUE); //TODO:设置一个合理的上限
-	SetTimer(1, 500, NULL);
+	SetTimer(UpdateTaskProgressTimer, 500, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -179,7 +184,7 @@ void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 	// 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
-	case 1: {
+	case UpdateTaskProgressTimer: {
 		UpdateTaskProgress();
 		break;
 	}

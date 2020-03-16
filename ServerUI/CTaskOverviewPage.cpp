@@ -8,6 +8,11 @@
 #include "MainFrm.h"
 #include "CSelectTasksDlg.h"
 
+enum TimerType
+{
+	UpdateTaskInfoTimer = 1
+};
+
 // CTaskOverviewPage 对话框
 
 IMPLEMENT_DYNAMIC(CTaskOverviewPage, CDialogEx)
@@ -90,7 +95,7 @@ BOOL CTaskOverviewPage::OnInitDialog()
 	// 在此添加额外的初始化
 	UpdateTaskInfo();
 
-	SetTimer(1, 1000, NULL);
+	SetTimer(UpdateTaskInfoTimer, 1000, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -102,7 +107,7 @@ void CTaskOverviewPage::OnTimer(UINT_PTR nIDEvent)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
-	case 1: {
+	case UpdateTaskInfoTimer: {
 		UpdateTaskInfo();
 		break;
 	}

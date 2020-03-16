@@ -34,4 +34,9 @@ public:
 	afx_msg void OnBnClickedBtnPauseClient();
 	afx_msg void OnBnClickedBtnStopClient();
 	afx_msg void OnBnClickedBtnContinueClient();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+private:
+	void UpdateClientInfo();
+public:
+	virtual BOOL OnInitDialog();
 };

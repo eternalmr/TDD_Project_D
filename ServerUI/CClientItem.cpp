@@ -6,6 +6,7 @@
 #include "CClientItem.h"
 #include "afxdialogex.h"
 
+#define RandNum(minValue, maxValue)((rand() % (maxValue - minValue + 1)) + minValue)
 
 // CClientItem 对话框
 
@@ -39,6 +40,7 @@ BEGIN_MESSAGE_MAP(CClientItem, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_PAUSE_CLIENT, &CClientItem::OnBnClickedBtnPauseClient)
 	ON_BN_CLICKED(IDC_BTN_STOP_CLIENT, &CClientItem::OnBnClickedBtnStopClient)
 	ON_BN_CLICKED(IDC_BTN_CONTINUE_CLIENT, &CClientItem::OnBnClickedBtnContinueClient)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -66,4 +68,54 @@ void CClientItem::OnBnClickedBtnStopClient()
 void CClientItem::OnBnClickedBtnContinueClient()
 {
 	CServer::get_instance().send_command_to_client(m_id, "continue");
+}
+
+
+void CClientItem::OnTimer(UINT_PTR nIDEvent)
+{
+	// 在此添加消息处理程序代码和/或调用默认值
+	switch (nIDEvent)
+	{
+	case 1: {
+		UpdateClientInfo();
+		break;
+	}
+	default:
+		break;
+	}
+
+
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+void CClientItem::UpdateClientInfo()
+{
+	CString str;
+	//str.Format(TEXT("%.2lf"), 80);
+	//str = CString("状态： 计算中（任务1）") + str + CString("%");
+	//m_ClientStatus.SetWindowTextW(str);
+
+	str.Format(TEXT("%d"), RandNum(50,60));
+	str = CString("CPU：") + str + CString("%");
+	m_ClientCPU.SetWindowTextW(str);
+
+	str.Format(TEXT("%d"), RandNum(70,80));
+	str = CString("内存：") + str + CString("%");
+	m_ClientMemory.SetWindowTextW(str);
+
+}
+
+
+BOOL CClientItem::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// 在此添加额外的初始化
+	UpdateClientInfo();
+
+	SetTimer(1, 1000, NULL);
+
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 异常: OCX 属性页应返回 FALSE
 }

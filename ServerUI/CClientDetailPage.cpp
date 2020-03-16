@@ -42,7 +42,7 @@ BOOL CClientDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// 在此添加额外的初始化
-	SetScrollRange(SB_VERT, 0, 1000, TRUE);
+	SetScrollRange(SB_VERT, 0, 1000, TRUE);//TODO: 合理设置scroll的上限
 
 	ShowConnectedClientItems();
 

@@ -13,8 +13,10 @@ enum TimerType
 	UpdateTaskInfoTimer = 1
 };
 
-// CTaskOverviewPage 对话框
+// 全局的server单例类入口
+CServer &server = CServer::get_instance();
 
+// CTaskOverviewPage 对话框
 IMPLEMENT_DYNAMIC(CTaskOverviewPage, CDialogEx)
 
 CTaskOverviewPage::CTaskOverviewPage(CWnd* pParent /*=nullptr*/)
@@ -23,9 +25,12 @@ CTaskOverviewPage::CTaskOverviewPage(CWnd* pParent /*=nullptr*/)
 
 }
 
+
 CTaskOverviewPage::~CTaskOverviewPage()
 {
+
 }
+
 
 void CTaskOverviewPage::DoDataExchange(CDataExchange* pDX)
 {
@@ -52,7 +57,6 @@ END_MESSAGE_MAP()
 // CTaskOverviewPage 消息处理程序
 void CTaskOverviewPage::OnBnClickedThreadBtn()
 {
-	CServer &server = CServer::get_instance();
 	server.sim_thread = std::thread(&CServer::start_threads, &server);
 	AddLog(TEXT("启动线程\r\n"), TLP_NORMAL);
 	MessageBox(TEXT("启动线程"));
@@ -60,14 +64,14 @@ void CTaskOverviewPage::OnBnClickedThreadBtn()
 
 void CTaskOverviewPage::OnBnClickedStart()
 {
-	CServer::get_instance().send_command_to_all_client("start");
+	server.send_command_to_all_client("start");
 	AddLog(TEXT("开始仿真\r\n"), TLP_NORMAL);
 	MessageBox(TEXT("开始任务"));
 }
 
 void CTaskOverviewPage::OnBnClickedPause()
 {
-	CServer::get_instance().send_command_to_all_client("pause");
+	server.send_command_to_all_client("pause");
 	AddLog(TEXT("暂停所有仿真\r\n"), TLP_NORMAL);
 	MessageBox(TEXT("暂停任务"));
 }
@@ -75,14 +79,14 @@ void CTaskOverviewPage::OnBnClickedPause()
 
 void CTaskOverviewPage::OnBnClickedContinue()
 {
-	CServer::get_instance().send_command_to_all_client("continue");
+	server.send_command_to_all_client("continue");
 	AddLog(TEXT("继续仿真\r\n"), TLP_NORMAL);
 	MessageBox(TEXT("继续任务"));
 }
 
 void CTaskOverviewPage::OnBnClickedStop()
 {
-	CServer::get_instance().send_command_to_all_client("stop");
+	server.send_command_to_all_client("stop");
 	AddLog(TEXT("结束仿真\r\n"), TLP_NORMAL);
 	MessageBox(TEXT("结束任务"));
 }
@@ -128,7 +132,7 @@ void CTaskOverviewPage::UpdateTaskInfo()
 {
 	CString str;
 	int totalNum, completedNum, inComputingNum, undoNum;
-	CServer::get_instance().get_task_num_info(totalNum,
+	server.get_task_num_info(totalNum,
 		completedNum, inComputingNum, undoNum);
 
 	str.Format(TEXT("方案总数：\r\n %d"), totalNum);

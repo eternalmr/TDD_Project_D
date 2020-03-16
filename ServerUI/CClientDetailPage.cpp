@@ -144,7 +144,7 @@ void CClientDetailPage::ShowConnectedClientItems()
 	int itemWidth = 500;
 	CString str;
 
-	m_ConnectedClientNum = CServer::get_instance().clients.size();
+	m_ConnectedClientNum = server.clients.size();
 	for (int i = 0; i < m_ConnectedClientNum; i++)
 	{
 		str.Format(TEXT("节点%d："), i+1);

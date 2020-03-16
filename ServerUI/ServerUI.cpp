@@ -16,6 +16,8 @@
 #define new DEBUG_NEW
 #endif
 
+// 全局的server单例类入口
+CServer &server = CServer::get_instance();
 
 // CServerUIApp
 

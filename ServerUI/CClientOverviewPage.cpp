@@ -59,7 +59,7 @@ void CClientOverviewPage::UpdateClientInfo()
 {
 	CString str;
 	int totalNum, freeNum, inComputingNum, breakdownNum;
-	CServer::get_instance().get_client_num_info(totalNum,
+	server.get_client_num_info(totalNum,
 		inComputingNum, freeNum, breakdownNum);
 
 	str.Format(TEXT("节点总数：\r\n %d"), totalNum);

@@ -43,7 +43,7 @@ void CSelectTasksDlg::OnBnClickedOk()
 	
 	int num = 10; // TODO: Add new tasks according to selection
 	for (int i = 0; i < num ; i++) {
-		CServer::get_instance().add_new_task(i+1);
+		server.add_new_task(i+1);
 	}
 	pTaskDlg->detailPage.ShowLoadedTaskItems();
 

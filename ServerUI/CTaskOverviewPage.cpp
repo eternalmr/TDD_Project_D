@@ -13,8 +13,6 @@ enum TimerType
 	UpdateTaskInfoTimer = 1
 };
 
-// 全局的server单例类入口
-CServer &server = CServer::get_instance();
 
 // CTaskOverviewPage 对话框
 IMPLEMENT_DYNAMIC(CTaskOverviewPage, CDialogEx)

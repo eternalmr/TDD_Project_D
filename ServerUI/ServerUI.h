@@ -33,3 +33,4 @@ public:
 };
 
 extern CServerUIApp theApp;
+extern CServer &server;

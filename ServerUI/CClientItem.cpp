@@ -49,25 +49,25 @@ END_MESSAGE_MAP()
 
 void CClientItem::OnBnClickedBtnStartClient()
 {
-	CServer::get_instance().send_command_to_client(m_id, "start");
+	server.send_command_to_client(m_id, "start");
 }
 
 
 void CClientItem::OnBnClickedBtnPauseClient()
 {
-	CServer::get_instance().send_command_to_client(m_id, "pause");
+	server.send_command_to_client(m_id, "pause");
 }
 
 
 void CClientItem::OnBnClickedBtnStopClient()
 {
-	CServer::get_instance().send_command_to_client(m_id, "stop");
+	server.send_command_to_client(m_id, "stop");
 }
 
 
 void CClientItem::OnBnClickedBtnContinueClient()
 {
-	CServer::get_instance().send_command_to_client(m_id, "continue");
+	server.send_command_to_client(m_id, "continue");
 }
 
 

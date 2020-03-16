@@ -15,6 +15,7 @@ enum TimerType
 	UpdateTaskProgressTimer = 1
 };
 
+
 // CTaskDetailPage 对话框
 
 IMPLEMENT_DYNAMIC(CTaskDetailPage, CDialogEx)
@@ -66,7 +67,7 @@ void CTaskDetailPage::ShowLoadedTaskItems()
 	int itemHeight = 80;
 	CString str;
 
-	m_LoadedTaskNum = CServer::get_instance().tasks.size();
+	m_LoadedTaskNum = server.tasks.size();
 	for (int i = 0; i < m_LoadedTaskNum; i++)
 	{
 		str.Format(TEXT("第%d个任务"), i + 1);
@@ -169,9 +170,7 @@ BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CTaskDetailPage::UpdateTaskProgress()
 {
-	CServer &server = CServer::get_instance();
 	uint progress = 0;
-
 	for (int i = 0; i < m_LoadedTaskNum ; i++)
 	{
 		progress = server.tasks[i].get_simulation_progress();

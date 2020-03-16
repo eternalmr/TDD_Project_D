@@ -56,6 +56,8 @@
 #define IDC_LOAD                        1015
 #define IDC_CLIENT_MEMORY               1016
 #define IDC_TOTAL_TASK_NUM              1017
+#define IDC_BTN_START_CLIENT2           1017
+#define IDC_BTN_CONTINUE_CLIENT         1017
 #define IDC_COMPLETED_TASK_NUM          1018
 #define IDC_INCOMPUTING_TASK_NUM        1019
 #define IDC_UNDO_TASK_NUM               1020

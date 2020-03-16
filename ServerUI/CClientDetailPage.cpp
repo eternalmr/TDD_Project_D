@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CClientDetailPage, CDialogEx)
 
 CClientDetailPage::CClientDetailPage(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CLIENT_DETAIL, pParent)
+	,m_ConnectedClientNum(0)
 {
 
 }
@@ -40,21 +41,10 @@ BOOL CClientDetailPage::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
-	RECT rect;
-	GetClientRect(&rect);
+	// 在此添加额外的初始化
 	SetScrollRange(SB_VERT, 0, 1000, TRUE);
 
-	CString str;
-	for (int i = 0; i < CLIENT_NUM; i++)
-	{
-		str.Format(TEXT("节点%d："), i);
-		m_ClientItems[i].Create(IDD_CLIENT_ITEM, this);
-		m_ClientItems[i].MoveWindow(0, 120 * i + 1 * i, 500, 120);
-		m_ClientItems[i].m_id = i;
-		m_ClientItems[i].m_ClientName.SetWindowTextW(str);
-		m_ClientItems[i].ShowWindow(SW_SHOWNORMAL);
-	}
+	ShowConnectedClientItems();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -134,7 +124,6 @@ void CClientDetailPage::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBa
 	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
-
 BOOL CClientDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	if (zDelta == 120)
@@ -147,4 +136,22 @@ BOOL CClientDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	}
 
 	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+void CClientDetailPage::ShowConnectedClientItems()
+{
+	int itemHeight = 120;
+	int itemWidth = 500;
+	CString str;
+
+	m_ConnectedClientNum = CServer::get_instance().clients.size();
+	for (int i = 0; i < m_ConnectedClientNum; i++)
+	{
+		str.Format(TEXT("节点%d："), i+1);
+		m_ClientItems[i].m_id = i + 1; //TODO: 将对应client的id号赋给这里更合适
+		m_ClientItems[i].Create(IDD_CLIENT_ITEM, this);
+		m_ClientItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);
+		m_ClientItems[i].m_ClientName.SetWindowTextW(str);
+		m_ClientItems[i].ShowWindow(SW_SHOWNORMAL);
+	}
 }

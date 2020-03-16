@@ -30,4 +30,8 @@ public:
 	CButton m_StopBtn;
 	UINT	m_id;
 
+	afx_msg void OnBnClickedBtnStartClient();
+	afx_msg void OnBnClickedBtnPauseClient();
+	afx_msg void OnBnClickedBtnStopClient();
+	afx_msg void OnBnClickedBtnContinueClient();
 };

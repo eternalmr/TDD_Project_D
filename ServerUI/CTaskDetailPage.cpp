@@ -56,7 +56,6 @@ BOOL CTaskDetailPage::OnInitDialog()
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
-
 void CTaskDetailPage::ShowLoadedTaskItems()
 {
 	int itemHeight = 80;

@@ -35,7 +35,35 @@ void CClientItem::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CClientItem, CDialogEx)
+	ON_BN_CLICKED(IDC_BTN_START_CLIENT, &CClientItem::OnBnClickedBtnStartClient)
+	ON_BN_CLICKED(IDC_BTN_PAUSE_CLIENT, &CClientItem::OnBnClickedBtnPauseClient)
+	ON_BN_CLICKED(IDC_BTN_STOP_CLIENT, &CClientItem::OnBnClickedBtnStopClient)
+	ON_BN_CLICKED(IDC_BTN_CONTINUE_CLIENT, &CClientItem::OnBnClickedBtnContinueClient)
 END_MESSAGE_MAP()
 
 
 // CClientItem 消息处理程序
+
+
+void CClientItem::OnBnClickedBtnStartClient()
+{
+	CServer::get_instance().send_command_to_client(m_id, "start");
+}
+
+
+void CClientItem::OnBnClickedBtnPauseClient()
+{
+	CServer::get_instance().send_command_to_client(m_id, "pause");
+}
+
+
+void CClientItem::OnBnClickedBtnStopClient()
+{
+	CServer::get_instance().send_command_to_client(m_id, "stop");
+}
+
+
+void CClientItem::OnBnClickedBtnContinueClient()
+{
+	CServer::get_instance().send_command_to_client(m_id, "continue");
+}

@@ -16,8 +16,9 @@ IMPLEMENT_DYNAMIC(CTaskDetailPage, CDialogEx)
 
 CTaskDetailPage::CTaskDetailPage(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_TASK_DETAIL, pParent)
+	,m_LoadedTaskNum(0)
 {
-	m_LoadedTaskNum = CServer::get_instance().tasks.size();
+
 }
 
 CTaskDetailPage::~CTaskDetailPage()
@@ -45,24 +46,9 @@ BOOL CTaskDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// 在此添加额外的初始化
+	ShowLoadedTaskItems();
+
 	int itemHeight = 80;
-	CString str;
-	CRect rect;
-	GetClientRect(&rect);
-
-	for (int i = 0; i < MAX_TASK_NUM; i++)
-	{
-		str.Format(TEXT("第%d个任务"), i+1);
-		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
-		m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, 600, itemHeight);//TODO：确定合适的大小
-		m_TaskItems[i].m_id = i;
-		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
-		m_TaskItems[i].m_ProgessBar.SetRange(0, 100);
-		if (i < m_LoadedTaskNum) {//显示已加载的任务，其他隐藏
-			m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
-		}
-	}
-
 	SetScrollRange(SB_VERT, 0, itemHeight * 10, TRUE); //TODO:设置一个合理的上限
 	SetTimer(1, 500, NULL);
 
@@ -70,6 +56,24 @@ BOOL CTaskDetailPage::OnInitDialog()
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
+
+void CTaskDetailPage::ShowLoadedTaskItems()
+{
+	int itemHeight = 80;
+	CString str;
+
+	m_LoadedTaskNum = CServer::get_instance().tasks.size();
+	for (int i = 0; i < m_LoadedTaskNum; i++)
+	{
+		str.Format(TEXT("第%d个任务"), i + 1);
+		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
+		m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, 600, itemHeight);//TODO：确定合适的大小
+		m_TaskItems[i].m_id = i;
+		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
+		m_TaskItems[i].m_ProgessBar.SetRange(0, 100);
+		m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
+	}
+}
 
 void CTaskDetailPage::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
@@ -171,18 +175,9 @@ void CTaskDetailPage::UpdateTaskProgress()
 	}
 }
 
-void CTaskDetailPage::UpdateShow()
-{
-	m_LoadedTaskNum = CServer::get_instance().tasks.size();
-	for(int i=0; i<m_LoadedTaskNum; i++)
-	{
-		m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
-	}
-}
-
 void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	// 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
 	case 1: {

@@ -43,7 +43,7 @@ BOOL CClientDetailPage::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	RECT rect;
 	GetClientRect(&rect);
-	SetScrollRange(SB_VERT, 0, rect.bottom - rect.top, TRUE);
+	SetScrollRange(SB_VERT, 0, 1000, TRUE);
 
 	CString str;
 	for (int i = 0; i < CLIENT_NUM; i++)

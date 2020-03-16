@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CClientItem.h"
 
-#define CLIENT_NUM 10
+#define CLIENT_NUM 20
 
 // CClientDetailPage 对话框
 

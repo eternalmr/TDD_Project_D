@@ -1,8 +1,7 @@
 ﻿#pragma once
 #include "CTaskItem.h"
 
-
-#define MAX_TASK_NUM 20
+#define MAX_TASK_NUM 100
 
 // CTaskDetailPage 对话框
 
@@ -26,16 +25,14 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
+	void ShowLoadedTaskItems();
 	void UpdateTaskProgress();
-	void UpdateShow();
 
 	CTaskItem m_TaskItems[MAX_TASK_NUM];
-	//BOOL IsTasksLoaded;
 
 private:
 	int m_LoadedTaskNum;

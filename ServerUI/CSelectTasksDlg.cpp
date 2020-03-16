@@ -45,7 +45,7 @@ void CSelectTasksDlg::OnBnClickedOk()
 	for (int i = 0; i < num ; i++) {
 		CServer::get_instance().add_new_task(i+1);
 	}
-	pTaskDlg->detailPage.UpdateShow();
+	pTaskDlg->detailPage.ShowLoadedTaskItems();
 
 	MessageBox(TEXT("已添加10个新任务"));
 	CDialogEx::OnOK();

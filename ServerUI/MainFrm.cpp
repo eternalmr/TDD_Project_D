@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "ServerUI.h"
-
+#include "ServerUIDoc.h"
 #include "MainFrm.h"
 
 #include "CSelectView.h"
@@ -265,6 +265,7 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 	CCreateContext Context;
 	if (wParam == NM_TASK)
 	{
+		Context.m_pCurrentDoc = (CServerUIDoc*)GetActiveDocument();
 		Context.m_pNewViewClass = RUNTIME_CLASS(CTaskDlg); //新建视图的动态创建类
 		Context.m_pCurrentFrame = this;//当前框架窗口
 		Context.m_pLastView = (CFormView *)m_RightWindowSplitter.GetPane(0, 0); //原先的视图类，通常在切分窗口的视图类中使用（splitterWnd）
@@ -277,6 +278,7 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 	}
 	else if (wParam == NM_CLIENT)
 	{
+		Context.m_pCurrentDoc = (CServerUIDoc*)GetActiveDocument();
 		Context.m_pNewViewClass = RUNTIME_CLASS(CClientDlg);
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView *)m_RightWindowSplitter.GetPane(0, 0);

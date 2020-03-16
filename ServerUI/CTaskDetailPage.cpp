@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "ServerUI.h"
+#include "ServerUIDoc.h"
 #include "CTaskDetailPage.h"
 #include "afxdialogex.h"
 #include "CLogView.h"
@@ -16,7 +17,7 @@ IMPLEMENT_DYNAMIC(CTaskDetailPage, CDialogEx)
 CTaskDetailPage::CTaskDetailPage(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_TASK_DETAIL, pParent)
 {
-	task_num = 0;
+	m_LoadedTaskNum = CServer::get_instance().tasks.size();
 }
 
 CTaskDetailPage::~CTaskDetailPage()
@@ -43,25 +44,26 @@ BOOL CTaskDetailPage::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
+	// 在此添加额外的初始化
+	int itemHeight = 80;
+	CString str;
 	CRect rect;
 	GetClientRect(&rect);
-	SetScrollRange(SB_VERT, 0, 1000, TRUE); //TODO:设置一个合理的上限
 
-	CString str;
-
-	//int TaskNum = CServer::get_instance().tasks.size();
 	for (int i = 0; i < MAX_TASK_NUM; i++)
 	{
 		str.Format(TEXT("第%d个任务"), i+1);
 		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
-		m_TaskItems[i].MoveWindow(0, 80 * i + 1 * i, 600, 80);//TODO：确定合适的大小
+		m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, 600, itemHeight);//TODO：确定合适的大小
 		m_TaskItems[i].m_id = i;
 		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
 		m_TaskItems[i].m_ProgessBar.SetRange(0, 100);
-		//m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
+		if (i < m_LoadedTaskNum) {//显示已加载的任务，其他隐藏
+			m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
+		}
 	}
 
+	SetScrollRange(SB_VERT, 0, itemHeight * 10, TRUE); //TODO:设置一个合理的上限
 	SetTimer(1, 500, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -162,28 +164,21 @@ void CTaskDetailPage::UpdateTaskProgress()
 	CServer &server = CServer::get_instance();
 	uint progress = 0;
 
-	for (int i = 0; i < task_num ; i++)
+	for (int i = 0; i < m_LoadedTaskNum ; i++)
 	{
 		progress = server.tasks[i].get_simulation_progress();
 		m_TaskItems[i].m_ProgessBar.SetPos(progress);
 	}
 }
 
-//void CTaskDetailPage::myInit(int num)
-//{
-//	task_num = num;
-//} 
-
-void CTaskDetailPage::UpdateShow(int num)
+void CTaskDetailPage::UpdateShow()
 {
-	task_num = num;
-	for(int i=0; i<num; i++)
+	m_LoadedTaskNum = CServer::get_instance().tasks.size();
+	for(int i=0; i<m_LoadedTaskNum; i++)
 	{
-		m_TaskItems[i].ShowWindow(TRUE);
+		m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
 	}
-	
 }
-
 
 void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 {

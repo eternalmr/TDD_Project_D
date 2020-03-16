@@ -6,8 +6,8 @@
 #include "CSelectTasksDlg.h"
 #include "afxdialogex.h"
 #include "MainFrm.h"
-//#include "CTaskDetailPage.h"
 #include "CTaskDlg.h"
+#include "ServerUIDoc.h"
 
 // CSelectTasksDlg 对话框
 
@@ -38,20 +38,14 @@ END_MESSAGE_MAP()
 
 void CSelectTasksDlg::OnBnClickedOk()
 {
-	// TODO: 在此添加控件通知处理程序代码
 	CMainFrame *pMain = (CMainFrame*)AfxGetMainWnd();
-	CTaskDlg* pDlg = (CTaskDlg*)pMain->m_RightWindowSplitter.GetPane(0, 0);
-
-	int num = 10;
+	CTaskDlg* pTaskDlg = (CTaskDlg*)pMain->m_RightWindowSplitter.GetPane(0, 0);
+	
+	int num = 10; // TODO: Add new tasks according to selection
 	for (int i = 0; i < num ; i++) {
 		CServer::get_instance().add_new_task(i+1);
 	}
-	pDlg->detailPage.UpdateShow(num);
-	//CServer::get_instance().add_tasks(10);
-
-	//pMain->GetActiveDocument();
-
-	// 更新任务详情页的显示
+	pTaskDlg->detailPage.UpdateShow();
 
 	MessageBox(TEXT("已添加10个新任务"));
 	CDialogEx::OnOK();

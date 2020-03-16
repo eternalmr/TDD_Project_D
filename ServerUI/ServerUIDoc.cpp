@@ -43,7 +43,7 @@ BOOL CServerUIDoc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	// TODO: 在此添加重新初始化代码
+	// 在此添加重新初始化代码
 	SetTitle(TEXT("并行管控系统服务器端"));
 
 	return TRUE;

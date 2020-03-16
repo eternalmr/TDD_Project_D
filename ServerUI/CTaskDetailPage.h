@@ -26,20 +26,18 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	void myInit(int num);
-	void UpdateShow(int num);
-	CTaskItem m_TaskItems[MAX_TASK_NUM];
-	CPtrList m_TaskList;
 
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
-
-	void AddNewTaskItem(Task *ptask);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	void UpdateTaskProgress();
+	void UpdateShow();
+
+	CTaskItem m_TaskItems[MAX_TASK_NUM];
+	//BOOL IsTasksLoaded;
 
 private:
-	int task_num;
-public:
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	int m_LoadedTaskNum;
+	
 };

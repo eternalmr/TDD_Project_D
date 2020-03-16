@@ -14,6 +14,7 @@ protected: // 仅从序列化创建
 // 特性
 public:
 	CPtrList m_TaskItems;
+	//BOOL IsTasksLoaded;
 
 // 操作
 public:

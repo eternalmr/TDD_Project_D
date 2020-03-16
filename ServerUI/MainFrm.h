@@ -47,25 +47,14 @@ public:
 	CWnd* m_pSelectView;
 	CWnd* m_pLogView;
 	CWnd* m_pDisplayView;
-
-	//CTaskDlg* m_pTaskDlg;
-	//CClientDlg* m_pClientDlg;
-
-	BOOL m_bTaskDlgIsCreated;
-	BOOL m_bClientDlgIsCreated;
-	int num_task;
-	int num_node;
 	
-
 private:
-	//CServer server;
 	BOOL m_bWholeWndIsSplitted;
 	BOOL m_bRightWndIsSplitted;
 	std::thread sim_thread;
 
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	afx_msg LRESULT ShiftPage(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT ControlServer(WPARAM wParam, LPARAM lParam);
 
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);

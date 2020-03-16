@@ -82,5 +82,6 @@ private:
 public:
 	ClientMap clients;
 	std::vector<Task> tasks;
+	std::thread sim_thread;
 };
 

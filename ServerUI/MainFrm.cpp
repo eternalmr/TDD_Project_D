@@ -30,12 +30,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_TASK,	  ShiftPage)
 	ON_MESSAGE(NM_CLIENT, ShiftPage)
 
-	ON_MESSAGE(NM_THREAD, ControlServer)
-	ON_MESSAGE(NM_START, ControlServer)
-	ON_MESSAGE(NM_PAUSE, ControlServer)
-	ON_MESSAGE(NM_CONTINUE, ControlServer)
-	ON_MESSAGE(NM_STOP, ControlServer)
-
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
@@ -57,13 +51,13 @@ CMainFrame::CMainFrame() noexcept
 	,m_pDisplayView(nullptr)
 {
 	// TODO: 在此添加成员初始化代码
-	 m_bTaskDlgIsCreated = FALSE;
-	 m_bClientDlgIsCreated = FALSE;
 }
+
 
 CMainFrame::~CMainFrame()
 {
 }
+
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -78,16 +72,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
 	SetTitle(TEXT(" By 湖南麟淇"));
-	//TODO : 这里的高度和宽度可能需要固定下来
-	//int nWidth = GetSystemMetrics(SM_CXSCREEN);  //屏幕宽度，不包括下面任务栏    
-	//int nHeight = GetSystemMetrics(SM_CYSCREEN); //屏幕高度，不包括下面任务栏
-
-	//int nWidth  = GetSystemMetrics(SM_CXFULLSCREEN);
-	//int nHeight = GetSystemMetrics(SM_CYFULLSCREEN);
-
+	
 	int nWidth = 960;
 	int nHeight = 600;
-
 	MoveWindow(0, 0, nWidth, nHeight);//设置窗口大小
 	CenterWindow();           //居中窗口
 
@@ -100,8 +87,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO: 在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
-	//cs.cx = 1440;
-	//cs.cy = 900;
 
 	return TRUE;
 }
@@ -192,11 +177,11 @@ void CMainFrame::OnApplicationLook(UINT id)
 
 }
 
+
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
 }
-
 
 
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
@@ -229,6 +214,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	return TRUE; 
 }
+
 
 void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
@@ -292,38 +278,5 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
-
-LRESULT CMainFrame::ControlServer(WPARAM wParam, LPARAM lParam)
-{
-	CServer &server = CServer::get_instance();
-	if (wParam == NM_THREAD) {
-		//启动线程
-		MessageBox(TEXT("启动线程"));
-		sim_thread = std::thread(&CServer::start_threads, &server);
-	}
-	if (wParam == NM_START) {
-		//启动线程
-		MessageBox(TEXT("开始任务"));
-		server.send_command_to_all_client("start");
-	}
-	if (wParam == NM_PAUSE) {
-		//启动线程
-		server.send_command_to_all_client("pause");
-		MessageBox(TEXT("暂停任务"));
-	}
-	if (wParam == NM_CONTINUE) {
-		//启动线程
-		server.send_command_to_all_client("continue");
-		MessageBox(TEXT("继续任务"));
-	}
-	if (wParam == NM_STOP) {
-		//启动线程
-		server.send_command_to_all_client("stop");
-		MessageBox(TEXT("结束任务"));
-	}
-
-	return 0;
-}
-
 
 

@@ -272,12 +272,8 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 		m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CTaskDlg), CSize(int(0.85*w), int(0.6*h)), &Context);
 		CTaskDlg *pNewView = (CTaskDlg*)m_RightWindowSplitter.GetPane(0, 0);
 		m_RightWindowSplitter.RecalcLayout();
-		//pNewView->myInit();
-		//int num = 10;
 		pNewView->OnInitialUpdate();
-		//pNewView->detailPage.UpdateShow(num);
 		m_RightWindowSplitter.SetActivePane(0, 0);
-		//m_bTaskDlgIsCreated = TRUE;
 	}
 	else if (wParam == NM_CLIENT)
 	{

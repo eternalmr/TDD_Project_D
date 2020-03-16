@@ -46,7 +46,7 @@ BOOL CTaskDetailPage::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	CRect rect;
 	GetClientRect(&rect);
-	//SetScrollRange(SB_VERT, 0, rect.bottom - rect.top, TRUE);
+	SetScrollRange(SB_VERT, 0, 1000, TRUE); //TODO:设置一个合理的上限
 
 	CString str;
 
@@ -58,6 +58,7 @@ BOOL CTaskDetailPage::OnInitDialog()
 		m_TaskItems[i].MoveWindow(0, 80 * i + 1 * i, 600, 80);//TODO：确定合适的大小
 		m_TaskItems[i].m_id = i;
 		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
+		m_TaskItems[i].m_ProgessBar.SetRange(0, 100);
 		//m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);
 	}
 
@@ -164,15 +165,14 @@ void CTaskDetailPage::UpdateTaskProgress()
 	for (int i = 0; i < task_num ; i++)
 	{
 		progress = server.tasks[i].get_simulation_progress();
-		m_TaskItems[i].m_ProgessBar.SetRange(0,100);
 		m_TaskItems[i].m_ProgessBar.SetPos(progress);
 	}
 }
 
-void CTaskDetailPage::myInit(int num)
-{
-	task_num = num;
-}
+//void CTaskDetailPage::myInit(int num)
+//{
+//	task_num = num;
+//} 
 
 void CTaskDetailPage::UpdateShow(int num)
 {

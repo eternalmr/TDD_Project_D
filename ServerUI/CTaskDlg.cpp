@@ -60,9 +60,7 @@ void CTaskDlg::OnInitialUpdate()
 	GetClientRect(&rect);
 
 	m_tab.MoveWindow(0, 0, rect.Width(), rect.Height());
-
 	
-
 	m_tab.AddPage(TEXT("任务概况"), &overviewPage, IDD_TASK_OVERVIEW, true);
 	m_tab.AddPage(TEXT("任务详情"), &detailPage, IDD_TASK_DETAIL, true);
 	m_tab.CreatePage();

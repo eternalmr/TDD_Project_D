@@ -51,7 +51,8 @@ public:
 	void start_simulation();//console use only
 	void start_threads();//
 
-	void get_task_num_info(int &total, int &completed, int &incomputing, int &undo);
+	void get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo);
+	void get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, int &nBreakdown);
 
 private:
 	bool is_not_reach(int max_num, int &count);
@@ -70,6 +71,11 @@ private:
 	int completed_task_num;
 	int in_computing_task_num;
 	int undo_task_num;
+
+	int total_client_num;
+	int in_computing_client_num;
+	int free_client_num;
+	int breakdown_client_num;
 	
 	std::mutex mtx;
 

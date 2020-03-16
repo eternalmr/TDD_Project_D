@@ -20,17 +20,20 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedStart();
 	afx_msg void OnBnClickedThreadBtn();
 	afx_msg void OnBnClickedPause();
 	afx_msg void OnBnClickedContinue();
 	afx_msg void OnBnClickedStop();
 	afx_msg void OnBnClickedLoad();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+	void UpdateTaskInfo();
+
 	CButton m_TotalTaskNum;
 	CButton m_CompletedTaskNum;
 	CButton m_IncomputingTaskNum;
 	CButton m_UndoTaskNum;
-	virtual BOOL OnInitDialog();
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	CProgressCtrl m_ProgressBar;
 };

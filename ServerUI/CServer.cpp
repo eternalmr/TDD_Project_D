@@ -11,7 +11,9 @@ CServer::CServer(const string &ip, const string &port) :
 	result_collector(context, ZMQ_PULL),
 	ip_(ip), port_(port), clients({}),
 	total_task_num(0), completed_task_num(0),
-	in_computing_task_num(0), undo_task_num(total_task_num)
+	in_computing_task_num(0), undo_task_num(total_task_num),
+	total_client_num(0), in_computing_client_num(0),
+	free_client_num(0), breakdown_client_num(0)
 {
 	bind_sockets_to_ip();
 }
@@ -45,6 +47,7 @@ string CServer::get_ip_address()
 void CServer::add_new_client(uint id)
 {
 	clients.insert(ClientMap::value_type(id, ClientRecord(id)));
+	total_client_num++;
 }
 
 void CServer::add_new_task(uint i)
@@ -142,6 +145,7 @@ void CServer::mark_breakdown_client() //TODO:Ìí¼Ó²âÊÔ
 			continue;
 
 		pClient->set_breakdown();
+		breakdown_client_num++;
 		str.Format(TEXT("Client[%d] is breakdown!\r\n"), pClient->get_id());
 		AddLog(str, TLP_ERROR);
 
@@ -242,6 +246,7 @@ void CServer::assign_task_to(uint id, Task* p_task)
 
 	mtx.lock();
 	in_computing_task_num++;
+	in_computing_client_num++;
 	mtx.unlock();
 
 	CString str;
@@ -259,6 +264,7 @@ void CServer::collect_result(uint max_num)
 		result = s_recv(result_collector);
 		// set task progress to 100%
 		mtx.lock();
+		in_computing_client_num--;
 		in_computing_task_num--;
 		completed_task_num++;
 		mtx.unlock();
@@ -313,10 +319,18 @@ void CServer::start_threads()
 	if (heartbeat_thread.joinable()) heartbeat_thread.join();
 }
 
-void CServer::get_task_num_info(int &total, int &completed, int &incomputing, int &undo)
+void CServer::get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo)
 {
-	total = total_task_num;
-	completed = completed_task_num;
-	incomputing = in_computing_task_num;
-	undo = total - completed - incomputing;
+	nTotal = total_task_num;
+	nCompleted = completed_task_num;
+	nIncomputing = in_computing_task_num;
+	nUndo = nTotal - nCompleted - nIncomputing;
+}
+
+void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, int &nBreakdown)
+{
+	nTotal = total_client_num;
+	nIncomputing = in_computing_client_num;
+	nBreakdown = breakdown_client_num;
+	nFree = nTotal - nIncomputing - nBreakdown;
 }

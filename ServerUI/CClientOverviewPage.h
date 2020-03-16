@@ -20,4 +20,16 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+
+	CButton m_BreakdownClientNum;
+	CButton m_FreeClientNum;
+	CButton m_IncomputingClientNum;
+	CButton m_TotalClientNum;
+	CProgressCtrl m_ProgressBar;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+	void UpdateClientInfo();
+
+	virtual BOOL OnInitDialog();
 };

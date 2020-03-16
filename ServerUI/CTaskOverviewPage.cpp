@@ -87,19 +87,8 @@ BOOL CTaskOverviewPage::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
-	CString str;
-	str.Format(TEXT("方案总数：\r\n"));
-	m_TotalTaskNum.SetWindowTextW(str);
-
-	str.Format(TEXT("已完成：\r\n"));
-	m_CompletedTaskNum.SetWindowTextW(str);
-
-	str.Format(TEXT("计算中：\r\n"));
-	m_IncomputingTaskNum.SetWindowTextW(str);
-
-	str.Format(TEXT("未开始：\r\n"));
-	m_UndoTaskNum.SetWindowTextW(str);
+	// 在此添加额外的初始化
+	UpdateTaskInfo();
 
 	SetTimer(1, 1000, NULL);
 
@@ -114,29 +103,35 @@ void CTaskOverviewPage::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent)
 	{
 	case 1: {
-		CString str;
-		int totalNum, completedNum, inComputingNum, undoNum;
-		CServer::get_instance().get_task_num_info(totalNum, 
-												completedNum, inComputingNum, undoNum);
-
-		str.Format(TEXT("方案总数：\r\n %d"), totalNum);
-		m_TotalTaskNum.SetWindowTextW(str);
-
-		str.Format(TEXT("已完成：\r\n %d"), completedNum);
-		m_CompletedTaskNum.SetWindowTextW(str);
-
-		str.Format(TEXT("计算中：\r\n %d"), inComputingNum);
-		m_IncomputingTaskNum.SetWindowTextW(str);
-
-		str.Format(TEXT("未开始：\r\n %d"), undoNum);
-		m_UndoTaskNum.SetWindowTextW(str);
-		
-		m_ProgressBar.SetRange(0, totalNum);
-		m_ProgressBar.SetPos(completedNum);
+		UpdateTaskInfo();
+		break;
 	}
 	default:
 		break;
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+void CTaskOverviewPage::UpdateTaskInfo()
+{
+	CString str;
+	int totalNum, completedNum, inComputingNum, undoNum;
+	CServer::get_instance().get_task_num_info(totalNum,
+		completedNum, inComputingNum, undoNum);
+
+	str.Format(TEXT("方案总数：\r\n %d"), totalNum);
+	m_TotalTaskNum.SetWindowTextW(str);
+
+	str.Format(TEXT("已完成：\r\n %d"), completedNum);
+	m_CompletedTaskNum.SetWindowTextW(str);
+
+	str.Format(TEXT("计算中：\r\n %d"), inComputingNum);
+	m_IncomputingTaskNum.SetWindowTextW(str);
+
+	str.Format(TEXT("未开始：\r\n %d"), undoNum);
+	m_UndoTaskNum.SetWindowTextW(str);
+
+	m_ProgressBar.SetRange(0, totalNum);
+	m_ProgressBar.SetPos(completedNum);
 }

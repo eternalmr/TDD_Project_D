@@ -118,7 +118,6 @@ void CDisplayView::OnTimer(UINT_PTR nIDEvent)
 void CDisplayView::RefreshCPUAndMemoryStatus()
 {
 	CString str;
-	CClient &client = CClient::get_instance();
 
 	str.Format(TEXT("%.2lf"), client.get_cpu_status());
 	str = CString("CPU状态：") + str + CString("%");
@@ -137,7 +136,6 @@ void CDisplayView::OnBnClickedConfirmidBtn()
 	str.Format(TEXT("推演节点%d: "), m_client_id);
 	m_clientName = str;
 
-	CClient &client = CClient::get_instance();
 	client.set_id(m_client_id);
 	client.simulation_thread = std::thread(&CClient::simulation_wrap, &client, 0);
 	client.control_thread = std::thread(&CClient::receive_command, &client);

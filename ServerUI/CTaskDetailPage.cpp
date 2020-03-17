@@ -178,7 +178,8 @@ void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 	// 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
-	case UpdateTaskProgressTimer: {
+	case UpdateTaskProgressTimer: 
+	{
 		UpdateTaskProgress();
 		break;
 	}

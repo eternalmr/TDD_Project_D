@@ -20,7 +20,7 @@
 #endif
 
 
-
+CClient &client = CClient::get_instance();
 
 // CClientUIApp
 
@@ -127,10 +127,8 @@ BOOL CClientUIApp::InitInstance()
 	// 初始化客户端和日志单例
 	CLogShow::GetInstance();
 
-	CClient &client = CClient::get_instance();
 	client.heartbeat_thread = std::thread(&CClient::send_heartbeat, &client, 0);
 	client.heartbeat_thread.detach();
-
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;
@@ -151,7 +149,6 @@ int CClientUIApp::ExitInstance()
 
 	CLogShow::GetInstance().m_bRun = FALSE;
 
-	CClient &client = CClient::get_instance();
 	client.simulation_thread.join();
 	client.control_thread.join();
 	//TODO: 退出heartbeat_thread

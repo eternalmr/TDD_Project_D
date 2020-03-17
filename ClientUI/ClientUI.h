@@ -35,3 +35,4 @@ public:
 };
 
 extern CClientUIApp theApp;
+extern CClient &client;

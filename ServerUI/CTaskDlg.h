@@ -29,13 +29,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+
 private:
 	CTabSheet m_tab;
 	CTaskOverviewPage overviewPage;
-	//CTaskDetailPage detailPage;
+
 public:
 	virtual void OnInitialUpdate();
-	void myInit(int num);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 
 	CTaskDetailPage detailPage;

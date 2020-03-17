@@ -36,5 +36,6 @@ public:
 
 private:
 	int m_LoadedTaskNum;
+	enum TimerType;
 	
 };

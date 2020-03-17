@@ -10,7 +10,7 @@
 #include "MainFrm.h"
 #include "CTask.h"
 
-enum TimerType
+enum CTaskDetailPage::TimerType
 {
 	UpdateTaskProgressTimer = 1
 };
@@ -65,6 +65,7 @@ BOOL CTaskDetailPage::OnInitDialog()
 void CTaskDetailPage::ShowLoadedTaskItems()
 {
 	int itemHeight = 80;
+	int itemWidth = 600;
 	CString str;
 
 	m_LoadedTaskNum = server.tasks.size();
@@ -72,8 +73,8 @@ void CTaskDetailPage::ShowLoadedTaskItems()
 	{
 		str.Format(TEXT("第%d个任务"), i + 1);
 		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
-		m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, 600, itemHeight);//TODO：确定合适的大小
-		m_TaskItems[i].m_id = i;
+		m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);//TODO：确定合适的大小
+		m_TaskItems[i].m_id = i+1;
 		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
 		m_TaskItems[i].m_ProgessBar.SetRange(0, 100);
 		m_TaskItems[i].ShowWindow(SW_SHOWNORMAL);

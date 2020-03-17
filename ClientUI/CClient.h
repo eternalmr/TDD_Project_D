@@ -57,6 +57,8 @@ private:
 	zmq::socket_t result_sender;
 	zmq::socket_t command_receiver;
 
+	uint current_task_id;
+
 	string ip_;
 	string port_;
 

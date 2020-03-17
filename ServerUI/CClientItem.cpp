@@ -8,6 +8,11 @@
 
 #define RandNum(minValue, maxValue)((rand() % (maxValue - minValue + 1)) + minValue)
 
+enum CClientItem::TimerType
+{
+	UpdateClientInfoTimer = 1
+};
+
 // CClientItem 对话框
 
 IMPLEMENT_DYNAMIC(CClientItem, CDialogEx)
@@ -45,6 +50,19 @@ END_MESSAGE_MAP()
 
 
 // CClientItem 消息处理程序
+BOOL CClientItem::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// 在此添加额外的初始化
+	UpdateClientInfo();
+
+	SetTimer(UpdateClientInfoTimer, 1000, NULL);
+
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 异常: OCX 属性页应返回 FALSE
+}
 
 
 void CClientItem::OnBnClickedBtnStartClient()
@@ -76,7 +94,7 @@ void CClientItem::OnTimer(UINT_PTR nIDEvent)
 	// 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
-	case 1: {
+	case UpdateClientInfoTimer: {
 		UpdateClientInfo();
 		break;
 	}
@@ -106,16 +124,4 @@ void CClientItem::UpdateClientInfo()
 }
 
 
-BOOL CClientItem::OnInitDialog()
-{
-	CDialogEx::OnInitDialog();
 
-	// 在此添加额外的初始化
-	UpdateClientInfo();
-
-	SetTimer(1, 1000, NULL);
-
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // 异常: OCX 属性页应返回 FALSE
-}

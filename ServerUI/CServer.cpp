@@ -65,21 +65,21 @@ void CServer::add_tasks(int num)
 //========================= heartbeat related functions ==================================
 void CServer::receive_heartbeat(int max_num)
 {
-	uint id;
+	uint client_id, task_id;
 	uint simulation_progress;
 	int count = 0;
 	string heartbeat_signal;
 
 	while (is_not_reach(max_num, count)) {
 		auto raw_signal = s_recv(heartbeat_receiver);
-		std::tie(id, heartbeat_signal) = decode_signal(raw_signal);
-		std::tie(id, simulation_progress) = decode_signal_new(raw_signal);
+		//std::tie(client_id, heartbeat_signal) = decode_signal(raw_signal);
+		std::tie(client_id, task_id, simulation_progress) = decode_signal_new(raw_signal);
 
-		if (is_not_connect_to_client(id)){
-			add_new_client(id);
+		if (is_not_connect_to_client(client_id)){
+			add_new_client(client_id);
 		}
 		//update_heartbeat_of_client(id);
-		update_client_info(id, simulation_progress);
+		update_client_info(client_id, task_id, simulation_progress);
 
 		//std::cout << "Heartbeat of client[" << id << "] : "
 		//	<< clients[id].get_heartbeat() << std::endl;
@@ -100,10 +100,11 @@ std::tuple<int, string> CServer::decode_signal(string &raw_signal)
 	return std::make_tuple(std::stoi(signal[1]), signal[0]);//output is [client_id, signal]
 }
 
-std::tuple<int, int> CServer::decode_signal_new(string &raw_signal)
+std::tuple<int, int, int> CServer::decode_signal_new(string &raw_signal)
 {
 	auto signal = split_string(raw_signal, "_");
-	return std::make_tuple(std::stoi(signal[0]), std::stoi(signal[1]));//[client_id, simulation_progress]
+	return std::make_tuple(std::stoi(signal[0]), std::stoi(signal[1]), 
+						   std::stoi(signal[2]));//[client_id, task_id, simulation_progress]
 }
 
 //用delim指定的正则表达式将字符串in分割，返回分割后的字符串数组
@@ -122,10 +123,13 @@ void CServer::update_heartbeat_of_client(uint id)
 	clients[id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
 }
 
-void CServer::update_client_info(uint id, uint progress)
+void CServer::update_client_info(uint client_id, uint task_id, uint progress)
 {
-	clients[id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
-	clients[id].get_task()->set_simulation_progress(progress);
+	clients[client_id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
+	
+	if (task_id == 0) 
+		return;
+	tasks[task_id-1].set_simulation_progress(progress); //TODO: 可能将tasks也改为map类型的容器
 }
 
 bool CServer::is_not_connect_to_client(uint id)
@@ -158,7 +162,6 @@ void CServer::mark_breakdown_client() //TODO:添加测试
 		}
 	}
 }
-
 
 
 void CServer::send_command_to_client(uint id, string command)

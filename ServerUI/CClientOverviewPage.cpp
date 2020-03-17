@@ -6,6 +6,10 @@
 #include "CClientOverviewPage.h"
 #include "afxdialogex.h"
 
+enum TimerType
+{
+	UpdateClientInfoTimer = 1
+};
 
 // CClientOverviewPage 对话框
 
@@ -38,14 +42,25 @@ END_MESSAGE_MAP()
 
 
 // CClientOverviewPage 消息处理程序
+BOOL CClientOverviewPage::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
 
+	// 在此添加额外的初始化
+	UpdateClientInfo();
+
+	SetTimer(UpdateClientInfoTimer, 1000, NULL);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 异常: OCX 属性页应返回 FALSE
+}
 
 void CClientOverviewPage::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
-	case 1: {
+	case UpdateClientInfoTimer: {
 		UpdateClientInfo();
 		break;
 	}
@@ -59,8 +74,8 @@ void CClientOverviewPage::UpdateClientInfo()
 {
 	CString str;
 	int totalNum, freeNum, inComputingNum, breakdownNum;
-	server.get_client_num_info(totalNum,
-		inComputingNum, freeNum, breakdownNum);
+
+	server.get_client_num_info(totalNum, inComputingNum, freeNum, breakdownNum);
 
 	str.Format(TEXT("节点总数：\r\n %d"), totalNum);
 	m_TotalClientNum.SetWindowTextW(str);
@@ -78,16 +93,3 @@ void CClientOverviewPage::UpdateClientInfo()
 	m_ProgressBar.SetPos(freeNum + inComputingNum);
 }
 
-
-BOOL CClientOverviewPage::OnInitDialog()
-{
-	CDialogEx::OnInitDialog();
-
-	// 在此添加额外的初始化
-	UpdateClientInfo();
-
-	SetTimer(1, 1000, NULL);
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // 异常: OCX 属性页应返回 FALSE
-}

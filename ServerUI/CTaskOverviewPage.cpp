@@ -130,8 +130,8 @@ void CTaskOverviewPage::UpdateTaskInfo()
 {
 	CString str;
 	int totalNum, completedNum, inComputingNum, undoNum;
-	server.get_task_num_info(totalNum,
-		completedNum, inComputingNum, undoNum);
+
+	server.get_task_num_info(totalNum,completedNum, inComputingNum, undoNum);
 
 	str.Format(TEXT("方案总数：\r\n %d"), totalNum);
 	m_TotalTaskNum.SetWindowTextW(str);

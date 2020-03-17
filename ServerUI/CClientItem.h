@@ -30,13 +30,15 @@ public:
 	CButton m_StopBtn;
 	UINT	m_id;
 
+	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedBtnStartClient();
 	afx_msg void OnBnClickedBtnPauseClient();
 	afx_msg void OnBnClickedBtnStopClient();
 	afx_msg void OnBnClickedBtnContinueClient();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
 private:
 	void UpdateClientInfo();
-public:
-	virtual BOOL OnInitDialog();
+	enum TimerType;
+
 };

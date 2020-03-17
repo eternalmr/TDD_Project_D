@@ -42,7 +42,7 @@ BOOL CTaskItem::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
+	// 在此添加额外的初始化
 	//m_ProgessBar.ShowWindow(FALSE); //初始不显示进度条
 
 	return TRUE;  // return TRUE unless you set the focus to a control

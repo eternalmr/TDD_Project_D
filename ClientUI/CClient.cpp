@@ -15,7 +15,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	command_receiver(context, ZMQ_SUB),
 	ip_(ip), port_(port),
 	start_flag(0), pause_flag(0), stop_flag(0)
-	,simulation_progress(0)
+	,simulation_progress(0),current_task_id(0)
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
@@ -75,7 +75,9 @@ void CClient::send_heartbeat(int max_num)
 	std::string signal;
 
 	while (is_not_reach(max_num, count)) {
-		signal = std::to_string(id_) + "_" + std::to_string(simulation_progress);
+		signal = std::to_string(id_) + "_" 
+			   + std::to_string(current_task_id) + "_" 
+			   + std::to_string(simulation_progress);
 		s_send(heartbeat_sender, signal);
 		//cout << "send heartbeat to server: " << id_ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
@@ -113,7 +115,6 @@ bool has_reached_endpoint(int input, int result)
 
 void CClient::simulation_wrap(int task_num)
 {
-	int task_input;
 	int result;
 	int count = 0;
 	CString str;
@@ -129,8 +130,8 @@ void CClient::simulation_wrap(int task_num)
 
 		// Do some work
 		stop_flag = 0; //reset stop flag
-		task_input = atoi(new_task.c_str());
-		result = simulation(task_input);
+		current_task_id = atoi(new_task.c_str());
+		result = simulation(current_task_id);
 
 		if (result == -1) {
 			std::cout << "Simulation interrupt" << std::endl;
@@ -150,9 +151,9 @@ void CClient::simulation_wrap(int task_num)
 	task_requester.close();
 }
 
-int CClient::simulation(int input)
+int CClient::simulation(int task_id)
 {
-	int result = input;
+	int result = task_id;
 
 	// 获取显示窗口指针
 	CClientUIApp* pApp = (CClientUIApp*)AfxGetApp();
@@ -184,9 +185,9 @@ int CClient::simulation(int input)
 		Sleep(SIM_DELAY);
 		std::cout << "Result: " << result << std::endl;
 		pView->m_progressBar.StepIt();
-		set_progress((result-input) * 100 / 5);
+		set_progress((result-task_id) * 100 / 5);
 
-		if (has_reached_endpoint(input, result)) {
+		if (has_reached_endpoint(task_id, result)) {
 			stop_flag = 1;
 			std::cout << "Task finished!" << std::endl;
 			break;

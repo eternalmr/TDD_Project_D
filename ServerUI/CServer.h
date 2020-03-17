@@ -26,6 +26,7 @@ public:
 	void receive_heartbeat(int max_num = REPEAT_FOREVER);
 	std::tuple<int, string> decode_signal(string &raw_signal);
 	std::tuple<int, int, int> decode_signal_new(string &raw_signal);
+	std::tuple<int, int> decode_result(string &raw_signal);
 	std::vector<string> split_string(const string& in, const string& delim);
 	void update_heartbeat_of_client(uint id);
 

@@ -30,7 +30,7 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	void ShowLoadedTaskItems();
-	void UpdateTaskProgress();
+	void UpdateTaskItemInfo();
 
 	CTaskItem m_TaskItems[MAX_TASK_NUM];
 

@@ -68,21 +68,16 @@ void CServer::receive_heartbeat(int max_num)
 	uint client_id, task_id;
 	uint simulation_progress;
 	int count = 0;
-	string heartbeat_signal;
+	string raw_signal;
 
 	while (is_not_reach(max_num, count)) {
-		auto raw_signal = s_recv(heartbeat_receiver);
-		//std::tie(client_id, heartbeat_signal) = decode_signal(raw_signal);
+		raw_signal = s_recv(heartbeat_receiver);
 		std::tie(client_id, task_id, simulation_progress) = decode_signal_new(raw_signal);
 
 		if (is_not_connect_to_client(client_id)){
 			add_new_client(client_id);
 		}
-		//update_heartbeat_of_client(id);
 		update_client_info(client_id, task_id, simulation_progress);
-
-		//std::cout << "Heartbeat of client[" << id << "] : "
-		//	<< clients[id].get_heartbeat() << std::endl;
 
 		//TODO : 加个线程的退出条件
 	}
@@ -105,6 +100,12 @@ std::tuple<int, int, int> CServer::decode_signal_new(string &raw_signal)
 	auto signal = split_string(raw_signal, "_");
 	return std::make_tuple(std::stoi(signal[0]), std::stoi(signal[1]), 
 						   std::stoi(signal[2]));//[client_id, task_id, simulation_progress]
+}
+
+std::tuple<int, int> CServer::decode_result(string &raw_signal)
+{
+	auto signal = split_string(raw_signal, "_");
+	return std::make_tuple(std::stoi(signal[0]), std::stoi(signal[1]));//[task_id, result]
 }
 
 //用delim指定的正则表达式将字符串in分割，返回分割后的字符串数组
@@ -166,13 +167,11 @@ void CServer::mark_breakdown_client() //TODO:添加测试
 
 void CServer::send_command_to_client(uint id, string command)
 {
-	// publish command to client(id)
 	s_send(command_sender, command + "_" + std::to_string(id));
 }
 
 void CServer::send_command_to_all_client(string command)
 {
-	// publish command to all clients
 	s_send(command_sender, command);
 }
 
@@ -259,17 +258,16 @@ void CServer::assign_task_to(uint id, Task* p_task)
 void CServer::collect_result(uint max_num)
 {
 	int count = 0;
-	// Collect result from workers
-	std::string result;
-	while (is_not_reach(max_num, count)) {
-		result = s_recv(result_collector);
-		// set task progress to 100%
+	int task_id, result;
+	string raw_result;
 
+	while (is_not_reach(max_num, count)) {
+		raw_result = s_recv(result_collector);
+		std::tie(task_id, result) = decode_result(raw_result);
+		tasks[task_id - 1].set_simulation_progress(100);
 		in_computing_client_num--;
 		in_computing_task_num--;
 		completed_task_num++;
-
-		std::cout << result << std::endl;
 	}
 }
 

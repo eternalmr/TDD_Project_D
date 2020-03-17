@@ -143,10 +143,9 @@ void CClient::simulation_wrap(int task_num)
 		}
 
 		//Send results to sink
-		string result_info = "Result of task[" + new_task
-			+ "] is: " + std::to_string(result);
+		string result_info = std::to_string(current_task_id) + "_" + std::to_string(result);
 		s_send(result_sender, result_info);
-		str = CA2T(result_info.c_str()) + CString("\r\n");
+		str.Format(TEXT("Result of task[%d] is: %d"), current_task_id, result);
 		AddLog(str, TLP_NORMAL);
 
 		std::cout << "**********************************************" << std::endl;

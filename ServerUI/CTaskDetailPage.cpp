@@ -75,6 +75,7 @@ void CTaskDetailPage::ShowLoadedTaskItems()
 	}
 }
 
+
 void CTaskDetailPage::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	SCROLLINFO scrollInfo;
@@ -149,6 +150,7 @@ void CTaskDetailPage::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
+
 BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	if (zDelta == 120)
@@ -163,15 +165,21 @@ BOOL CTaskDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }
 
-void CTaskDetailPage::UpdateTaskProgress()
+
+void CTaskDetailPage::UpdateTaskItemInfo()
 {
 	uint progress = 0;
+	CString str;
 	for (int i = 0; i < m_LoadedTaskNum ; i++)
 	{
 		progress = server.tasks[i].get_simulation_progress();
 		m_TaskItems[i].m_ProgessBar.SetPos(progress);
+		str.Format(TEXT("%d"), progress);
+		str = CString("计算状态：") + str + CString("%");
+		m_TaskItems[i].m_TaskComputeStatus.SetWindowTextW(str);
 	}
 }
+
 
 void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 {
@@ -180,7 +188,7 @@ void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 	{
 	case UpdateTaskProgressTimer: 
 	{
-		UpdateTaskProgress();
+		UpdateTaskItemInfo();
 		break;
 	}
 	default:

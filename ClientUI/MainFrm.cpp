@@ -21,6 +21,7 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -124,4 +125,18 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 		m_splitter.SetRowInfo(1, rect.Height()*0.4, 10);
 		m_splitter.RecalcLayout();
 	}
+}
+
+
+void CMainFrame::OnClose()
+{
+	// 在此添加消息处理程序代码和/或调用默认值
+	auto ReturnID =  MessageBox(TEXT("您确定要退出程序吗？"), TEXT("关闭client"), MB_OKCANCEL);
+
+	if (ReturnID == IDCANCEL)
+	{
+		return;
+	}
+
+	CFrameWnd::OnClose();
 }

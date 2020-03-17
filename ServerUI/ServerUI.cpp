@@ -165,6 +165,7 @@ protected:
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
 {
+
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)

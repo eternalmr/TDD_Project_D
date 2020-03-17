@@ -8,11 +8,6 @@
 
 #define RandNum(minValue, maxValue)((rand() % (maxValue - minValue + 1)) + minValue)
 
-enum CClientItem::TimerType
-{
-	UpdateClientInfoTimer = 1
-};
-
 // CClientItem 对话框
 
 IMPLEMENT_DYNAMIC(CClientItem, CDialogEx)

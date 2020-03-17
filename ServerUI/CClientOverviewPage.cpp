@@ -6,10 +6,7 @@
 #include "CClientOverviewPage.h"
 #include "afxdialogex.h"
 
-enum TimerType
-{
-	UpdateClientInfoTimer = 1
-};
+
 
 // CClientOverviewPage 对话框
 

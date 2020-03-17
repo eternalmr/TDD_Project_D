@@ -21,7 +21,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-
+	virtual BOOL OnInitDialog();
 	CButton m_BreakdownClientNum;
 	CButton m_FreeClientNum;
 	CButton m_IncomputingClientNum;
@@ -30,6 +30,6 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	void UpdateClientInfo();
-
-	virtual BOOL OnInitDialog();
+private:
+	enum TimerType { UpdateClientInfoTimer };
 };

@@ -39,6 +39,6 @@ public:
 
 private:
 	void UpdateClientInfo();
-	enum TimerType;
+	enum TimerType { UpdateClientInfoTimer };
 
 };

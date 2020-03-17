@@ -36,4 +36,7 @@ public:
 	CButton m_IncomputingTaskNum;
 	CButton m_UndoTaskNum;
 	CProgressCtrl m_ProgressBar;
+
+private:
+	enum TimerType { UpdateTaskInfoTimer };
 };

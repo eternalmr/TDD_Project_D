@@ -11,7 +11,7 @@ CServer::CServer(const string &ip, const string &port) :
 	result_collector(context, ZMQ_PULL),
 	ip_(ip), port_(port), clients({}),
 	total_task_num(0), completed_task_num(0),
-	in_computing_task_num(0), undo_task_num(total_task_num),
+	in_computing_task_num(0), undo_task_num(0),
 	total_client_num(0), in_computing_client_num(0),
 	free_client_num(0), breakdown_client_num(0)
 {
@@ -247,10 +247,8 @@ void CServer::assign_task_to(uint id, Task* p_task)
 	p_task->set_in_computing();
 	clients[id].set_in_computing();
 
-	mtx.lock();
 	in_computing_task_num++;
 	in_computing_client_num++;
-	mtx.unlock();
 
 	CString str;
 	str.Format(TEXT("Task[%d] is assigned to client[%d]\r\n"),
@@ -266,11 +264,11 @@ void CServer::collect_result(uint max_num)
 	while (is_not_reach(max_num, count)) {
 		result = s_recv(result_collector);
 		// set task progress to 100%
-		mtx.lock();
+
 		in_computing_client_num--;
 		in_computing_task_num--;
 		completed_task_num++;
-		mtx.unlock();
+
 		std::cout << result << std::endl;
 	}
 }

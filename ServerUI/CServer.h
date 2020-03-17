@@ -3,6 +3,7 @@
 #include <regex>
 #include <map>
 #include <mutex>
+#include <atomic>
 #include "../project_paramters.h"
 
 class Task;
@@ -67,17 +68,17 @@ private:
 	string ip_;
 	string port_;
 
-	int total_task_num;
-	int completed_task_num;
-	int in_computing_task_num;
-	int undo_task_num;
+	std::atomic<int> total_task_num;
+	std::atomic<int> completed_task_num;
+	std::atomic<int> in_computing_task_num;
+	std::atomic<int> undo_task_num;
 
-	int total_client_num;
-	int in_computing_client_num;
-	int free_client_num;
-	int breakdown_client_num;
+	std::atomic<int> total_client_num;
+	std::atomic<int> in_computing_client_num;
+	std::atomic<int> free_client_num;
+	std::atomic<int> breakdown_client_num;
 	
-	std::mutex mtx;
+	//std::mutex mtx;
 
 public:
 	ClientMap clients;

@@ -6,7 +6,7 @@
 class ClientRecord
 {
 private:
-	enum ClientStatus { kFree = 0, kInComputing, kBreakdown };
+	enum ClientStatus { kFree, kInComputing, kBreakdown };
 
 public:
 	ClientRecord();

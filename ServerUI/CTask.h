@@ -4,8 +4,8 @@
 class Task
 {
 private:
-	enum ComputeStatus { kNotStart = 0, kInComputing, kFinished };
-	enum   StoreStatus { kNotSave = 0, kSaved };
+	enum ComputeStatus { kNotStart, kInComputing, kFinished };
+	enum   StoreStatus { kNotSave, kSaved };
 
 public:
 	explicit Task(uint id = 1);

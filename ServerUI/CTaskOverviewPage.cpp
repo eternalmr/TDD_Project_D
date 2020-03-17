@@ -8,10 +8,7 @@
 #include "MainFrm.h"
 #include "CSelectTasksDlg.h"
 
-enum TimerType
-{
-	UpdateTaskInfoTimer = 1
-};
+
 
 
 // CTaskOverviewPage 对话框

@@ -27,27 +27,23 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedButton1();
-	afx_msg void OnBnClickedButton2();
-	afx_msg void OnBnClickedButton3();
-	afx_msg void OnBnClickedButton4();
-
-	CProgressCtrl m_progressBar;
-	CStatic m_memoryStatus;
-	CStatic m_cpuStatus;
-//	CString m_currentTask;
-	CString m_clientName;
-	CStatic m_currentTask;
+	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedConfirmidBtn();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
 	void RefreshCPUAndMemoryStatus();
 
-	virtual void OnInitialUpdate();
-	afx_msg void OnBnClickedConfirmidBtn();
+	CButton m_confirmIdBtn;
+	CProgressCtrl m_progressBar;
+	CStatic m_memoryStatus;
+	CStatic m_cpuStatus;
+	CString m_clientName;
+	CStatic m_currentTask;
+
 private:
 	int m_client_id;
-public:
-	CButton m_confirmIdBtn;
+	enum TimerSet { StatusRefreshTimer };
+	
 };
 
 

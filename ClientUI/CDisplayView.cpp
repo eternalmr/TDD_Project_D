@@ -7,10 +7,6 @@
 #include "CUserDefineMsg.h"
 #include "MainFrm.h"
 
-enum TimerSet
-{
-	StatusRefreshTimer = 1
-};
 
 IMPLEMENT_DYNCREATE(CDisplayView, CFormView)
 
@@ -43,10 +39,6 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
-	ON_BN_CLICKED(IDC_BUTTON1, &CDisplayView::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &CDisplayView::OnBnClickedButton2)
-	ON_BN_CLICKED(IDC_BUTTON3, &CDisplayView::OnBnClickedButton3)
-	ON_BN_CLICKED(IDC_BUTTON4, &CDisplayView::OnBnClickedButton4)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CONFIRMID_BTN, &CDisplayView::OnBnClickedConfirmidBtn)
 END_MESSAGE_MAP()
@@ -73,27 +65,6 @@ void CDisplayView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	SetTimer(StatusRefreshTimer, 1000, NULL);//启动CPU、内存状态刷新计时器
-}
-
-
-void CDisplayView::OnBnClickedButton1()
-{
-	CLogShow::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DEBUG);
-}
-
-void CDisplayView::OnBnClickedButton2()
-{
-	CLogShow::GetInstance().AddLine(TEXT("Test Debug Log\r\n"), TLP_DETAIL);
-}
-
-void CDisplayView::OnBnClickedButton3()
-{
-	CLogShow::GetInstance().AddLine(TEXT("Test Normal Log\r\n"), TLP_NORMAL);
-}
-
-void CDisplayView::OnBnClickedButton4()
-{
-	CLogShow::GetInstance().AddLine(TEXT("Test Error Log\r\n"), TLP_ERROR);
 }
 
 

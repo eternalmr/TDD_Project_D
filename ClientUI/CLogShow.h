@@ -51,6 +51,7 @@ public:
 	void LimitLine();
 	int TLogEditThreadSTL();
 
+	std::thread LogThread;
 	BOOL m_bRun;
 
 private:

@@ -24,7 +24,7 @@ CLogView::~CLogView()
 void CLogView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_RICHEDIT21, CLogShow::GetInstance());
+	DDX_Control(pDX, IDC_RICHEDIT21, logger);
 }
 
 BEGIN_MESSAGE_MAP(CLogView, CFormView)
@@ -59,10 +59,9 @@ void CLogView::OnInitialUpdate()
 	// TODO: 在此添加专用代码和/或调用基类
 	CRect rect;
 	GetClientRect(&rect);
-	CLogShow &logger = CLogShow::GetInstance();
 
 	logger.MoveWindow(0, 0, rect.Width(),rect.Height());
-	LogThread = std::thread(&CLogShow::TLogEditThreadSTL, &logger); //启动日志接受线程
-	LogThread.detach();
+	logger.LogThread = std::thread(&CLogShow::TLogEditThreadSTL, &logger); //启动日志接受线程
+	//LogThread.detach();
 }
 

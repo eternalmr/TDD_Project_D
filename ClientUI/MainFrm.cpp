@@ -22,6 +22,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -131,12 +132,24 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 void CMainFrame::OnClose()
 {
 	// 在此添加消息处理程序代码和/或调用默认值
-	auto ReturnID =  MessageBox(TEXT("您确定要退出程序吗？"), TEXT("关闭client"), MB_OKCANCEL);
+	int ReturnID =  MessageBox(TEXT("您确定要退出程序吗？"),
+								TEXT("关闭client"), MB_OKCANCEL);
 
-	if (ReturnID == IDCANCEL)
-	{
+	//TODO: 判断是否有计算任务仍然在执行
+	if (ReturnID == IDCANCEL) {
 		return;
 	}
 
 	CFrameWnd::OnClose();
+}
+
+
+void CMainFrame::OnDestroy()
+{
+	CFrameWnd::OnDestroy();
+
+	// 在此处添加消息处理程序代码
+	MessageBox(TEXT("执行退出线程等操作"));
+	logger.m_bRun = FALSE;
+	client.exit();
 }

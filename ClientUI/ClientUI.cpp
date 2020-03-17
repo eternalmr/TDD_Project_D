@@ -21,7 +21,7 @@
 
 
 CClient &client = CClient::get_instance();
-
+CLogShow &logger = CLogShow::GetInstance();
 // CClientUIApp
 
 BEGIN_MESSAGE_MAP(CClientUIApp, CWinApp)
@@ -125,10 +125,8 @@ BOOL CClientUIApp::InitInstance()
 		return FALSE;
 
 	// 初始化客户端和日志单例
-	CLogShow::GetInstance();
-
 	client.heartbeat_thread = std::thread(&CClient::send_heartbeat, &client, 0);
-	client.heartbeat_thread.detach();
+	//client.heartbeat_thread.detach();
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;
@@ -146,12 +144,19 @@ int CClientUIApp::ExitInstance()
 {
 	//TODO: 处理可能已添加的附加资源
 	AfxOleTerm(FALSE);
-
-	CLogShow::GetInstance().m_bRun = FALSE;
-
-	client.simulation_thread.join();
-	client.control_thread.join();
-	//TODO: 退出heartbeat_thread
+	
+	// 等待线程退出
+	logger.LogThread.join();
+	client.heartbeat_thread.join();
+	if (client.simulation_thread.joinable())
+	{
+		client.simulation_thread.join();
+	}
+	if (client.control_thread.joinable())
+	{
+		client.control_thread.join();
+	}
+	
 
 	return CWinApp::ExitInstance();
 }

@@ -36,3 +36,4 @@ public:
 
 extern CClientUIApp theApp;
 extern CClient &client;
+extern CLogShow &logger;

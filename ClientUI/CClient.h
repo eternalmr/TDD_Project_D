@@ -44,6 +44,8 @@ public:
 	uint get_progress();
 	void set_progress(uint percent);
 
+	void exit();
+
 private:
 	bool is_not_reach(int max_num, int &count); 
 	unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime);
@@ -68,6 +70,8 @@ public:
 	int start_flag;
 	int pause_flag;
 	int stop_flag;
+
+	bool exit_flag;
 
 	std::thread heartbeat_thread;
 	std::thread simulation_thread;

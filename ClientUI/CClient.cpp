@@ -16,6 +16,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	ip_(ip), port_(port),
 	start_flag(0), pause_flag(0), stop_flag(0)
 	,simulation_progress(0),current_task_id(0)
+	,exit_flag(false)
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
@@ -74,7 +75,7 @@ void CClient::send_heartbeat(int max_num)
 	//std::string signal = "HEARTBEAT_" + std::to_string(id_);
 	std::string signal;
 
-	while (is_not_reach(max_num, count)) {
+	while (is_not_reach(max_num, count) && !exit_flag) {
 		signal = std::to_string(id_) + "_" 
 			   + std::to_string(current_task_id) + "_" 
 			   + std::to_string(simulation_progress);
@@ -82,7 +83,7 @@ void CClient::send_heartbeat(int max_num)
 		//cout << "send heartbeat to server: " << id_ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
 	}
-
+	AfxMessageBox(TEXT("心跳线程已退出"));
 	heartbeat_sender.close();
 }
 
@@ -90,11 +91,14 @@ void CClient::receive_command()
 {
 	Command cmd;
 
-	while (true) {
+	while (!exit_flag) {
 		cmd = listen_from_server();
 		if (is_irrelevant(cmd)) continue;
 		execute_control_command(cmd);
-		if (stop_flag) break;
+		if (stop_flag) {
+			AfxMessageBox(TEXT("退出命令线程"));
+			break;
+		}
 	}
 }
 
@@ -118,7 +122,7 @@ void CClient::simulation_wrap(int task_num)
 	int result;
 	int count = 0;
 	CString str;
-	while (simulation_is_not_finished(task_num, count)) {
+	while (simulation_is_not_finished(task_num, count) && !exit_flag) {
 		// Send client id to server
 		s_send(task_requester, std::to_string(id_));
 
@@ -149,6 +153,7 @@ void CClient::simulation_wrap(int task_num)
 	}//end of while
  	std::cout << "client: simulation finished" << std::endl;
 	task_requester.close();
+	AfxMessageBox(TEXT("仿真线程已退出"));
 }
 
 int CClient::simulation(int task_id)
@@ -174,7 +179,7 @@ int CClient::simulation(int task_id)
 	}
 
 	while (true) {
-		if (stop_flag) return -1;//interrupt simulation
+		if (stop_flag || exit_flag) return -1;//interrupt simulation
 
 		if (start_flag == 1 && pause_flag == 1) {
 			std::this_thread::yield();
@@ -248,6 +253,13 @@ void CClient::set_progress(uint percent)
 	simulation_progress = percent;
 }
 
+void CClient::exit()
+{
+	command_receiver.close();
+	stop_flag = 1;
+	exit_flag = true;
+}
+
 CClient::SignalSet CClient::listen_from_server()
 {
 	std::string command = s_recv(command_receiver);
@@ -302,11 +314,11 @@ void CClient::execute_control_command(SignalSet control_signal)
 		start_flag = 0;
 		pause_flag = 0;
 		stop_flag = 1;
-		AddLog(TEXT("Stop simulation"), TLP_NORMAL);
+		AddLog(TEXT("Stop simulation\r\n"), TLP_NORMAL);
 		break;
 	}
 	default: {
-		AddLog(TEXT("Unknown command"), TLP_NORMAL);
+		AddLog(TEXT("Unknown command\r\n"), TLP_NORMAL);
 	}
 	}//end of switch
 }

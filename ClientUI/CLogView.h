@@ -29,7 +29,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	//CTLogEdit m_log;
-	std::thread LogThread;
 	virtual void OnInitialUpdate();
 };
 

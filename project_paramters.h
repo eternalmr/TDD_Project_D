@@ -12,7 +12,7 @@ const string default_client_port{ "5555" };
 
 const int HEARTBEAT_INTERVAL = 2000;
 
-const int MAX_HEARTBEAT_TIMEOUT = 100000; //100 seconds
+const int MAX_HEARTBEAT_TIMEOUT = 10000; //100 seconds
 
 const int REPEAT_FOREVER = 0;
 

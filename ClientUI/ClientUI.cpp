@@ -146,7 +146,7 @@ int CClientUIApp::ExitInstance()
 	AfxOleTerm(FALSE);
 	
 	// 等待线程退出
-	logger.LogThread.join();
+	logger.m_LogThread.join();
 	client.heartbeat_thread.join();
 	if (client.simulation_thread.joinable())
 	{

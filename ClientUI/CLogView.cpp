@@ -56,12 +56,11 @@ void CLogView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 
-	// TODO: 在此添加专用代码和/或调用基类
+	// 在此添加专用代码和/或调用基类
 	CRect rect;
 	GetClientRect(&rect);
 
 	logger.MoveWindow(0, 0, rect.Width(),rect.Height());
-	logger.LogThread = std::thread(&CLogShow::TLogEditThreadSTL, &logger); //启动日志接受线程
-	//LogThread.detach();
+	logger.m_LogThread = std::thread(&CLogShow::ShowLogOnBoard, &logger); //启动日志接受线程
 }
 

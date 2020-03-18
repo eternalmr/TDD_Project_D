@@ -49,9 +49,9 @@ public:
 	void SetLogLineColor(long lPos, LOG_LEVEL level);
 	void AddLine(LPCTSTR lpTLogLine, LOG_LEVEL level = TLP_NORMAL);
 	void LimitLine();
-	int TLogEditThreadSTL();
+	int ShowLogOnBoard();
 
-	std::thread LogThread;
+	std::thread m_LogThread;
 	BOOL m_bRun;
 
 private:

@@ -103,7 +103,7 @@ void CLogShow::LimitLine()
 }
 
 
-int CLogShow::TLogEditThreadSTL()
+int CLogShow::ShowLogOnBoard()
 {
 	PTLOGITEM pItem;
 	long pos;

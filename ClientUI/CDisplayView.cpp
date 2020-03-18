@@ -120,6 +120,7 @@ void CDisplayView::OnBnClickedConfirmidBtn()
 	UpdateData(FALSE);
 	m_confirmIdBtn.ShowWindow(FALSE);
 	m_ClientIdInput.ShowWindow(FALSE);
+	///
 }
 
 

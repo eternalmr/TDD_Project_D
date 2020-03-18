@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pch.h"
-#include <condition_variable>
+//#include <condition_variable>
 #include "../project_paramters.h"
 
 class CClient {
@@ -16,6 +16,8 @@ private:
 	CClient(uint id = 1, const string &ip = default_client_ip, 
 		const string &port = default_client_port);
 
+	~CClient();
+
 public:
 	static CClient& get_instance();//singleton class entrance
 
@@ -24,7 +26,7 @@ public:
 	void set_ip_address(const string ip);
 
 	void connect_to_ip_address();
-
+	void disconnect_to_ip_address();
 	void subscribe_specific_signal();
 
 	SignalSet listen_from_server();

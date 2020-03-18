@@ -31,7 +31,7 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	//CClientTest &client;
+
 };
 
 extern CClientUIApp theApp;

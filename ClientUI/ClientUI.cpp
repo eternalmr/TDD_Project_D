@@ -157,6 +157,9 @@ int CClientUIApp::ExitInstance()
 		client.control_thread.join();
 	}
 	
+	//HANDLE MyProcess = GetCurrentProcess();
+	//TerminateProcess(MyProcess, 0);
+	ExitProcess(0);
 
 	return CWinApp::ExitInstance();
 }

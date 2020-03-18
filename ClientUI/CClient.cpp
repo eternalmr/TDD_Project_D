@@ -23,6 +23,16 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	GetSystemTimes(&IdleTime, &KernelTime, &UserTime);
 }
 
+CClient::~CClient()
+{
+	disconnect_to_ip_address();
+	heartbeat_sender.close();
+	task_requester.close();
+	result_sender.close();
+	command_receiver.close();
+	context.close();
+}
+
 CClient& CClient::get_instance()
 {
 	static CClient client;
@@ -52,6 +62,14 @@ void CClient::connect_to_ip_address()
 	command_receiver.connect("tcp://localhost:5555");
 }
 
+void CClient::disconnect_to_ip_address()
+{
+	heartbeat_sender.disconnect("tcp://localhost:1217");
+	task_requester.disconnect("tcp://localhost:5560");
+	result_sender.disconnect("tcp://localhost:5558");
+	command_receiver.disconnect("tcp://localhost:5555");
+}
+
 string CClient::get_ip_address()
 {
 	return "tcp://" + ip_ + ":" + port_;
@@ -72,19 +90,18 @@ void CClient::subscribe_specific_signal()
 void CClient::send_heartbeat(int max_num)
 {
 	int count = 0;
-	//std::string signal = "HEARTBEAT_" + std::to_string(id_);
-	std::string signal;
+	string signal;
 	CString str;
+
 	while (is_not_reach(max_num, count) && !exit_flag) {
 		signal = std::to_string(id_) + "_" 
 			   + std::to_string(current_task_id) + "_" 
 			   + std::to_string(simulation_progress);
 		s_send(heartbeat_sender, signal);
-		//cout << "send heartbeat to server: " << id_ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
 	}
-	AfxMessageBox(TEXT("心跳线程已退出"));
-	heartbeat_sender.close();
+	OutputDebugString(TEXT("心跳线程已退出"));
+	//heartbeat_sender.close();
 }
 
 void CClient::receive_command()
@@ -244,7 +261,7 @@ uint CClient::get_task_id()
 
 void CClient::exit()
 {
-	command_receiver.close();
+	//command_receiver.close();
 	stop_flag = 1;
 	exit_flag = true;
 }

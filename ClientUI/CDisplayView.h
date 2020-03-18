@@ -44,6 +44,8 @@ public:
 private:
 //	int m_client_id;
 	enum TimerSet { ClientInfoUpdateTimer };
+public:
+	afx_msg void OnDestroy();
 };
 
 

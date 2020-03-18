@@ -122,8 +122,8 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 
 	if (m_isSplitted) {
 		m_splitter.SetColumnInfo(0, rect.Width(), 10);
-		m_splitter.SetRowInfo(0, rect.Height()*0.6, 10);
-		m_splitter.SetRowInfo(1, rect.Height()*0.4, 10);
+		m_splitter.SetRowInfo(0, int(rect.Height()*0.6), 10);
+		m_splitter.SetRowInfo(1, int(rect.Height()*0.4), 10);
 		m_splitter.RecalcLayout();
 	}
 }
@@ -149,7 +149,8 @@ void CMainFrame::OnDestroy()
 	CFrameWnd::OnDestroy();
 
 	// 在此处添加消息处理程序代码
-	MessageBox(TEXT("执行退出线程等操作"));
+	//MessageBox(TEXT("执行退出线程等操作"));
 	logger.m_bRun = FALSE;
 	client.exit();
+
 }

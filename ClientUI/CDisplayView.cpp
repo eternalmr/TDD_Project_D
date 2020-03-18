@@ -37,6 +37,7 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CONFIRMID_BTN, &CDisplayView::OnBnClickedConfirmidBtn)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -117,4 +118,14 @@ void CDisplayView::OnBnClickedConfirmidBtn()
 	UpdateData(FALSE);
 	m_confirmIdBtn.ShowWindow(FALSE);
 	m_ClientIdInput.ShowWindow(FALSE);
+}
+
+
+void CDisplayView::OnDestroy()
+{
+	CFormView::OnDestroy();
+
+	//在此处添加消息处理程序代码
+	KillTimer(ClientInfoUpdateTimer);
+	OutputDebugString(TEXT("已终止client更新计时器"));
 }

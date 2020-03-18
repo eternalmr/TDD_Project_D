@@ -119,13 +119,12 @@ int CLogShow::ShowLogOnBoard()
 			ReplaceSel(pItem->line);
 			LimitLine();
 			delete pItem;
-			if (m_bAutoScroll)
-			{
+			if (m_bAutoScroll) {
 				SendMessage(WM_VSCROLL, SB_BOTTOM);
 			}
 		}
 	}
-	AfxMessageBox(TEXT("log线程已退出"));
+	OutputDebugString(TEXT("log线程已退出"));
 	return 0;
 }
 

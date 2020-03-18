@@ -25,7 +25,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 
 CClient::~CClient()
 {
-	disconnect_to_ip_address();
+	//disconnect_to_ip_address();
 	heartbeat_sender.close();
 	task_requester.close();
 	result_sender.close();

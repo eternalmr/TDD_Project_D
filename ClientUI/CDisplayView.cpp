@@ -114,6 +114,8 @@ void CDisplayView::OnBnClickedConfirmidBtn()
 	m_clientName = CString(TEXT("推演节点：")) + str;
 	client.simulation_thread = std::thread(&CClient::simulation_wrap, &client, 0);
 	client.control_thread = std::thread(&CClient::receive_command, &client);
+	client.simulation_thread.detach();
+	client.control_thread.detach();
 
 	UpdateData(FALSE);
 	m_confirmIdBtn.ShowWindow(FALSE);

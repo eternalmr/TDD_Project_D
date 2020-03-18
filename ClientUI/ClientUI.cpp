@@ -148,14 +148,15 @@ int CClientUIApp::ExitInstance()
 	// 等待线程退出
 	logger.m_LogThread.join();
 	client.heartbeat_thread.join();
-	if (client.simulation_thread.joinable())
-	{
-		client.simulation_thread.join();
-	}
-	if (client.control_thread.joinable())
-	{
-		client.control_thread.join();
-	}
+	//if (client.control_thread.joinable())
+	//{
+	//	client.control_thread.join();
+	//}
+	//if (client.simulation_thread.joinable())
+	//{
+	//	client.simulation_thread.join();
+	//}
+
 	
 	//HANDLE MyProcess = GetCurrentProcess();
 	//TerminateProcess(MyProcess, 0);

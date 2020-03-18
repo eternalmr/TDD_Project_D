@@ -50,17 +50,18 @@ BOOL CTaskDetailPage::OnInitDialog()
 
 	int itemHeight = 80;
 	SetScrollRange(SB_VERT, 0, itemHeight * 10, TRUE); //TODO:设置一个合理的上限
-	SetTimer(UpdateTaskProgressTimer, 100, NULL);
+	SetTimer(UpdateTaskInfoTimer, 1000, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
 
+
 void CTaskDetailPage::ShowLoadedTaskItems()
 {
+	CString str;
 	int itemHeight = 80;
 	int itemWidth = 600;
-	CString str;
 
 	m_LoadedTaskNum = server.tasks.size();
 	for (int i = 0; i < m_LoadedTaskNum; i++)
@@ -186,7 +187,7 @@ void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 	// 在此添加消息处理程序代码和/或调用默认值
 	switch (nIDEvent)
 	{
-	case UpdateTaskProgressTimer: 
+	case UpdateTaskInfoTimer: 
 	{
 		UpdateTaskItemInfo();
 		break;

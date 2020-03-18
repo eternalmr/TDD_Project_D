@@ -145,7 +145,7 @@ void CClient::simulation_wrap(int task_num)
 		//Send results to sink
 		string result_info = std::to_string(current_task_id) + "_" + std::to_string(result);
 		s_send(result_sender, result_info);
-		str.Format(TEXT("Result of task[%d] is: %d"), current_task_id, result);
+		str.Format(TEXT("Result of task[%d] is: %d\r\n"), current_task_id, result);
 		AddLog(str, TLP_NORMAL);
 
 		std::cout << "**********************************************" << std::endl;
@@ -159,26 +159,13 @@ int CClient::simulation(int task_id)
 {
 	int result = task_id;
 
-	// 获取显示窗口指针
-	CClientUIApp* pApp = (CClientUIApp*)AfxGetApp();
-	CMainFrame* pMain = (CMainFrame*)pApp->m_pMainWnd;
-	CDisplayView* pView = (CDisplayView*)pMain->m_pDisplayView;
-
-	//设置进度条
-	pView->m_progressBar.SetRange(0, 5);
-	pView->m_progressBar.SetStep(1);
-
-	//更新任务序号
-	CString str;
-	str.Format(TEXT("当前计算任务：任务%d"), result);
-	pView->m_currentTask.SetWindowTextW(str);
-
 	while (!start_flag) {
 		std::this_thread::yield();
 	}
 
 	while (true) {
-		if (stop_flag || exit_flag) return -1;//interrupt simulation
+		if (stop_flag || exit_flag) 
+			return -1;//interrupt simulation
 
 		if (start_flag == 1 && pause_flag == 1) {
 			std::this_thread::yield();
@@ -187,13 +174,10 @@ int CClient::simulation(int task_id)
 
 		result++;
 		Sleep(SIM_DELAY);
-		std::cout << "Result: " << result << std::endl;
-		pView->m_progressBar.StepIt();
 		set_progress((result-task_id) * 100 / 5);
 
 		if (has_reached_endpoint(task_id, result)) {
 			stop_flag = 1;
-			std::cout << "Task finished!" << std::endl;
 			break;
 		}
 	}
@@ -250,6 +234,11 @@ uint CClient::get_progress()
 void CClient::set_progress(uint percent)
 {
 	simulation_progress = percent;
+}
+
+uint CClient::get_task_id()
+{
+	return current_task_id;
 }
 
 void CClient::exit()

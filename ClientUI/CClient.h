@@ -44,6 +44,8 @@ public:
 	uint get_progress();
 	void set_progress(uint percent);
 
+	uint get_task_id();
+
 	void exit();
 
 private:

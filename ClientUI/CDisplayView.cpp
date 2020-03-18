@@ -13,9 +13,6 @@ IMPLEMENT_DYNCREATE(CDisplayView, CFormView)
 CDisplayView::CDisplayView()
 	: CFormView(IDD_DISPLAYVIEW)
 	, m_clientName(_T("推演节点："))
-	//, m_cpuStatus(_T("CPU状态："))
-	//, m_memoryStatus(_T("内存状态："))
-	, m_client_id(1)
 {
 	
 }
@@ -33,9 +30,8 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CPU_STATUS, m_cpuStatus);
 	DDX_Text(pDX, IDC_CLIENT_ID, m_clientName);
 	DDX_Control(pDX, IDC_CURRENT_TASK, m_currentTask);
-	DDX_Text(pDX, IDC_CLIENTID_EDIT, m_client_id);
-	DDV_MinMaxInt(pDX, m_client_id, 1, 100);
 	DDX_Control(pDX, IDC_CONFIRMID_BTN, m_confirmIdBtn);
+	DDX_Control(pDX, IDC_CLIENTID_EDIT, m_ClientIdInput);
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
@@ -63,8 +59,9 @@ void CDisplayView::Dump(CDumpContext& dc) const
 void CDisplayView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
-
-	SetTimer(StatusRefreshTimer, 1000, NULL);//启动CPU、内存状态刷新计时器
+	m_ClientIdInput.SetWindowTextW(TEXT("1"));
+	m_progressBar.SetRange(0, 100);
+	SetTimer(ClientInfoUpdateTimer, 1000, NULL);//启动CPU、内存状态刷新计时器
 }
 
 
@@ -72,8 +69,8 @@ void CDisplayView::OnTimer(UINT_PTR nIDEvent)
 {
 	switch (nIDEvent)
 	{
-	case StatusRefreshTimer: {
-		RefreshCPUAndMemoryStatus();
+	case ClientInfoUpdateTimer: {
+		UpdateClientInfo();
 		break;
 	}
 	case 2: {
@@ -86,7 +83,7 @@ void CDisplayView::OnTimer(UINT_PTR nIDEvent)
 	CFormView::OnTimer(nIDEvent);
 }
 
-void CDisplayView::RefreshCPUAndMemoryStatus()
+void CDisplayView::UpdateClientInfo()
 {
 	CString str;
 
@@ -97,6 +94,11 @@ void CDisplayView::RefreshCPUAndMemoryStatus()
 	str.Format(TEXT("%.2lf"), client.get_memoery_status());
 	str = CString("内存状态：") + str + CString("%");
 	m_memoryStatus.SetWindowTextW(str);
+
+	str.Format(TEXT("当前计算任务：任务%d"), client.get_task_id());
+	m_currentTask.SetWindowTextW(str);
+
+	m_progressBar.SetPos(client.get_progress());
 }
 
 
@@ -104,13 +106,14 @@ void CDisplayView::OnBnClickedConfirmidBtn()
 {
 	UpdateData(TRUE);
 	CString str;
-	str.Format(TEXT("推演节点%d: "), m_client_id);
-	m_clientName = str;
+	m_ClientIdInput.GetWindowTextW(str);
+	client.set_id(_ttoi(str));
 
-	client.set_id(m_client_id);
+	m_clientName = CString(TEXT("推演节点：")) + str;
 	client.simulation_thread = std::thread(&CClient::simulation_wrap, &client, 0);
 	client.control_thread = std::thread(&CClient::receive_command, &client);
 
 	UpdateData(FALSE);
-	m_confirmIdBtn.EnableWindow(FALSE);
+	m_confirmIdBtn.ShowWindow(FALSE);
+	m_ClientIdInput.ShowWindow(FALSE);
 }

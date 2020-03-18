@@ -31,7 +31,7 @@ public:
 	afx_msg void OnBnClickedConfirmidBtn();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
-	void RefreshCPUAndMemoryStatus();
+	void UpdateClientInfo();
 
 	CButton m_confirmIdBtn;
 	CProgressCtrl m_progressBar;
@@ -39,11 +39,11 @@ public:
 	CStatic m_cpuStatus;
 	CString m_clientName;
 	CStatic m_currentTask;
+	CEdit m_ClientIdInput;
 
 private:
-	int m_client_id;
-	enum TimerSet { StatusRefreshTimer };
-	
+//	int m_client_id;
+	enum TimerSet { ClientInfoUpdateTimer };
 };
 
 

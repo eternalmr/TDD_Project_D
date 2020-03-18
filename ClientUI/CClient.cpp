@@ -96,10 +96,10 @@ void CClient::receive_command()
 		if (is_irrelevant(cmd)) continue;
 		execute_control_command(cmd);
 		if (stop_flag) {
-			AfxMessageBox(TEXT("退出命令线程"));
 			break;
 		}
 	}
+	AfxMessageBox(TEXT("退出命令线程"));
 }
 
 bool CClient::is_not_reach(int max_num, int &count)

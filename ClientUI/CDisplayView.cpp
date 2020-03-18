@@ -61,6 +61,7 @@ void CDisplayView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 	m_ClientIdInput.SetWindowTextW(TEXT("1"));
 	m_progressBar.SetRange(0, 100);
+
 	SetTimer(ClientInfoUpdateTimer, 1000, NULL);//启动CPU、内存状态刷新计时器
 }
 

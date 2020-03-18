@@ -74,7 +74,7 @@ void CClient::send_heartbeat(int max_num)
 	int count = 0;
 	//std::string signal = "HEARTBEAT_" + std::to_string(id_);
 	std::string signal;
-
+	CString str;
 	while (is_not_reach(max_num, count) && !exit_flag) {
 		signal = std::to_string(id_) + "_" 
 			   + std::to_string(current_task_id) + "_" 
@@ -135,6 +135,7 @@ void CClient::simulation_wrap(int task_num)
 		// Do some work
 		stop_flag = 0; //reset stop flag
 		current_task_id = atoi(new_task.c_str());
+		set_progress(0);
 		result = simulation(current_task_id);
 
 		if (result == -1) {

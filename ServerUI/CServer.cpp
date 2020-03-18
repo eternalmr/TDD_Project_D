@@ -69,7 +69,7 @@ void CServer::receive_heartbeat(int max_num)
 	uint simulation_progress;
 	int count = 0;
 	string raw_signal;
-
+	CString str;
 	while (is_not_reach(max_num, count)) {
 		raw_signal = s_recv(heartbeat_receiver);
 		std::tie(client_id, task_id, simulation_progress) = decode_signal_new(raw_signal);
@@ -78,7 +78,6 @@ void CServer::receive_heartbeat(int max_num)
 			add_new_client(client_id);
 		}
 		update_client_info(client_id, task_id, simulation_progress);
-
 		//TODO : 加个线程的退出条件
 	}
 	heartbeat_receiver.close();

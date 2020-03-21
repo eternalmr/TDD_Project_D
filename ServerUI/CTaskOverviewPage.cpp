@@ -35,6 +35,12 @@ void CTaskOverviewPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_INCOMPUTING_TASK_NUM, m_IncomputingTaskNum);
 	DDX_Control(pDX, IDC_UNDO_TASK_NUM, m_UndoTaskNum);
 	DDX_Control(pDX, IDC_PROGRESS1, m_ProgressBar);
+	DDX_Control(pDX, IDC_LOAD, m_LoadBtn);
+	DDX_Control(pDX, IDC_START, m_StartBtn);
+	DDX_Control(pDX, IDC_STOP, m_StopBtn);
+	DDX_Control(pDX, IDC_THREAD, m_ThreadBtn);
+	DDX_Control(pDX, IDC_PAUSE, m_PauseBtn);
+	DDX_Control(pDX, IDC_CONTINUE, m_ContinueBtn);
 }
 
 
@@ -90,6 +96,11 @@ void CTaskOverviewPage::OnBnClickedLoad()
 {
 	CSelectTasksDlg dlg;
 	dlg.DoModal();
+	m_ThreadBtn.EnableWindow(TRUE);
+	m_StartBtn.EnableWindow(TRUE);
+	m_StopBtn.EnableWindow(TRUE);
+	m_ContinueBtn.EnableWindow(TRUE);
+	m_PauseBtn.EnableWindow(TRUE);
 }
 
 
@@ -99,6 +110,12 @@ BOOL CTaskOverviewPage::OnInitDialog()
 
 	// 在此添加额外的初始化
 	UpdateTaskInfo();
+	
+	m_ThreadBtn.EnableWindow(FALSE);
+	m_StartBtn.EnableWindow(FALSE);
+	m_StopBtn.EnableWindow(FALSE);
+	m_ContinueBtn.EnableWindow(FALSE);
+	m_PauseBtn.EnableWindow(FALSE);
 
 	SetTimer(UpdateTaskInfoTimer, 1000, NULL);
 

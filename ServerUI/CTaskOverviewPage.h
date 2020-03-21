@@ -39,4 +39,11 @@ public:
 
 private:
 	enum TimerType { UpdateTaskInfoTimer };
+public:
+	CButton m_LoadBtn;
+	CButton m_StartBtn;
+	CButton m_StopBtn;
+	CButton m_ThreadBtn;
+	CButton m_PauseBtn;
+	CButton m_ContinueBtn;
 };

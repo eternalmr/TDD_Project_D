@@ -56,6 +56,8 @@ public:
 
 private:
 	bool is_not_reach(int max_num, int &count); 
+	bool simulation_is_not_finished(int task_num, int &count);
+	bool has_reached_endpoint(int input, int result);
 	unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime);
 
 	uint simulation_progress;

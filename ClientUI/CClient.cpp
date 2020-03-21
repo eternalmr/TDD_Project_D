@@ -137,7 +137,7 @@ void CClient::receive_tasks()
 
 		//等待任务计算完成
 		std::unique_lock<std::mutex> locker2(mu2);
-		task_finished_notifier.wait(locker2, [&]{return is_task_finished.load();});
+		task_finished_notifier.wait(locker2, [&]{return is_task_finished.load();});// 应该阻塞在这里啊！
 	}
 	OutputDebugString(TEXT("任务线程已退出"));
 }
@@ -155,13 +155,8 @@ void CClient::simulation_wrap(int task_num)
 		task_queue.pop();
 		locker1.unlock();
 
-
 		std::unique_lock<std::mutex> locker2(mu2);
-		stop_flag = 0; 
-		set_progress(0);
-		is_task_finished = false;
 		result = simulation(current_task_id);
-
 
 		//TODO:任务中途中断应该怎么处理
 		//if (result == -1) { 
@@ -184,6 +179,10 @@ void CClient::simulation_wrap(int task_num)
 int CClient::simulation(int task_id)
 {
 	int result = task_id;
+
+	stop_flag = 0;
+	set_progress(0);
+	is_task_finished = false;
 
 	while (!start_flag) {
 		std::this_thread::yield();
@@ -342,13 +341,13 @@ bool CClient::is_not_reach(int max_num, int &count)
 	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
 }
 
-bool simulation_is_not_finished(int	task_num, int &count)
+bool CClient::simulation_is_not_finished(int	task_num, int &count)
 {
 	return task_num == 0 ? true : count++ < task_num;
 }
 
 
-bool has_reached_endpoint(int input, int result)
+bool CClient::has_reached_endpoint(int input, int result)
 {
 	return (result - input == 5);
 }

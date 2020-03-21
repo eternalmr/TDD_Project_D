@@ -16,7 +16,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	ip_(ip), port_(port),
 	start_flag(0), pause_flag(0), stop_flag(0)
 	,simulation_progress(0),current_task_id(0)
-	,exit_flag(false)
+	,exit_flag(false),is_task_finished(false)
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
@@ -81,10 +81,10 @@ void CClient::subscribe_specific_signal()
 	const char *continue_filter = "continue";
 	const char *pause_filter = "pause";
 	const char *stop_filter = "stop";
-	command_receiver.setsockopt(ZMQ_SUBSCRIBE, start_filter, strlen(start_filter));
+	command_receiver.setsockopt(ZMQ_SUBSCRIBE,    start_filter, strlen(start_filter));
 	command_receiver.setsockopt(ZMQ_SUBSCRIBE, continue_filter, strlen(continue_filter));
-	command_receiver.setsockopt(ZMQ_SUBSCRIBE, pause_filter, strlen(pause_filter));
-	command_receiver.setsockopt(ZMQ_SUBSCRIBE, stop_filter, strlen(stop_filter));
+	command_receiver.setsockopt(ZMQ_SUBSCRIBE,    pause_filter, strlen(pause_filter));
+	command_receiver.setsockopt(ZMQ_SUBSCRIBE,     stop_filter, strlen(stop_filter));
 }
 
 void CClient::send_heartbeat(int max_num)
@@ -107,58 +107,67 @@ void CClient::send_heartbeat(int max_num)
 void CClient::receive_command()
 {
 	Command cmd;
-
 	while (!exit_flag) {
 		cmd = listen_from_server();
 		if (is_irrelevant(cmd)) continue;
 		execute_control_command(cmd);
-		if (stop_flag) {
-			break;
-		}
+		//if (stop_flag) {
+		//	break;
+		//}
 	}
 	AfxMessageBox(TEXT("退出命令线程"));
 }
 
-bool CClient::is_not_reach(int max_num, int &count)
+void CClient::receive_tasks()
 {
-	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
+	CString str;
+	while (!exit_flag)
+	{
+		//接收新任务
+		s_send(task_requester, std::to_string(id_));
+		string new_task = s_recv(task_requester);
+		int new_task_id = std::atoi(new_task.c_str());
+		str.Format(TEXT("Receive a new task: %d \r\n"), new_task_id);
+		AddLog(str, TLP_NORMAL);
+
+		std::unique_lock<std::mutex> locker1(mu1);
+		task_queue.push(new_task_id);
+		locker1.unlock();
+		new_task_notifier.notify_one();
+
+		//等待任务计算完成
+		std::unique_lock<std::mutex> locker2(mu2);
+		task_finished_notifier.wait(locker2, [&]{return is_task_finished.load();});
+	}
+	OutputDebugString(TEXT("任务线程已退出"));
 }
 
-bool simulation_is_not_finished(int	task_num, int &count)
-{
-	return task_num == 0 ? true : count++ < task_num;
-}
-
-bool has_reached_endpoint(int input, int result)
-{
-	return (result - input == 5);
-}
 
 void CClient::simulation_wrap(int task_num)
 {
 	int result;
-	int count = 0;
 	CString str;
-	while (simulation_is_not_finished(task_num, count) && !exit_flag) {
-		// Send client id to server
-		s_send(task_requester, std::to_string(id_));
+	while (!exit_flag) {//仿真响应线程，当程序退出时，该线程终止
+		std::unique_lock<std::mutex> locker1(mu1);
 
-		// Receive a task from server
-		string new_task = s_recv(task_requester);
-		std::cout << "**********************************************" << std::endl;
-		str.Format(TEXT("Receive a new task: %d \r\n"), std::atoi(new_task.c_str()));
-		AddLog(str, TLP_NORMAL);
+		new_task_notifier.wait(locker1, [&]{return !task_queue.empty(); });
+		current_task_id = task_queue.front();
+		task_queue.pop();
+		locker1.unlock();
 
-		// Do some work
-		stop_flag = 0; //reset stop flag
-		current_task_id = atoi(new_task.c_str());
+
+		std::unique_lock<std::mutex> locker2(mu2);
+		stop_flag = 0; 
 		set_progress(0);
+		is_task_finished = false;
 		result = simulation(current_task_id);
 
-		if (result == -1) {
-			std::cout << "Simulation interrupt" << std::endl;
-			break;
-		}
+
+		//TODO:任务中途中断应该怎么处理
+		//if (result == -1) { 
+		//	std::cout << "Simulation interrupt" << std::endl;
+		//	continue;
+		//}
 
 		//Send results to sink
 		string result_info = std::to_string(current_task_id) + "_" + std::to_string(result);
@@ -166,10 +175,9 @@ void CClient::simulation_wrap(int task_num)
 		str.Format(TEXT("Result of task[%d] is: %d\r\n"), current_task_id, result);
 		AddLog(str, TLP_NORMAL);
 
-		std::cout << "**********************************************" << std::endl;
+		is_task_finished = true;
+		task_finished_notifier.notify_one();
 	}//end of while
- 	std::cout << "client: simulation finished" << std::endl;
-	task_requester.close();
 	AfxMessageBox(TEXT("仿真线程已退出"));
 }
 
@@ -327,4 +335,20 @@ void CClient::execute_control_command(SignalSet control_signal)
 		AddLog(TEXT("Unknown command\r\n"), TLP_NORMAL);
 	}
 	}//end of switch
+}
+
+bool CClient::is_not_reach(int max_num, int &count)
+{
+	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
+}
+
+bool simulation_is_not_finished(int	task_num, int &count)
+{
+	return task_num == 0 ? true : count++ < task_num;
+}
+
+
+bool has_reached_endpoint(int input, int result)
+{
+	return (result - input == 5);
 }

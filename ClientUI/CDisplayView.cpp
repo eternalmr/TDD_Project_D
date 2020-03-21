@@ -112,8 +112,11 @@ void CDisplayView::OnBnClickedConfirmidBtn()
 	client.set_id(_ttoi(str));
 
 	m_clientName = CString(TEXT("推演节点：")) + str;
+	client.task_thread = std::thread(&CClient::receive_tasks, &client);
 	client.simulation_thread = std::thread(&CClient::simulation_wrap, &client, 0);
 	client.control_thread = std::thread(&CClient::receive_command, &client);
+
+	client.task_thread.detach();
 	client.simulation_thread.detach();
 	client.control_thread.detach();
 

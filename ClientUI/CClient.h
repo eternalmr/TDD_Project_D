@@ -1,7 +1,10 @@
 #pragma once
 
 #include "pch.h"
-//#include <condition_variable>
+#include <queue>
+#include <mutex>
+#include <atomic>
+#include <condition_variable>
 #include "../project_paramters.h"
 
 class CClient {
@@ -37,6 +40,7 @@ public:
 
 	void send_heartbeat(int max_num = REPEAT_FOREVER);
 	void receive_command();
+	void receive_tasks();
 
 	void simulation_wrap(int task_num);
 	int simulation(int input);
@@ -53,6 +57,7 @@ public:
 private:
 	bool is_not_reach(int max_num, int &count); 
 	unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime);
+
 	uint simulation_progress;
 
 private:
@@ -63,12 +68,18 @@ private:
 	zmq::socket_t result_sender;
 	zmq::socket_t command_receiver;
 
+	std::queue<int> task_queue;
 	uint current_task_id;
 
 	string ip_;
 	string port_;
 
 	FILETIME IdleTime, KernelTime, UserTime;
+
+	std::mutex mu1, mu2;
+	std::condition_variable new_task_notifier;
+	std::condition_variable task_finished_notifier;
+	std::atomic<bool> is_task_finished;
 
 public:
 	int start_flag;
@@ -78,6 +89,7 @@ public:
 	bool exit_flag;
 
 	std::thread heartbeat_thread;
+	std::thread task_thread;
 	std::thread simulation_thread;
 	std::thread control_thread;
 };

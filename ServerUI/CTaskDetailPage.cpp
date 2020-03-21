@@ -46,6 +46,7 @@ BOOL CTaskDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// 在此添加额外的初始化
+	CreateTaskItems();
 	ShowLoadedTaskItems();
 
 	int itemHeight = 80;
@@ -54,6 +55,19 @@ BOOL CTaskDetailPage::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
+}
+
+
+void CTaskDetailPage::CreateTaskItems()
+{
+	int itemHeight = 80;
+	int itemWidth = 600;
+
+	m_LoadedTaskNum = server.tasks.size();
+	for (int i = 0; i < m_LoadedTaskNum; i++)
+	{
+
+	}
 }
 
 

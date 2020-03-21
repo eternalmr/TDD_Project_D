@@ -123,6 +123,15 @@ void CClient::receive_tasks()
 	CString str;
 	while (!exit_flag)
 	{
+		//判断server是否还有任务；
+		//用一个标记位still_has_task来标记
+		//若有则发出任务请求，没有则wait在此
+		//（若是没有任务了，server则返回一条no_task的消息）
+		//当server从没有任务，到收到新任务，从pub端口向client发一条消息
+		//收到消息后，client重新将still_has_task标记置为true
+
+
+
 		//接收新任务
 		s_send(task_requester, std::to_string(id_));
 		string new_task = s_recv(task_requester);

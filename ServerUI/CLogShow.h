@@ -51,7 +51,7 @@ public:
 	int TLogEditThreadSTL();
 
 	BOOL m_bRun;
-
+	std::thread m_LogThread;
 private:
 	CRITICAL_SECTION m_csTLogEdit;
 	CPtrList m_TLogItemQue;

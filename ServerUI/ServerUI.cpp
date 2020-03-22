@@ -18,6 +18,7 @@
 
 // 全局的server单例类入口
 CServer &server = CServer::get_instance();
+CLogShow &logger = CLogShow::GetInstance();
 
 // CServerUIApp
 
@@ -117,14 +118,14 @@ BOOL CServerUIApp::InitInstance()
 	ParseCommandLine(cmdInfo);
 
 
-
 	// 调度在命令行中指定的命令。  如果
 	// 用 /RegServer、/Register、/Unregserver 或 /Unregister 启动应用程序，则返回 FALSE。
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
-	// 初始化单例类
-	CLogShow::GetInstance();
+	// 启动接收心跳线程
+	server.heartbeat_thread = std::thread(&CServer::receive_heartbeat, &server, REPEAT_FOREVER);
+
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -136,6 +137,18 @@ int CServerUIApp::ExitInstance()
 {
 	//TODO: 处理可能已添加的附加资源
 	AfxOleTerm(FALSE);
+
+	logger.m_LogThread.join();
+	//if (server.heartbeat_thread.joinable())
+	server.heartbeat_thread.join();
+
+	if (server.task_thread.joinable()) 
+		server.task_thread.join();
+	if (server.result_thread.joinable())
+		server.result_thread.join();
+
+
+	ExitProcess(0);
 
 	return CWinApp::ExitInstance();
 }

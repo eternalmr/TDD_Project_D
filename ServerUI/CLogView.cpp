@@ -5,8 +5,6 @@
 #include "ServerUI.h"
 #include "CLogView.h"
 
-
-
 // CLogView
 
 IMPLEMENT_DYNCREATE(CLogView, CFormView)
@@ -28,12 +26,6 @@ void CLogView::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CLogView, CFormView)
-
-	//ON_MESSAGE(NW_DEBUG_LOG,  &CLogView::OnNwWritelog)
-	//ON_MESSAGE(NW_DETAIL_LOG, &CLogView::OnNwWritelog)
-	//ON_MESSAGE(NW_NORMAL_LOG, &CLogView::OnNwWritelog)
-	//ON_MESSAGE(NW_ERROR_LOG,  &CLogView::OnNwWritelog)
-
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
@@ -59,35 +51,13 @@ void CLogView::Dump(CDumpContext& dc) const
 void CLogView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
+
 	CRect rect;
 	GetClientRect(&rect);
-	CLogShow &logger = CLogShow::GetInstance();
 
 	logger.MoveWindow(0, 0, rect.Width(), rect.Height());
-	LogThread = std::thread(&CLogShow::TLogEditThreadSTL, &logger); //启动日志接受线程
-	LogThread.detach();
+	logger.m_LogThread = std::thread(&CLogShow::TLogEditThreadSTL, &logger); //启动日志接受线程
 }
-
-
-//afx_msg LRESULT CLogView::OnNwWritelog(WPARAM wParam, LPARAM lParam)
-//{
-//	CString *str = (CString*)lParam;
-//	if (wParam == NW_DEBUG_LOG) {
-//		m_log.AddLine(*str, TLP_DEBUG);
-//	}
-//	if (wParam == NW_DETAIL_LOG) {
-//		m_log.AddLine(*str, TLP_DETAIL);
-//	}
-//	if (wParam == NW_NORMAL_LOG) {
-//		m_log.AddLine(*str, TLP_NORMAL);
-//	}
-//	if (wParam == NW_ERROR_LOG) {
-//		m_log.AddLine(*str, TLP_ERROR);
-//	}
-//	delete str;
-//	
-//	return 0;
-//}
 
 
 void CLogView::OnSize(UINT nType, int cx, int cy)

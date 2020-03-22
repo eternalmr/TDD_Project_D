@@ -13,9 +13,16 @@ CServer::CServer(const string &ip, const string &port) :
 	total_task_num(0), completed_task_num(0),
 	in_computing_task_num(0), undo_task_num(0),
 	total_client_num(0), in_computing_client_num(0),
-	free_client_num(0), breakdown_client_num(0)
+	free_client_num(0), breakdown_client_num(0),
+	exit_flag(false)
 {
 	bind_sockets_to_ip();
+}
+
+CServer::~CServer()
+{
+	//heartbeat_receiver.close();
+
 }
 
 CServer& CServer::get_instance()
@@ -70,7 +77,7 @@ void CServer::receive_heartbeat(int max_num)
 	int count = 0;
 	string raw_signal;
 	CString str;
-	while (is_not_reach(max_num, count)) {
+	while (is_not_reach(max_num, count)&&(!exit_flag)) {
 		raw_signal = s_recv(heartbeat_receiver);
 		std::tie(client_id, task_id, simulation_progress) = decode_signal_new(raw_signal);
 
@@ -78,9 +85,8 @@ void CServer::receive_heartbeat(int max_num)
 			add_new_client(client_id);
 		}
 		update_client_info(client_id, task_id, simulation_progress);
-		//TODO : 加个线程的退出条件
 	}
-	heartbeat_receiver.close();
+	OutputDebugString(TEXT("心跳线程已退出\r\n"));
 }
 
 bool CServer::is_not_reach(int max_num, int &count)
@@ -180,7 +186,7 @@ void CServer::assign_tasks()
 
 	Task* undo_task_pointer;
 
-	while (true) {//TODO : simulation is finished
+	while (!exit_flag) {//TODO : simulation is finished
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
@@ -188,13 +194,17 @@ void CServer::assign_tasks()
 		if (!undo_task_pointer)
 			break; // all task is completed and stored, than break
 
+		//while ( undo_tasks.size == 0)
+		//{
+		//	wait();
+		//}
+
 		uint id = get_free_client();
 
 		assign_task_to(id, undo_task_pointer);
 
 	}// end of while
-
-	std::cout << "All tasks is finished!" << std::endl;
+	OutputDebugString(TEXT("任务分配线程已退出"));
 }
 
 Task* CServer::get_undo_task()
@@ -260,7 +270,7 @@ void CServer::collect_result(uint max_num)
 	int task_id, result;
 	string raw_result;
 
-	while (is_not_reach(max_num, count)) {
+	while (is_not_reach(max_num, count)&&!exit_flag) {
 		raw_result = s_recv(result_collector);
 		std::tie(task_id, result) = decode_result(raw_result);
 		tasks[task_id - 1].set_simulation_progress(100);
@@ -268,53 +278,49 @@ void CServer::collect_result(uint max_num)
 		in_computing_task_num--;
 		completed_task_num++;
 	}
+	OutputDebugString(TEXT("结果收集线程已退出"));
 }
 
-void CServer::start_simulation()
-{
-	std::thread      task_thread(&CServer::assign_tasks, this);
-	std::thread    result_thread(&CServer::collect_result, this, REPEAT_FOREVER);
-	std::thread heartbeat_thread(&CServer::receive_heartbeat, this, REPEAT_FOREVER);
-
-	char command;
-	while (true) {
-		std::cout << "Please input your command: ";
-		std::cin >> command;
-
-		if (command == 's') {
-			send_command_to_all_client("start");
-		}
-		else if (command == 'c') {
-			send_command_to_all_client("continue");
-		}
-		else if (command == 'p') {
-			send_command_to_all_client("pause");
-		}
-		else if (command == 'e') {
-			send_command_to_all_client("stop");
-			std::cout << "Simulation stop!" << std::endl;
-			break;
-		}
-		else {
-			std::cout << "Wrong command!" << std::endl;
-			continue;
-		}
-	}
-
-	task_thread.join();
-	result_thread.join();
-	heartbeat_thread.join();
-}
+//void CServer::start_simulation()
+//{
+//	std::thread      task_thread(&CServer::assign_tasks, this);
+//	std::thread    result_thread(&CServer::collect_result, this, REPEAT_FOREVER);
+//	std::thread heartbeat_thread(&CServer::receive_heartbeat, this, REPEAT_FOREVER);
+//
+//	char command;
+//	while (true) {
+//		std::cout << "Please input your command: ";
+//		std::cin >> command;
+//
+//		if (command == 's') {
+//			send_command_to_all_client("start");
+//		}
+//		else if (command == 'c') {
+//			send_command_to_all_client("continue");
+//		}
+//		else if (command == 'p') {
+//			send_command_to_all_client("pause");
+//		}
+//		else if (command == 'e') {
+//			send_command_to_all_client("stop");
+//			std::cout << "Simulation stop!" << std::endl;
+//			break;
+//		}
+//		else {
+//			std::cout << "Wrong command!" << std::endl;
+//			continue;
+//		}
+//	}
+//
+//	task_thread.join();
+//	result_thread.join();
+//	heartbeat_thread.join();
+//}
 
 void CServer::start_threads()
 {
-	std::thread      task_thread(&CServer::assign_tasks, this);
-	std::thread    result_thread(&CServer::collect_result, this, REPEAT_FOREVER);
-	std::thread heartbeat_thread(&CServer::receive_heartbeat, this, REPEAT_FOREVER);
-
-	if (task_thread.joinable()) task_thread.join();
-	if (result_thread.joinable()) result_thread.join();
-	if (heartbeat_thread.joinable()) heartbeat_thread.join();
+	task_thread      = std::thread(&CServer::assign_tasks, this);
+	result_thread    = std::thread(&CServer::collect_result, this, REPEAT_FOREVER);
 }
 
 void CServer::get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo)
@@ -331,4 +337,11 @@ void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, in
 	nIncomputing = in_computing_client_num;
 	nBreakdown = breakdown_client_num;
 	nFree = nTotal - nIncomputing - nBreakdown;
+}
+
+void CServer::exit()
+{
+	heartbeat_receiver.close();
+	//heartbeat_receiver.unbind("tcp://127.0.0.1:1217");
+	exit_flag = true;
 }

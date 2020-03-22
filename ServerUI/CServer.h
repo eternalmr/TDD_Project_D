@@ -14,6 +14,7 @@ class CServer {
 private:
 	CServer(const string &ip = default_server_ip, 
 		const string &port = default_server_port);
+	~CServer();
 
 public:
 	static CServer& get_instance();
@@ -55,6 +56,7 @@ public:
 
 	void get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo);
 	void get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, int &nBreakdown);
+	void exit();
 
 private:
 	bool is_not_reach(int max_num, int &count);
@@ -79,11 +81,15 @@ private:
 	std::atomic<int> free_client_num;
 	std::atomic<int> breakdown_client_num;
 	
-	//std::mutex mtx;
-
+	bool exit_flag;
 public:
 	ClientMap clients;
 	std::vector<Task> tasks;
+
+	std::thread heartbeat_thread;
 	std::thread sim_thread;
+	std::thread task_thread;
+	std::thread result_thread;
+
 };
 

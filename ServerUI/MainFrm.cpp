@@ -31,6 +31,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_CLIENT, ShiftPage)
 
 	ON_WM_SIZE()
+	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -280,3 +282,30 @@ LRESULT CMainFrame::ShiftPage(WPARAM wParam, LPARAM lParam)
 }
 
 
+
+
+void CMainFrame::OnClose()
+{
+	// 在此添加消息处理程序代码和/或调用默认值
+	int ReturnID = MessageBox(TEXT("您确定要退出程序吗？"),
+		TEXT("关闭server"), MB_OKCANCEL);
+
+	//TODO: 判断是否有计算任务仍然在执行
+	if (ReturnID == IDCANCEL) {
+		return;
+	}
+
+	CFrameWnd::OnClose();
+}
+
+
+void CMainFrame::OnDestroy()
+{
+	CFrameWnd::OnDestroy();
+
+	// 在此处添加消息处理程序代码
+	logger.m_bRun = FALSE;
+	server.exit();
+	//client.disconnect_to_ip_address();
+
+}

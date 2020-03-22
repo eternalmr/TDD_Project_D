@@ -22,7 +22,7 @@ CServer::CServer(const string &ip, const string &port) :
 CServer::~CServer()
 {
 	//heartbeat_receiver.close();
-
+	//
 }
 
 CServer& CServer::get_instance()
@@ -321,6 +321,9 @@ void CServer::start_threads()
 {
 	task_thread      = std::thread(&CServer::assign_tasks, this);
 	result_thread    = std::thread(&CServer::collect_result, this, REPEAT_FOREVER);
+
+	task_thread.detach();
+	result_thread.detach();
 }
 
 void CServer::get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo)
@@ -341,7 +344,29 @@ void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, in
 
 void CServer::exit()
 {
-	heartbeat_receiver.close();
+	//heartbeat_receiver.close();
+	int num;
+	try
+	{
+		heartbeat_receiver.setsockopt(ZMQ_LINGER, 0);
+		task_assigner.setsockopt(ZMQ_LINGER, 0);
+		command_sender.setsockopt(ZMQ_LINGER, 0);
+		result_collector.setsockopt(ZMQ_LINGER, 0);
+
+		heartbeat_receiver.close();
+		task_assigner.close();
+		command_sender.close();
+		result_collector.close();
+
+		num = zmq_ctx_term(&context);
+		//zmq_close(he)
+		//context.close();
+	}
+	catch (...)
+	{
+		OutputDebugString(TEXT("context πÿ±’“Ï≥£"));
+	}
+	
 	//heartbeat_receiver.unbind("tcp://127.0.0.1:1217");
 	exit_flag = true;
 }

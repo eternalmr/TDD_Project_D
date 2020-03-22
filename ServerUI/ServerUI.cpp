@@ -125,7 +125,7 @@ BOOL CServerUIApp::InitInstance()
 
 	// 启动接收心跳线程
 	server.heartbeat_thread = std::thread(&CServer::receive_heartbeat, &server, REPEAT_FOREVER);
-
+	server.heartbeat_thread.detach();
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -140,12 +140,12 @@ int CServerUIApp::ExitInstance()
 
 	logger.m_LogThread.join();
 	//if (server.heartbeat_thread.joinable())
-	server.heartbeat_thread.join();
+	//server.heartbeat_thread.join();
 
-	if (server.task_thread.joinable()) 
-		server.task_thread.join();
-	if (server.result_thread.joinable())
-		server.result_thread.join();
+	//if (server.task_thread.joinable()) 
+	//	server.task_thread.join();
+	//if (server.result_thread.joinable())
+	//	server.result_thread.join();
 
 
 	ExitProcess(0);

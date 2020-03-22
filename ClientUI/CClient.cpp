@@ -16,7 +16,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	ip_(ip), port_(port),
 	start_flag(0), pause_flag(0), stop_flag(0)
 	,simulation_progress(0),current_task_id(0)
-	,exit_flag(false),is_task_finished(false)
+	,exit_flag(false),task_finished(false)
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
@@ -146,7 +146,12 @@ void CClient::receive_tasks()
 
 		//等待任务计算完成
 		std::unique_lock<std::mutex> locker2(mu2);
-		task_finished_notifier.wait(locker2, [&]{return is_task_finished.load();});// 应该阻塞在这里啊！
+		while ( !task_finished.load())
+		{
+			std::this_thread::yield();
+			//task_finished_notifier.wait(locker2);
+		}
+		//task_finished_notifier.wait(locker2, [&]{return task_finished.load();});// 应该阻塞在这里啊！
 	}
 	OutputDebugString(TEXT("任务线程已退出"));
 }
@@ -164,7 +169,7 @@ void CClient::simulation_wrap(int task_num)
 		task_queue.pop();
 		locker1.unlock();
 
-		std::unique_lock<std::mutex> locker2(mu2);
+		//std::unique_lock<std::mutex> locker2(mu2);
 		result = simulation(current_task_id);
 
 		//TODO:任务中途中断应该怎么处理
@@ -179,8 +184,8 @@ void CClient::simulation_wrap(int task_num)
 		str.Format(TEXT("Result of task[%d] is: %d\r\n"), current_task_id, result);
 		AddLog(str, TLP_NORMAL);
 
-		is_task_finished = true;
-		task_finished_notifier.notify_one();
+		task_finished = true;
+		//task_finished_notifier.notify_one();
 	}//end of while
 	AfxMessageBox(TEXT("仿真线程已退出"));
 }
@@ -191,7 +196,7 @@ int CClient::simulation(int task_id)
 
 	stop_flag = 0;
 	set_progress(0);
-	is_task_finished = false;
+	task_finished = false;
 
 	while (!start_flag) {
 		std::this_thread::yield();

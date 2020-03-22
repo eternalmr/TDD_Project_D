@@ -81,7 +81,7 @@ private:
 	std::mutex mu1, mu2;
 	std::condition_variable new_task_notifier;
 	std::condition_variable task_finished_notifier;
-	std::atomic<bool> is_task_finished;
+	std::atomic<bool> task_finished;
 
 public:
 	int start_flag;

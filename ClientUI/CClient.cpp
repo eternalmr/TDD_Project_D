@@ -25,12 +25,12 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 
 CClient::~CClient()
 {
-	//disconnect_to_ip_address();
-	//heartbeat_sender.close();
-	//task_requester.close();
-	//result_sender.close();
-	//command_receiver.close();
-	//context.close();
+	heartbeat_sender.close();
+	task_requester.close();
+	result_sender.close();
+	command_receiver.close();
+
+	zmq_ctx_term(&context);
 }
 
 CClient& CClient::get_instance()
@@ -100,7 +100,7 @@ void CClient::send_heartbeat(int max_num)
 		s_send(heartbeat_sender, signal);
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
 	}
-	OutputDebugString(TEXT("心跳线程已退出"));
+	OutputDebugString(TEXT("心跳线程已退出。"));
 	//heartbeat_sender.close();
 }
 
@@ -112,7 +112,7 @@ void CClient::receive_command()
 		if (is_irrelevant(cmd)) continue;
 		execute_control_command(cmd);
 	}
-	OutputDebugString(TEXT("退出命令线程"));
+	OutputDebugString(TEXT("控制线程已退出。"));
 }
 
 void CClient::receive_tasks()
@@ -129,13 +129,22 @@ void CClient::receive_tasks()
 		//收到消息后，client重新将still_has_task标记置为true
 
 		//接收新任务
-		s_send(task_requester, std::to_string(id_));
-		OutputDebugString(TEXT("请求任务\r\n"));
-		string new_task = s_recv(task_requester);
+		string new_task;
+		try
+		{
+			s_send(task_requester, std::to_string(id_));
+			new_task = s_recv(task_requester);
+		}
+		catch (...)
+		{
+			break;
+		}
+
 		int new_task_id = std::atoi(new_task.c_str());
 		str.Format(TEXT("Receive a new task: %d \r\n"), new_task_id);
 		AddLog(str, TLP_NORMAL);
 
+		//将任务放入队列
 		std::unique_lock<std::mutex> locker1(mu1);
 		task_queue.push(new_task_id);
 		locker1.unlock();
@@ -189,12 +198,12 @@ void CClient::save_result_to_database(int result)
 
 void CClient::reset_current_task_to_undo()
 {
-
+	//TODO
 }
 
 void CClient::clear_temp_simulation_data()
 {
-
+	//TODO
 }
 
 uint CClient::get_task_from_queue()
@@ -216,7 +225,6 @@ int CClient::start_simulation(int task_id)
 
 	stop_flag = 0;
 	set_progress(0);
-	//task_finished = false;
 
 	while (!start_flag) {
 		std::this_thread::yield();
@@ -311,14 +319,9 @@ void CClient::exit()
 	heartbeat_sender.setsockopt(ZMQ_RCVTIMEO, 0);
 	task_requester.setsockopt(ZMQ_RCVTIMEO, 0);
 	result_sender.setsockopt(ZMQ_RCVTIMEO, 0);
-	command_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
+	command_receiver.setsockopt(ZMQ_RCVTIMEO, 1);
 
-	heartbeat_sender.close();
-	task_requester.close();
-	result_sender.close();
-	command_receiver.close();
 
-	zmq_ctx_term(&context);
 
 	stop_flag = 1;
 	exit_flag = true;
@@ -326,7 +329,14 @@ void CClient::exit()
 
 CClient::SignalSet CClient::listen_from_server()
 {
-	std::string command = s_recv(command_receiver);
+	std::string command;
+	try {
+		command = s_recv(command_receiver);
+	}
+	catch (...)
+	{
+		return kUnknown;
+	}
 
 	if (command == "start" || 
 		command == "start_" + std::to_string(id_))

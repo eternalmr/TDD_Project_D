@@ -133,5 +133,5 @@ void CDisplayView::OnDestroy()
 
 	//在此处添加消息处理程序代码
 	KillTimer(ClientInfoUpdateTimer);
-	OutputDebugString(TEXT("已终止client更新计时器"));
+	OutputDebugString(TEXT("已终止client更新计时器\r\n"));
 }

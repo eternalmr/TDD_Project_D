@@ -353,6 +353,11 @@ void CServer::exit()
 		command_sender.setsockopt(ZMQ_LINGER, 0);
 		result_collector.setsockopt(ZMQ_LINGER, 0);
 
+		heartbeat_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
+		task_assigner.setsockopt(ZMQ_RCVTIMEO, 0);
+		command_sender.setsockopt(ZMQ_RCVTIMEO, 0);
+		result_collector.setsockopt(ZMQ_RCVTIMEO, 0);
+
 		heartbeat_receiver.close();
 		task_assigner.close();
 		command_sender.close();

@@ -12,7 +12,7 @@ class CClient {
 public:
 	enum SignalSet {
 		kStart = 111, kStop = 222, kPause = 333,
-		kContinue = 444, kUnknow = 555
+		kContinue = 444, kUnknown = 555
 	};
 	
 private:
@@ -42,13 +42,16 @@ public:
 	void receive_command();
 	void receive_tasks();
 
-	void simulation_wrap(int task_num);
+	void wrap_simulation_process(int task_num);
 
-	void save_result(int result);
+	void set_task_status_to_finished();
 
+	void save_result_to_database(int result);
+	void reset_current_task_to_undo();
+	void clear_temp_simulation_data();
 	uint get_task_from_queue();
 
-	int simulation(int input);
+	int start_simulation(int input);
 	double get_cpu_status();
 	double get_memoery_status();
 

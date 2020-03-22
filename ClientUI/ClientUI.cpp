@@ -13,7 +13,7 @@
 #include "ClientUIDoc.h"
 #include "ClientUIView.h"
 
-
+//#include <crtdbg.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -64,6 +64,9 @@ CClientUIApp theApp;
 
 BOOL CClientUIApp::InitInstance()
 {
+	//_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(344);
+	//_CrtSetBreakAlloc(343);
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
 	//则需要 InitCommonControlsEx()。  否则，将无法创建窗口。
@@ -75,7 +78,6 @@ BOOL CClientUIApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinApp::InitInstance();
-
 
 	// 初始化 OLE 库
 	if (!AfxOleInit())
@@ -124,9 +126,11 @@ BOOL CClientUIApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
+
 	// 初始化客户端和日志单例
 	client.heartbeat_thread = std::thread(&CClient::send_heartbeat, &client, 0);
 	//client.heartbeat_thread.detach();
+
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	int Width = 800;
@@ -157,10 +161,12 @@ int CClientUIApp::ExitInstance()
 	//	client.simulation_thread.join();
 	//}
 
-	
 	//HANDLE MyProcess = GetCurrentProcess();
 	//TerminateProcess(MyProcess, 0);
-	ExitProcess(0);
+	//delete pDocTemplate;
+	
+	//m_pDocManager->CloseAllDocuments(TRUE);
+	//ExitProcess(0);
 
 	return CWinApp::ExitInstance();
 }

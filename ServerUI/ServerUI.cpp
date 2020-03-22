@@ -16,6 +16,11 @@
 #define new DEBUG_NEW
 #endif
 
+
+//_CrtSetBreakAlloc(9553);
+//_CrtSetBreakAlloc(9552);
+
+
 // 全局的server单例类入口
 CServer &server = CServer::get_instance();
 CLogShow &logger = CLogShow::GetInstance();
@@ -126,6 +131,14 @@ BOOL CServerUIApp::InitInstance()
 	// 启动接收心跳线程
 	server.heartbeat_thread = std::thread(&CServer::receive_heartbeat, &server, REPEAT_FOREVER);
 	server.heartbeat_thread.detach();
+
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(384);
+	//_CrtSetBreakAlloc(17965);
+	//_CrtSetBreakAlloc(17950);
+	//_CrtSetBreakAlloc(3579);
+	//_CrtSetBreakAlloc(766);
+	//_CrtSetBreakAlloc(760);
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	m_pMainWnd->ShowWindow(SW_SHOW);

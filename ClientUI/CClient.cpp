@@ -26,11 +26,11 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 CClient::~CClient()
 {
 	//disconnect_to_ip_address();
-	heartbeat_sender.close();
-	task_requester.close();
-	result_sender.close();
-	command_receiver.close();
-	context.close();
+	//heartbeat_sender.close();
+	//task_requester.close();
+	//result_sender.close();
+	//command_receiver.close();
+	//context.close();
 }
 
 CClient& CClient::get_instance()
@@ -111,11 +111,8 @@ void CClient::receive_command()
 		cmd = listen_from_server();
 		if (is_irrelevant(cmd)) continue;
 		execute_control_command(cmd);
-		//if (stop_flag) {
-		//	break;
-		//}
 	}
-	AfxMessageBox(TEXT("退出命令线程"));
+	OutputDebugString(TEXT("退出命令线程"));
 }
 
 void CClient::receive_tasks()
@@ -155,26 +152,33 @@ void CClient::receive_tasks()
 }
 
 
-void CClient::simulation_wrap(int task_num)
+void CClient::wrap_simulation_process(int task_num)
 {
 	int result;
 
 	while (!exit_flag) {//仿真响应线程，当程序退出时，该线程终止
 		current_task_id = get_task_from_queue();
-		result = simulation(current_task_id);
+		result = start_simulation(current_task_id);
 
-		//TODO:任务中途中断应该怎么处理
-		//if (result == -1) { 
-		//	std::cout << "Simulation interrupt" << std::endl;
-		//	continue;
-		//}
-		save_result(result);
-		task_finished = true;
+		if (result == -1) { 
+			reset_current_task_to_undo();
+			clear_temp_simulation_data();
+			AddLog(TEXT("current task has been interrupted"), TLP_ERROR);
+			continue;
+		}
+
+		save_result_to_database(result);
+		set_task_status_to_finished();
 	}//end of while
-	AfxMessageBox(TEXT("仿真线程已退出"));
+	OutputDebugString(TEXT("仿真线程已退出"));
 }
 
-void CClient::save_result(int result)
+void CClient::set_task_status_to_finished()
+{
+	task_finished = true;
+}
+
+void CClient::save_result_to_database(int result)
 {
 	CString str;
 	string result_info = std::to_string(current_task_id) + "_" + std::to_string(result);
@@ -183,20 +187,30 @@ void CClient::save_result(int result)
 	AddLog(str, TLP_NORMAL);
 }
 
+void CClient::reset_current_task_to_undo()
+{
+
+}
+
+void CClient::clear_temp_simulation_data()
+{
+
+}
+
 uint CClient::get_task_from_queue()
 {
-	std::unique_lock<std::mutex> locker1(mu1);
+	std::unique_lock<std::mutex> locker(mu1);
 	while (task_queue.empty())
 	{
-		new_task_notifier.wait(locker1);
+		new_task_notifier.wait(locker);
 	}
 	uint task_id = task_queue.front();
 	task_queue.pop();
-	locker1.unlock();
+	locker.unlock();
 	return task_id;
 }
 
-int CClient::simulation(int task_id)
+int CClient::start_simulation(int task_id)
 {
 	int result = task_id;
 
@@ -288,7 +302,24 @@ uint CClient::get_task_id()
 
 void CClient::exit()
 {
-	//command_receiver.close();
+	//将所有端口的发送延迟和接收延迟设置为0秒，并关闭所有端口和context
+	heartbeat_sender.setsockopt(ZMQ_LINGER,0);
+	task_requester.setsockopt(ZMQ_LINGER, 0);
+	result_sender.setsockopt(ZMQ_LINGER, 0);
+	command_receiver.setsockopt(ZMQ_LINGER, 0);
+
+	heartbeat_sender.setsockopt(ZMQ_RCVTIMEO, 0);
+	task_requester.setsockopt(ZMQ_RCVTIMEO, 0);
+	result_sender.setsockopt(ZMQ_RCVTIMEO, 0);
+	command_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
+
+	heartbeat_sender.close();
+	task_requester.close();
+	result_sender.close();
+	command_receiver.close();
+
+	zmq_ctx_term(&context);
+
 	stop_flag = 1;
 	exit_flag = true;
 }
@@ -309,7 +340,7 @@ CClient::SignalSet CClient::listen_from_server()
 	if (command == "continue" || 
 		command == "continue_" + std::to_string(id_))
 		return kContinue;
-	return kUnknow;
+	return kUnknown;
 }
 
 bool CClient::is_irrelevant(const SignalSet &signal) const

@@ -153,6 +153,6 @@ void CMainFrame::OnDestroy()
 
 	logger.m_bRun = FALSE;
 	client.exit();
-	client.disconnect_to_ip_address();
+	//client.disconnect_to_ip_address();
 
 }

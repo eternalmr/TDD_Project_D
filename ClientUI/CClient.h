@@ -43,6 +43,11 @@ public:
 	void receive_tasks();
 
 	void simulation_wrap(int task_num);
+
+	void save_result(int result);
+
+	uint get_task_from_queue();
+
 	int simulation(int input);
 	double get_cpu_status();
 	double get_memoery_status();
@@ -82,6 +87,7 @@ private:
 	std::condition_variable new_task_notifier;
 	std::condition_variable task_finished_notifier;
 	std::atomic<bool> task_finished;
+	//bool  task_finished;
 
 public:
 	int start_flag;

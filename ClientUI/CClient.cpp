@@ -120,6 +120,7 @@ void CClient::receive_command()
 
 void CClient::receive_tasks()
 {
+	int count = 0;
 	CString str;
 	while (!exit_flag)
 	{
@@ -130,10 +131,9 @@ void CClient::receive_tasks()
 		//当server从没有任务，到收到新任务，从pub端口向client发一条消息
 		//收到消息后，client重新将still_has_task标记置为true
 
-
-
 		//接收新任务
 		s_send(task_requester, std::to_string(id_));
+		OutputDebugString(TEXT("请求任务\r\n"));
 		string new_task = s_recv(task_requester);
 		int new_task_id = std::atoi(new_task.c_str());
 		str.Format(TEXT("Receive a new task: %d \r\n"), new_task_id);
@@ -145,13 +145,11 @@ void CClient::receive_tasks()
 		new_task_notifier.notify_one();
 
 		//等待任务计算完成
-		std::unique_lock<std::mutex> locker2(mu2);
-		while ( !task_finished.load())
+		task_finished = false;
+		while ( !task_finished )
 		{
 			std::this_thread::yield();
-			//task_finished_notifier.wait(locker2);
 		}
-		//task_finished_notifier.wait(locker2, [&]{return task_finished.load();});// 应该阻塞在这里啊！
 	}
 	OutputDebugString(TEXT("任务线程已退出"));
 }
@@ -160,16 +158,9 @@ void CClient::receive_tasks()
 void CClient::simulation_wrap(int task_num)
 {
 	int result;
-	CString str;
+
 	while (!exit_flag) {//仿真响应线程，当程序退出时，该线程终止
-		std::unique_lock<std::mutex> locker1(mu1);
-
-		new_task_notifier.wait(locker1, [&]{return !task_queue.empty(); });
-		current_task_id = task_queue.front();
-		task_queue.pop();
-		locker1.unlock();
-
-		//std::unique_lock<std::mutex> locker2(mu2);
+		current_task_id = get_task_from_queue();
 		result = simulation(current_task_id);
 
 		//TODO:任务中途中断应该怎么处理
@@ -177,17 +168,32 @@ void CClient::simulation_wrap(int task_num)
 		//	std::cout << "Simulation interrupt" << std::endl;
 		//	continue;
 		//}
-
-		//Send results to sink
-		string result_info = std::to_string(current_task_id) + "_" + std::to_string(result);
-		s_send(result_sender, result_info);
-		str.Format(TEXT("Result of task[%d] is: %d\r\n"), current_task_id, result);
-		AddLog(str, TLP_NORMAL);
-
+		save_result(result);
 		task_finished = true;
-		//task_finished_notifier.notify_one();
 	}//end of while
 	AfxMessageBox(TEXT("仿真线程已退出"));
+}
+
+void CClient::save_result(int result)
+{
+	CString str;
+	string result_info = std::to_string(current_task_id) + "_" + std::to_string(result);
+	s_send(result_sender, result_info);
+	str.Format(TEXT("Result of task[%d] is: %d\r\n"), current_task_id, result);
+	AddLog(str, TLP_NORMAL);
+}
+
+uint CClient::get_task_from_queue()
+{
+	std::unique_lock<std::mutex> locker1(mu1);
+	while (task_queue.empty())
+	{
+		new_task_notifier.wait(locker1);
+	}
+	uint task_id = task_queue.front();
+	task_queue.pop();
+	locker1.unlock();
+	return task_id;
 }
 
 int CClient::simulation(int task_id)
@@ -196,7 +202,7 @@ int CClient::simulation(int task_id)
 
 	stop_flag = 0;
 	set_progress(0);
-	task_finished = false;
+	//task_finished = false;
 
 	while (!start_flag) {
 		std::this_thread::yield();

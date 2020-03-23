@@ -5,6 +5,7 @@
 #include <map>
 #include <mutex>
 #include <atomic>
+#include <deque>
 #include "../project_paramters.h"
 
 class Task;
@@ -88,6 +89,7 @@ private:
 public:
 	ClientMap clients;
 	std::vector<Task> tasks;
+	std::deque<Task*> undo_tasks;
 
 	std::thread heartbeat_thread;
 	std::thread sim_thread;

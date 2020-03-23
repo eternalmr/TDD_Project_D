@@ -228,14 +228,16 @@ void CServer::assign_tasks()
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
-		undo_task_pointer = get_undo_task();
-		if (!undo_task_pointer)
-			continue; // all task is completed and stored, than break
-
 		//while ( undo_tasks.size == 0)
 		//{
 		//	wait();
 		//}
+
+		undo_task_pointer = get_undo_task();
+		if (!undo_task_pointer)
+			continue; // all task is completed and stored, than break
+
+
 		try {
 			id = get_free_client();
 		}

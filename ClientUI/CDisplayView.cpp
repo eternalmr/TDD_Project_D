@@ -38,6 +38,8 @@ BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CONFIRMID_BTN, &CDisplayView::OnBnClickedConfirmidBtn)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON1, &CDisplayView::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDisplayView::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -133,4 +135,16 @@ void CDisplayView::OnDestroy()
 	//在此处添加消息处理程序代码
 	KillTimer(ClientInfoUpdateTimer);
 	OutputDebugString(TEXT("已终止client更新计时器\r\n"));
+}
+
+
+void CDisplayView::OnBnClickedButton1()
+{
+	client.server_has_no_pending_tasks = false;
+}
+
+
+void CDisplayView::OnBnClickedButton2()
+{
+	client.server_has_no_pending_tasks = true;
 }

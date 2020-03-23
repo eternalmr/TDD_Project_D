@@ -17,6 +17,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	start_flag(0), pause_flag(0), stop_flag(0)
 	,simulation_progress(0),current_task_id(0)
 	,exit_flag(false),task_finished(false)
+	,server_has_no_pending_tasks(true)
 {
 	connect_to_ip_address();
 	subscribe_specific_signal();
@@ -128,6 +129,11 @@ void CClient::receive_tasks()
 		//当server从没有任务，到收到新任务，从pub端口向client发一条消息
 		//收到消息后，client重新将still_has_task标记置为true
 
+		while (server_has_no_pending_tasks) {
+			OutputDebugString(TEXT("server has no pending tasks\r\n"));
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		}
+
 		try {
 			new_task_id = get_new_task_from_server();
 		}
@@ -137,6 +143,12 @@ void CClient::receive_tasks()
 		}
 		catch (...) {
 			OutputDebugString(TEXT("Unknown exception occur in CClient::receive_tasks"));
+			continue;
+		}
+
+		if (new_task_id == -1) {
+			server_has_no_pending_tasks = true;
+			OutputDebugString(TEXT("no new task"));
 			continue;
 		}
 
@@ -229,7 +241,7 @@ void CClient::clear_temp_simulation_data()
 uint CClient::get_task_from_queue()
 {
 	std::unique_lock<std::mutex> locker(queue_mtx);
-	while (task_queue.empty() || !exit_flag) {
+	while (task_queue.empty() && !exit_flag) {
 		new_task_notifier.wait(locker);
 	}
 

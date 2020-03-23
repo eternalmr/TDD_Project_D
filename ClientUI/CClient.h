@@ -98,12 +98,15 @@ private:
 	std::atomic<bool> task_finished;
 	//bool  task_finished;
 
+
+
 public:
 	int start_flag;
 	int pause_flag;
 	int stop_flag;
 
 	bool exit_flag;
+	bool server_has_no_pending_tasks;
 
 	std::thread heartbeat_thread;
 	std::thread task_thread;

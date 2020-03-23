@@ -42,6 +42,12 @@ public:
 	void receive_command();
 	void receive_tasks();
 
+	void wait_simulation_finish();
+
+	void put_task_into_queue(int new_task_id);
+
+	int get_new_task_from_server();
+
 	void wrap_simulation_process(int task_num);
 
 	void set_task_status_to_finished();
@@ -86,7 +92,7 @@ private:
 
 	FILETIME IdleTime, KernelTime, UserTime;
 
-	std::mutex mu1, mu2;
+	std::mutex queue_mtx, mu2;
 	std::condition_variable new_task_notifier;
 	std::condition_variable task_finished_notifier;
 	std::atomic<bool> task_finished;

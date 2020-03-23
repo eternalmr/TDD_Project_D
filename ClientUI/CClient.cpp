@@ -117,8 +117,8 @@ void CClient::receive_command()
 
 void CClient::receive_tasks()
 {
-	int count = 0;
-	CString str;
+	int new_task_id;
+
 	while (!exit_flag)
 	{
 		//判断server是否还有任务；
@@ -128,52 +128,65 @@ void CClient::receive_tasks()
 		//当server从没有任务，到收到新任务，从pub端口向client发一条消息
 		//收到消息后，client重新将still_has_task标记置为true
 
-		//接收新任务
-		string new_task;
-		try
-		{
-			s_send(task_requester, std::to_string(id_));
-			new_task = s_recv(task_requester);
+		try {
+			new_task_id = get_new_task_from_server();
 		}
-		catch (zmq::error_t &e)
-		{
-			CString str(e.what());
-			OutputDebugString(str);
+		catch (zmq::error_t &e) {
+			OutputDebugString(CA2T(e.what()));
 			continue;
 		}
-		catch (...)
-		{
+		catch (...) {
 			OutputDebugString(TEXT("Unknown exception occur in CClient::receive_tasks"));
 			continue;
 		}
 
-		int new_task_id = std::atoi(new_task.c_str());
-		str.Format(TEXT("Receive a new task: %d \r\n"), new_task_id);
-		AddLog(str, TLP_NORMAL);
-
-		//将任务放入队列
-		std::unique_lock<std::mutex> locker1(mu1);
-		task_queue.push(new_task_id);
-		locker1.unlock();
-		new_task_notifier.notify_one();
-
-		//等待任务计算完成
-		task_finished = false;
-		while ( !task_finished )
-		{
-			std::this_thread::yield();
-		}
+		put_task_into_queue(new_task_id);
+		wait_simulation_finish();
 	}
-	OutputDebugString(TEXT("任务线程已退出"));
+	OutputDebugString(TEXT("任务接收线程已退出。"));
 }
 
+
+void CClient::wait_simulation_finish()
+{
+	task_finished = false;
+	while (!task_finished) {
+		std::this_thread::yield();
+	}
+}
+
+void CClient::put_task_into_queue(int new_task_id)
+{
+	std::unique_lock<std::mutex> locker(queue_mtx);
+	task_queue.push(new_task_id);
+	locker.unlock();
+	new_task_notifier.notify_one(); //通知仿真线程收到新任务
+}
+
+int CClient::get_new_task_from_server()
+{
+	CString str;
+	s_send(task_requester, std::to_string(id_));
+	string new_task = s_recv(task_requester);
+	int new_task_id = std::atoi(new_task.c_str());
+	str.Format(TEXT("Receive a new task: %d \r\n"), new_task_id);
+	AddLog(str, TLP_NORMAL);
+	return new_task_id;
+}
 
 void CClient::wrap_simulation_process(int task_num)
 {
 	int result;
 
-	while (!exit_flag) {//仿真响应线程，当程序退出时，该线程终止
-		current_task_id = get_task_from_queue();
+	while (!exit_flag) {
+		try {
+			current_task_id = get_task_from_queue();
+		}
+		catch (...) {
+			OutputDebugString(TEXT("终止仿真..."));
+			break;
+		}
+		
 		result = start_simulation(current_task_id);
 
 		if (result == -1) { 
@@ -215,11 +228,14 @@ void CClient::clear_temp_simulation_data()
 
 uint CClient::get_task_from_queue()
 {
-	std::unique_lock<std::mutex> locker(mu1);
-	while (task_queue.empty())
-	{
+	std::unique_lock<std::mutex> locker(queue_mtx);
+	while (task_queue.empty() || !exit_flag) {
 		new_task_notifier.wait(locker);
 	}
+
+	if (exit_flag)
+		throw "exit process";
+
 	uint task_id = task_queue.front();
 	task_queue.pop();
 	locker.unlock();

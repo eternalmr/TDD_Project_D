@@ -117,13 +117,12 @@ void CDisplayView::OnBnClickedConfirmidBtn()
 	client.control_thread = std::thread(&CClient::receive_command, &client);
 
 	client.task_thread.detach();
-	client.simulation_thread.detach();
 	client.control_thread.detach();
+	client.simulation_thread.detach();
 
 	UpdateData(FALSE);
 	m_confirmIdBtn.ShowWindow(FALSE);
 	m_ClientIdInput.ShowWindow(FALSE);
-	///
 }
 
 

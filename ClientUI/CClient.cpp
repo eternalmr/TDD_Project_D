@@ -135,9 +135,16 @@ void CClient::receive_tasks()
 			s_send(task_requester, std::to_string(id_));
 			new_task = s_recv(task_requester);
 		}
+		catch (zmq::error_t &e)
+		{
+			CString str(e.what());
+			OutputDebugString(str);
+			continue;
+		}
 		catch (...)
 		{
-			break;
+			OutputDebugString(TEXT("Unknown exception occur in CClient::receive_tasks"));
+			continue;
 		}
 
 		int new_task_id = std::atoi(new_task.c_str());
@@ -319,9 +326,7 @@ void CClient::exit()
 	heartbeat_sender.setsockopt(ZMQ_RCVTIMEO, 0);
 	task_requester.setsockopt(ZMQ_RCVTIMEO, 0);
 	result_sender.setsockopt(ZMQ_RCVTIMEO, 0);
-	command_receiver.setsockopt(ZMQ_RCVTIMEO, 1);
-
-
+	command_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
 
 	stop_flag = 1;
 	exit_flag = true;
@@ -332,6 +337,12 @@ CClient::SignalSet CClient::listen_from_server()
 	std::string command;
 	try {
 		command = s_recv(command_receiver);
+	}
+	catch (zmq::error_t &e) {
+		//e.what();
+		CString str(e.what());
+		OutputDebugString(str);
+		return kUnknown;
 	}
 	catch (...)
 	{

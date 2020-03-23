@@ -65,7 +65,7 @@ CClientUIApp theApp;
 BOOL CClientUIApp::InitInstance()
 {
 	//_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(2247);
+	//_CrtSetBreakAlloc(1779);
 	//_CrtSetBreakAlloc(2240);
 
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要

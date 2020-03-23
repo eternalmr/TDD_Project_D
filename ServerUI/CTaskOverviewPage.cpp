@@ -52,6 +52,7 @@ BEGIN_MESSAGE_MAP(CTaskOverviewPage, CDialogEx)
 	ON_BN_CLICKED(IDC_STOP,     &CTaskOverviewPage::OnBnClickedStop)
 	ON_BN_CLICKED(IDC_LOAD,		&CTaskOverviewPage::OnBnClickedLoad)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -161,4 +162,14 @@ void CTaskOverviewPage::UpdateTaskInfo()
 
 	m_ProgressBar.SetRange(0, totalNum);
 	m_ProgressBar.SetPos(completedNum);
+}
+
+
+void CTaskOverviewPage::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	KillTimer(UpdateTaskInfoTimer);
+	OutputDebugString(TEXT("任务数量信息计时器更新已停止。\r\n"));
 }

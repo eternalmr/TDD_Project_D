@@ -35,6 +35,7 @@ void CClientOverviewPage::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CClientOverviewPage, CDialogEx)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -90,3 +91,13 @@ void CClientOverviewPage::UpdateClientInfo()
 	m_ProgressBar.SetPos(freeNum + inComputingNum);
 }
 
+
+
+void CClientOverviewPage::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+	
+	KillTimer(UpdateClientInfoTimer);
+	OutputDebugString(TEXT("Client数量计时器已停止。\r\n"));
+
+}

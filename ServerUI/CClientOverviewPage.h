@@ -32,4 +32,6 @@ public:
 	void UpdateClientInfo();
 private:
 	enum TimerType { UpdateClientInfoTimer };
+public:
+	afx_msg void OnDestroy();
 };

@@ -46,4 +46,5 @@ public:
 	CButton m_ThreadBtn;
 	CButton m_PauseBtn;
 	CButton m_ContinueBtn;
+	afx_msg void OnDestroy();
 };

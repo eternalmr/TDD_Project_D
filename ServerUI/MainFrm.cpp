@@ -306,6 +306,4 @@ void CMainFrame::OnDestroy()
 	// 在此处添加消息处理程序代码
 	logger.m_bRun = FALSE;
 	server.exit();
-	//client.disconnect_to_ip_address();
-
 }

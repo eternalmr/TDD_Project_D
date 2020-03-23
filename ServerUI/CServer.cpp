@@ -21,8 +21,12 @@ CServer::CServer(const string &ip, const string &port) :
 
 CServer::~CServer()
 {
-	//heartbeat_receiver.close();
-	//
+	zmq_ctx_term(&context);
+
+	heartbeat_receiver.close();
+	task_assigner.close();
+	command_sender.close();
+	result_collector.close();
 }
 
 CServer& CServer::get_instance()
@@ -41,9 +45,33 @@ void CServer::bind_sockets_to_ip()
 
 void CServer::unbind_sockets_to_ip()
 {
-	heartbeat_receiver.unbind(get_ip_address());
-	command_sender.unbind("tcp://127.0.0.1:5556");
-	task_assigner.unbind("tcp://127.0.0.1:5560"); //TODO : 
+	try {
+		heartbeat_receiver.unbind("tcp://127.0.0.1:1217");
+	}
+	catch (zmq::error_t &e) {
+		OutputDebugString(CA2T(e.what()));
+	}
+
+	try {
+		command_sender.unbind("tcp://127.0.0.1:5556");
+	}
+	catch (zmq::error_t &e) {
+		OutputDebugString(CA2T(e.what()));
+	}
+
+	try {
+		task_assigner.unbind("tcp://127.0.0.1:5560"); //TODO : 
+	}
+	catch (zmq::error_t &e) {
+		OutputDebugString(CA2T(e.what()));
+	}
+
+	try {
+		result_collector.unbind("tcp://127.0.0.1:5558");
+	}
+	catch (zmq::error_t &e) {
+		OutputDebugString(CA2T(e.what()));
+	}
 }
 
 string CServer::get_ip_address()
@@ -70,15 +98,25 @@ void CServer::add_tasks(int num)
 	}
 }
 //========================= heartbeat related functions ==================================
-void CServer::receive_heartbeat(int max_num)
+void CServer::receive_heartbeat()
 {
 	uint client_id, task_id;
 	uint simulation_progress;
-	int count = 0;
 	string raw_signal;
-	CString str;
-	while (is_not_reach(max_num, count)&&(!exit_flag)) {
-		raw_signal = s_recv(heartbeat_receiver);
+
+	while (!exit_flag) {
+		try {
+			raw_signal = my_recv(heartbeat_receiver);
+		}
+		catch (zmq::error_t &e) {
+			OutputDebugString(CA2T(e.what()));
+			continue;
+		}
+		catch (...) {
+			OutputDebugString(TEXT("Unknown exception occur"));
+			continue;
+		}
+
 		std::tie(client_id, task_id, simulation_progress) = decode_signal_new(raw_signal);
 
 		if (is_not_connect_to_client(client_id)){
@@ -185,26 +223,29 @@ void CServer::assign_tasks()
 	// TODO : check tasks and clients status
 
 	Task* undo_task_pointer;
-
+	uint id;
 	while (!exit_flag) {//TODO : simulation is finished
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
 		undo_task_pointer = get_undo_task();
 		if (!undo_task_pointer)
-			break; // all task is completed and stored, than break
+			continue; // all task is completed and stored, than break
 
 		//while ( undo_tasks.size == 0)
 		//{
 		//	wait();
 		//}
-
-		uint id = get_free_client();
-
+		try {
+			id = get_free_client();
+		}
+		catch (zmq::error_t &e) {
+			OutputDebugString(CA2T(e.what()));
+			continue;
+		}
 		assign_task_to(id, undo_task_pointer);
-
 	}// end of while
-	OutputDebugString(TEXT("任务分配线程已退出"));
+	OutputDebugString(TEXT("任务分配线程已退出。"));
 }
 
 Task* CServer::get_undo_task()
@@ -223,8 +264,15 @@ uint CServer::get_free_client()
 {
 	Task* ptask;
 	CString str;
+	string reply;
 
-	string reply = s_recv(task_assigner);//reply client id
+	try {
+		reply = my_recv(task_assigner);//reply client id
+	}
+	catch (zmq::error_t &e) {
+		throw e;
+	}
+
 	uint id = stoi(reply);
 	//str = CString(TEXT("Receive request from client[")) 
 	//	+ CA2T(reply.c_str()) + CString(TEXT("]\r\n"));
@@ -264,21 +312,32 @@ void CServer::assign_task_to(uint id, Task* p_task)
 	AddLog(str, TLP_NORMAL);
 }
 
-void CServer::collect_result(uint max_num)
+void CServer::collect_result()
 {
 	int count = 0;
 	int task_id, result;
 	string raw_result;
 
-	while (is_not_reach(max_num, count)&&!exit_flag) {
-		raw_result = s_recv(result_collector);
+	while (!exit_flag) {
+		try {
+			raw_result = my_recv(result_collector);
+		}
+		catch (zmq::error_t &e) {
+			OutputDebugString(CA2T(e.what()));
+			continue;
+		}
+		catch (...) {
+			OutputDebugString(TEXT("Unknown exception occur"));
+			continue;
+		}
+		
 		std::tie(task_id, result) = decode_result(raw_result);
 		tasks[task_id - 1].set_simulation_progress(100);
 		in_computing_client_num--;
 		in_computing_task_num--;
 		completed_task_num++;
 	}
-	OutputDebugString(TEXT("结果收集线程已退出"));
+	OutputDebugString(TEXT("结果收集线程已退出。"));
 }
 
 //void CServer::start_simulation()
@@ -319,8 +378,8 @@ void CServer::collect_result(uint max_num)
 
 void CServer::start_threads()
 {
-	task_thread      = std::thread(&CServer::assign_tasks, this);
-	result_thread    = std::thread(&CServer::collect_result, this, REPEAT_FOREVER);
+	task_thread   = std::thread(&CServer::assign_tasks, this);
+	result_thread = std::thread(&CServer::collect_result, this);
 
 	task_thread.detach();
 	result_thread.detach();
@@ -344,34 +403,34 @@ void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, in
 
 void CServer::exit()
 {
-	//heartbeat_receiver.close();
-	int num;
-	try
-	{
-		heartbeat_receiver.setsockopt(ZMQ_LINGER, 0);
-		task_assigner.setsockopt(ZMQ_LINGER, 0);
-		command_sender.setsockopt(ZMQ_LINGER, 0);
-		result_collector.setsockopt(ZMQ_LINGER, 0);
-
-		heartbeat_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
-		task_assigner.setsockopt(ZMQ_RCVTIMEO, 0);
-		command_sender.setsockopt(ZMQ_RCVTIMEO, 0);
-		result_collector.setsockopt(ZMQ_RCVTIMEO, 0);
-
-		heartbeat_receiver.close();
-		task_assigner.close();
-		command_sender.close();
-		result_collector.close();
-
-		num = zmq_ctx_term(&context);
-		//zmq_close(he)
-		//context.close();
-	}
-	catch (...)
-	{
-		OutputDebugString(TEXT("context 关闭异常"));
-	}
-	
-	//heartbeat_receiver.unbind("tcp://127.0.0.1:1217");
 	exit_flag = true;
+
+	heartbeat_receiver.setsockopt(ZMQ_LINGER, 0);
+	task_assigner.setsockopt(ZMQ_LINGER, 0);
+	command_sender.setsockopt(ZMQ_LINGER, 0);
+	result_collector.setsockopt(ZMQ_LINGER, 0);
+
+	heartbeat_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
+	task_assigner.setsockopt(ZMQ_RCVTIMEO, 0);
+	command_sender.setsockopt(ZMQ_RCVTIMEO, 0);
+	result_collector.setsockopt(ZMQ_RCVTIMEO, 0);
+	
+	//unbind_sockets_to_ip();
+}
+
+std::string CServer::my_recv(zmq::socket_t & socket) 
+{
+	zmq::message_t message;
+
+	try {
+		socket.recv(&message);
+	}
+	catch (zmq::error_t &e) {
+		throw e;
+	}
+	catch (...) {
+		OutputDebugString(TEXT("Unknown exception occur."));
+	}
+
+	return std::string(static_cast<char*>(message.data()), message.size());
 }

@@ -38,6 +38,7 @@ BEGIN_MESSAGE_MAP(CTaskDetailPage, CDialogEx)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_TIMER()
 
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -211,4 +212,14 @@ void CTaskDetailPage::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void CTaskDetailPage::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	// TODO: 在此处添加消息处理程序代码
+	KillTimer(UpdateTaskInfoTimer);
+	OutputDebugString(TEXT("任务信息更新计时器已停止。\r\n"));
 }

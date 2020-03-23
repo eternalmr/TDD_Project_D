@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable:4996)
 
 #include <regex>
 #include <map>
@@ -24,7 +25,7 @@ public:
 
 	string get_ip_address();
 
-	void receive_heartbeat(int max_num = REPEAT_FOREVER);
+	void receive_heartbeat();
 	std::tuple<int, string> decode_signal(string &raw_signal);
 	std::tuple<int, int, int> decode_signal_new(string &raw_signal);
 	std::tuple<int, int> decode_result(string &raw_signal);
@@ -48,7 +49,7 @@ public:
 	void send_command_to_client(uint id, string command);
 	void send_command_to_all_client(string command);
 
-	void collect_result(uint max_num = REPEAT_FOREVER);
+	void collect_result();
 
 	void add_tasks(int num);
 	void start_simulation();//console use only
@@ -57,6 +58,8 @@ public:
 	void get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo);
 	void get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, int &nBreakdown);
 	void exit();
+
+	std::string my_recv(zmq::socket_t &socket);
 
 private:
 	bool is_not_reach(int max_num, int &count);

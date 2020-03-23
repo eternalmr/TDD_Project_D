@@ -38,4 +38,6 @@ public:
 private:
 	int m_LoadedTaskNum;
 	enum TimerType{ UpdateTaskInfoTimer };
+public:
+	afx_msg void OnDestroy();
 };

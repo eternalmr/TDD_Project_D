@@ -67,6 +67,10 @@ CServerUIApp theApp;
 
 BOOL CServerUIApp::InitInstance()
 {
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(384);
+	//_CrtSetBreakAlloc(17965);
+
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
 	//则需要 InitCommonControlsEx()。  否则，将无法创建窗口。
@@ -129,16 +133,8 @@ BOOL CServerUIApp::InitInstance()
 		return FALSE;
 
 	// 启动接收心跳线程
-	server.heartbeat_thread = std::thread(&CServer::receive_heartbeat, &server, REPEAT_FOREVER);
+	server.heartbeat_thread = std::thread(&CServer::receive_heartbeat, &server);
 	server.heartbeat_thread.detach();
-
-	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(384);
-	//_CrtSetBreakAlloc(17965);
-	//_CrtSetBreakAlloc(17950);
-	//_CrtSetBreakAlloc(3579);
-	//_CrtSetBreakAlloc(766);
-	//_CrtSetBreakAlloc(760);
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	m_pMainWnd->ShowWindow(SW_SHOW);
@@ -152,6 +148,12 @@ int CServerUIApp::ExitInstance()
 	AfxOleTerm(FALSE);
 
 	logger.m_LogThread.join();
+
+	//server.task_thread.join();
+	//server.result_thread.join();
+
+	
+	//server.heartbeat_thread.join();
 	//if (server.heartbeat_thread.joinable())
 	//server.heartbeat_thread.join();
 
@@ -160,8 +162,6 @@ int CServerUIApp::ExitInstance()
 	//if (server.result_thread.joinable())
 	//	server.result_thread.join();
 
-
-	ExitProcess(0);
 
 	return CWinApp::ExitInstance();
 }

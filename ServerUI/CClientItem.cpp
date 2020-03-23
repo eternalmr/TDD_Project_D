@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CClientItem, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_STOP_CLIENT, &CClientItem::OnBnClickedBtnStopClient)
 	ON_BN_CLICKED(IDC_BTN_CONTINUE_CLIENT, &CClientItem::OnBnClickedBtnContinueClient)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -97,7 +98,6 @@ void CClientItem::OnTimer(UINT_PTR nIDEvent)
 		break;
 	}
 
-
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -120,3 +120,13 @@ void CClientItem::UpdateClientInfo()
 
 
 
+
+
+void CClientItem::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	//在此处添加消息处理程序代码
+	KillTimer(UpdateClientInfoTimer);
+	OutputDebugString(TEXT("Client信息计时器已停止。\r\n"));
+}

@@ -125,7 +125,7 @@ int CLogShow::TLogEditThreadSTL()
 			}
 		}
 	}
-	OutputDebugString(TEXT("log线程已退出"));
+	OutputDebugString(TEXT("log线程已退出。"));
 	return 0;
 }
 

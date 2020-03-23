@@ -64,7 +64,7 @@ void CTaskDetailPage::CreateTaskItems()
 	int itemHeight = 80;
 	int itemWidth = 600;
 
-	m_LoadedTaskNum = server.tasks.size();
+	m_LoadedTaskNum = server.all_tasks.size();
 	for (int i = 0; i < m_LoadedTaskNum; i++)
 	{
 
@@ -78,7 +78,7 @@ void CTaskDetailPage::ShowLoadedTaskItems()
 	int itemHeight = 80;
 	int itemWidth = 600;
 
-	m_LoadedTaskNum = server.tasks.size();
+	m_LoadedTaskNum = server.all_tasks.size();
 	for (int i = 0; i < m_LoadedTaskNum; i++)
 	{
 		str.Format(TEXT("第%d个任务"), i + 1);
@@ -188,7 +188,7 @@ void CTaskDetailPage::UpdateTaskItemInfo()
 	CString str;
 	for (int i = 0; i < m_LoadedTaskNum ; i++)
 	{
-		progress = server.tasks[i].get_simulation_progress();
+		progress = server.all_tasks[i].get_simulation_progress();
 		m_TaskItems[i].m_ProgessBar.SetPos(progress);
 		str.Format(TEXT("%d"), progress);
 		str = CString("计算状态：") + str + CString("%");

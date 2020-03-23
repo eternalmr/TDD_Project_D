@@ -46,7 +46,7 @@ public:
 
 	void mark_breakdown_client();
 	Task* get_undo_task();
-
+	Task* get_undo_task_new();
 	void send_command_to_client(uint id, string command);
 	void send_command_to_all_client(string command);
 
@@ -88,7 +88,7 @@ private:
 	bool exit_flag;
 public:
 	ClientMap clients;
-	std::vector<Task> tasks;
+	std::vector<Task> all_tasks;
 	std::deque<Task*> undo_tasks;
 
 	std::thread heartbeat_thread;

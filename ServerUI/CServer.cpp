@@ -87,7 +87,8 @@ void CServer::add_new_client(uint id)
 
 void CServer::add_new_task(uint i)
 {
-	tasks.push_back(Task(i));
+	all_tasks.push_back(Task(i));
+	undo_tasks.push_back(&(all_tasks.back()));
 	total_task_num++;
 }
 
@@ -97,6 +98,7 @@ void CServer::add_tasks(int num)
 		add_new_task(i);
 	}
 }
+
 //========================= heartbeat related functions ==================================
 void CServer::receive_heartbeat()
 {
@@ -171,9 +173,9 @@ void CServer::update_client_info(uint client_id, uint task_id, uint progress)
 {
 	clients[client_id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
 	
-	if (task_id == 0) 
+	if (task_id == 0)
 		return;
-	tasks[task_id-1].set_simulation_progress(progress); //TODO: 可能将tasks也改为map类型的容器
+	all_tasks[task_id-1].set_simulation_progress(progress); //TODO: 可能将tasks也改为map类型的容器
 }
 
 bool CServer::is_not_connect_to_client(uint id)
@@ -253,12 +255,22 @@ void CServer::assign_tasks()
 Task* CServer::get_undo_task()
 {
 	Task *ptask = nullptr;
-	for (int i = 0; i < tasks.size(); i++) {//TODO : 可以优化不用每次从头开始查找
-		if (tasks[i].is_not_start()) {
-			ptask = &tasks[i];
+	for (int i = 0; i < all_tasks.size(); i++) {//TODO : 可以优化不用每次从头开始查找
+		if (all_tasks[i].is_not_start()) {
+			ptask = &all_tasks[i];
 			break;
 		}
 	}
+	return ptask;
+}
+
+Task* CServer::get_undo_task_new()
+{
+	if (undo_tasks.empty())
+		return nullptr;
+
+	Task *ptask = undo_tasks.front();
+	undo_tasks.pop_front();
 	return ptask;
 }
 
@@ -334,7 +346,7 @@ void CServer::collect_result()
 		}
 		
 		std::tie(task_id, result) = decode_result(raw_result);
-		tasks[task_id - 1].set_simulation_progress(100);
+		all_tasks[task_id - 1].set_simulation_progress(100);
 		in_computing_client_num--;
 		in_computing_task_num--;
 		completed_task_num++;

@@ -314,7 +314,6 @@ uint CServer::get_free_client()
 	}
 	else { // already in clients pool
 		clients[id].set_free();
-		in_computing_client_num--;
 	}
 	return id;
 }
@@ -362,9 +361,9 @@ void CServer::collect_result()
 		
 		std::tie(task_id, result) = decode_result(raw_result);
 		all_tasks[task_id - 1]->set_finished();
-		in_computing_client_num--;
 		in_computing_task_num--;
 		completed_task_num++;
+		in_computing_client_num--;
 
 		str.Format(TEXT("Task[%d] is accomplished, result is %d\r\n"), task_id, result);
 		AddLog(str, TLP_NORMAL);

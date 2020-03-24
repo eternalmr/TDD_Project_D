@@ -29,6 +29,9 @@ public:
 private:
 	void set_id(uint id);
 
+public:
+	int;
+
 private:
 	uint progress_;
 	unsigned int id_;

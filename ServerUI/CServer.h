@@ -38,13 +38,16 @@ public:
 	void add_new_client(uint id);
 	void add_new_task(uint i);
 
-	void assign_tasks();
+	void distrubute_tasks();
 
 	void assign_task_to(uint id, Task* undo_task_pointer);
 
 	uint get_free_client();
 
 	void mark_breakdown_client();
+
+	void reset_task_to_not_start(Task* pTask);
+
 	Task* get_undo_task();
 	Task* get_undo_task_new();
 	void send_command_to_client(uint id, string command);

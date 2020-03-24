@@ -87,8 +87,9 @@ void CServer::add_new_client(uint id)
 
 void CServer::add_new_task(uint i)
 {
-	all_tasks.push_back(Task(i));
-	undo_tasks.push_back(&(all_tasks.back()));
+	Task *pTask = new Task(i);
+	all_tasks.push_back(*pTask);
+	undo_tasks.push_back(pTask);
 	total_task_num++;
 }
 
@@ -199,16 +200,22 @@ void CServer::mark_breakdown_client() //TODO:添加测试
 		str.Format(TEXT("Client[%d] is breakdown!\r\n"), pClient->get_id());
 		AddLog(str, TLP_ERROR);
 
-		if (pClient->get_task()) {
-			pClient->get_task()->set_not_start();
-			in_computing_task_num--;
-			str.Format(TEXT("Reset task[%d] status to not start!\r\n"), 
-				pClient->get_task()->get_id());
-			AddLog(str, TLP_ERROR);
-		}
+		reset_task_to_not_start(pClient->get_task());
 	}
 }
 
+void CServer::reset_task_to_not_start(Task* pTask)
+{
+	if (pTask == nullptr) return;
+
+	pTask->set_not_start();
+	undo_tasks.push_front(pTask);
+	in_computing_task_num--;
+
+	CString str;
+	str.Format(TEXT("Reset task[%d] status to not start!\r\n"), pTask->get_id());
+	AddLog(str, TLP_ERROR);
+}
 
 void CServer::send_command_to_client(uint id, string command)
 {
@@ -220,12 +227,11 @@ void CServer::send_command_to_all_client(string command)
 	s_send(command_sender, command);
 }
 
-void CServer::assign_tasks()
+void CServer::distrubute_tasks()
 {
-	// TODO : check tasks and clients status
-
 	Task* undo_task_pointer;
 	uint id;
+
 	while (!exit_flag) {//TODO : simulation is finished
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
@@ -235,10 +241,9 @@ void CServer::assign_tasks()
 		//	wait();
 		//}
 
-		undo_task_pointer = get_undo_task();
+		undo_task_pointer = get_undo_task_new();
 		if (!undo_task_pointer)
 			continue; // all task is completed and stored, than break
-
 
 		try {
 			id = get_free_client();
@@ -288,9 +293,6 @@ uint CServer::get_free_client()
 	}
 
 	uint id = stoi(reply);
-	//str = CString(TEXT("Receive request from client[")) 
-	//	+ CA2T(reply.c_str()) + CString(TEXT("]\r\n"));
-	//AddLog(str, TLP_NORMAL);
 
 	if (is_not_connect_to_client(id)) { //new client
 		add_new_client(id);
@@ -354,45 +356,10 @@ void CServer::collect_result()
 	OutputDebugString(TEXT("结果收集线程已退出。"));
 }
 
-//void CServer::start_simulation()
-//{
-//	std::thread      task_thread(&CServer::assign_tasks, this);
-//	std::thread    result_thread(&CServer::collect_result, this, REPEAT_FOREVER);
-//	std::thread heartbeat_thread(&CServer::receive_heartbeat, this, REPEAT_FOREVER);
-//
-//	char command;
-//	while (true) {
-//		std::cout << "Please input your command: ";
-//		std::cin >> command;
-//
-//		if (command == 's') {
-//			send_command_to_all_client("start");
-//		}
-//		else if (command == 'c') {
-//			send_command_to_all_client("continue");
-//		}
-//		else if (command == 'p') {
-//			send_command_to_all_client("pause");
-//		}
-//		else if (command == 'e') {
-//			send_command_to_all_client("stop");
-//			std::cout << "Simulation stop!" << std::endl;
-//			break;
-//		}
-//		else {
-//			std::cout << "Wrong command!" << std::endl;
-//			continue;
-//		}
-//	}
-//
-//	task_thread.join();
-//	result_thread.join();
-//	heartbeat_thread.join();
-//}
 
 void CServer::start_threads()
 {
-	task_thread   = std::thread(&CServer::assign_tasks, this);
+	task_thread   = std::thread(&CServer::distrubute_tasks, this);
 	result_thread = std::thread(&CServer::collect_result, this);
 
 	task_thread.detach();

@@ -30,7 +30,9 @@ private:
 	void set_id(uint id);
 
 public:
-	//int;
+	static uint total_num;
+	static uint completed_num;
+	static uint in_computing_num;
 
 private:
 	uint progress_;

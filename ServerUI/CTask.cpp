@@ -2,11 +2,14 @@
 #include "pch.h"
 #include "CTask.h"
 
+uint Task::total_num = 0;
+
 // constructors
 Task::Task(uint id):id_(id)
 {
 	set_not_start();
 	set_result_not_saved();
+	total_num++;
 }
 
 // get functions
@@ -14,8 +17,6 @@ int Task::get_id() const { return id_; }
 
 // set functions
 void Task::set_id(uint id) { id_ = id; }
-
-
 void Task::set_in_computing() { compute_status_ = kInComputing; }
 void Task::set_result_saved() { store_status_ = kSaved; }
 void Task::set_result_not_saved() { store_status_ = kNotSave; }

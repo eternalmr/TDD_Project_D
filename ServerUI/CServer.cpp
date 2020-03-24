@@ -267,7 +267,7 @@ void CServer::distribute_tasks()
 			continue;
 		}
 
-		undo_task_pointer = get_undo_task_new();
+		undo_task_pointer = get_undo_task();
 		assign_task_to_client(id, undo_task_pointer);
 	}// end of while
 	OutputDebugString(TEXT("任务分配线程已退出。"));
@@ -285,7 +285,7 @@ void CServer::distribute_tasks()
 //	return ptask;
 //}
 
-Task* CServer::get_undo_task_new()
+Task* CServer::get_undo_task()
 {
 	if (undo_tasks.empty())
 		return nullptr;
@@ -382,7 +382,7 @@ void CServer::start_threads()
 
 void CServer::get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo)
 {
-	nTotal = total_task_num;
+	nTotal = Task::total_num;
 	nCompleted = completed_task_num;
 	nIncomputing = in_computing_task_num;
 	nUndo = nTotal - nCompleted - nIncomputing;

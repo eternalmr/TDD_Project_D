@@ -38,6 +38,7 @@ public:
 	bool is_not_connect_to_client(uint id);
 	void add_new_client(uint id);
 	void add_new_task(uint i);
+	void add_tasks(int num);
 
 	void distribute_tasks();
 
@@ -50,15 +51,12 @@ public:
 	void reset_task_to_not_start(Task* pTask);
 
 	Task* get_undo_task();
-	Task* get_undo_task_new();
 	void send_command_to_client(uint id, string command);
 	void send_command_to_all_client(string command);
 
 	void collect_result();
 
-	void add_tasks(int num);
-	void start_simulation();//console use only
-	void start_threads();//
+	void start_threads();
 
 	void get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo);
 	void get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, int &nBreakdown);

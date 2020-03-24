@@ -99,7 +99,12 @@ void CDisplayView::UpdateClientInfo()
 	str = CString("内存状态：") + str + CString("%");
 	m_memoryStatus.SetWindowTextW(str);
 
-	str.Format(TEXT("当前计算任务：任务%d"), client.get_task_id());
+	if (client.get_task_id() == 0) {
+		str.Format(TEXT("当前计算任务：暂无"));
+	}
+	else {
+		str.Format(TEXT("当前计算任务：任务%d"), client.get_task_id());
+	}
 	m_currentTask.SetWindowTextW(str);
 
 	m_progressBar.SetPos(client.get_progress());
@@ -138,13 +143,13 @@ void CDisplayView::OnDestroy()
 }
 
 
-void CDisplayView::OnBnClickedButton1()
+void CDisplayView::OnBnClickedButton1() //server有新任务
 {
 	client.server_has_no_pending_tasks = false;
 }
 
 
-void CDisplayView::OnBnClickedButton2()
+void CDisplayView::OnBnClickedButton2() //server没有新任务
 {
 	client.server_has_no_pending_tasks = true;
 }

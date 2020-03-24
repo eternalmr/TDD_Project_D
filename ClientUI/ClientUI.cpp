@@ -129,7 +129,7 @@ BOOL CClientUIApp::InitInstance()
 
 
 	// 初始化客户端和日志单例
-	client.heartbeat_thread = std::thread(&CClient::send_heartbeat, &client, 0);
+	client.heartbeat_thread = std::thread(&CClient::send_heartbeat, &client);
 	//client.heartbeat_thread.detach();
 
 

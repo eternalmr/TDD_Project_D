@@ -3,7 +3,7 @@
 #include "CClientRecord.h"
 #include "CLogShow.h"
 
-#define NO_MORE_TASK -1
+#define NO_TASK 0
 
 string heartbeat_ipaddress = "tcp://" + default_server_ip + ":" + heartbeat_port;
 string command_ipaddress = "tcp://" + default_server_ip + ":" + command_port;
@@ -191,7 +191,7 @@ void CServer::update_client_info(uint client_id, uint task_id, uint progress)
 {
 	clients[client_id].set_heartbeat(s_clock());//set this moment as client's new heartbeat
 	
-	if (task_id == 0)
+	if (task_id == NO_TASK)
 		return;
 	all_tasks[task_id-1]->set_simulation_progress(progress); //TODO: 可能将tasks也改为map类型的容器
 }
@@ -321,7 +321,7 @@ uint CServer::get_free_client()
 void CServer::assign_task_to_client(uint id, Task* p_task)
 {
 	if (p_task == nullptr) {
-		s_send(task_assigner, std::to_string(NO_MORE_TASK));
+		s_send(task_assigner, std::to_string(NO_TASK));
 		return;
 	}
 

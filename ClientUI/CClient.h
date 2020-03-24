@@ -38,7 +38,7 @@ public:
 
 	string get_ip_address();
 
-	void send_heartbeat(int max_num = REPEAT_FOREVER);
+	void send_heartbeat();
 	void receive_command();
 	void receive_tasks();
 

@@ -7,7 +7,7 @@
 #include "MainFrm.h"
 #include "CDisplayView.h"
 
-#define NO_MORE_TASK -1
+#define NO_TASK 0
 
 string heartbeat_ipaddress = "tcp://" + default_client_ip + ":" + heartbeat_port;
 string command_ipaddress = "tcp://" + default_client_ip + ":" + command_port;
@@ -22,7 +22,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	command_receiver(context, ZMQ_SUB),
 	ip_(ip), port_(port),
 	start_flag(0), pause_flag(0), stop_flag(0)
-	,simulation_progress(0),current_task_id(0)
+	,simulation_progress(0),current_task_id(NO_TASK)
 	,exit_flag(false),task_finished(false)
 	,server_has_no_pending_tasks(true)
 {
@@ -95,13 +95,11 @@ void CClient::subscribe_specific_signal()
 	command_receiver.setsockopt(ZMQ_SUBSCRIBE,     stop_filter, strlen(stop_filter));
 }
 
-void CClient::send_heartbeat(int max_num)
+void CClient::send_heartbeat()
 {
-	int count = 0;
 	string signal;
-	CString str;
 
-	while (is_not_reach(max_num, count) && !exit_flag) {
+	while (!exit_flag) {
 		signal = std::to_string(id_) + "_" 
 			   + std::to_string(current_task_id) + "_" 
 			   + std::to_string(simulation_progress);
@@ -109,7 +107,6 @@ void CClient::send_heartbeat(int max_num)
 		std::this_thread::sleep_for(std::chrono::milliseconds(HEARTBEAT_INTERVAL));
 	}
 	OutputDebugString(TEXT("心跳线程已退出。"));
-	//heartbeat_sender.close();
 }
 
 void CClient::receive_command()
@@ -142,7 +139,6 @@ void CClient::receive_tasks()
 
 		try {
 			new_task_id = get_new_task_from_server();
-			if (new_task_id == NO_MORE_TASK) continue;
 		}
 		catch (zmq::error_t &e) {
 			OutputDebugString(CA2T(e.what()));
@@ -151,6 +147,11 @@ void CClient::receive_tasks()
 		catch (...) {
 			OutputDebugString(TEXT("Unknown exception occur in CClient::receive_tasks"));
 			break;
+		}
+
+		if (new_task_id == NO_TASK) {
+			current_task_id = NO_TASK;
+			continue;
 		}
 
 		put_task_into_queue(new_task_id);
@@ -183,7 +184,7 @@ int CClient::get_new_task_from_server()
 	string new_task = s_recv(task_requester);
 	int new_task_id = std::atoi(new_task.c_str());
 
-	if (new_task_id == NO_MORE_TASK) {
+	if (new_task_id == NO_TASK) {
 		server_has_no_pending_tasks = true;
 		str.Format(TEXT("Server has no pending task right now\r\n"));
 		AddLog(str, TLP_DETAIL);

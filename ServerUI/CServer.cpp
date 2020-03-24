@@ -259,8 +259,6 @@ void CServer::distribute_tasks()
 		//	std::this_thread::sleep_for(std::chrono::seconds(1));
 		//}
 
-		undo_task_pointer = get_undo_task_new();
-
 		try {
 			id = get_free_client();
 		}
@@ -269,6 +267,7 @@ void CServer::distribute_tasks()
 			continue;
 		}
 
+		undo_task_pointer = get_undo_task_new();
 		assign_task_to_client(id, undo_task_pointer);
 	}// end of while
 	OutputDebugString(TEXT("任务分配线程已退出。"));

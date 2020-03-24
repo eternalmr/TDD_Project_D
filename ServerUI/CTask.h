@@ -12,6 +12,7 @@ public:
 	int get_id() const;
 
 	void set_not_start();
+	void reset_to_not_start();
 	void set_in_computing();
 	void set_finished();
 	void set_result_saved();
@@ -31,7 +32,7 @@ private:
 
 public:
 	static uint total_num;
-	static uint completed_num;
+	static uint finished_num;
 	static uint in_computing_num;
 
 private:

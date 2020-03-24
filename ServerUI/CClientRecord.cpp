@@ -4,18 +4,22 @@
 #include "CTask.h"
 #include "CClientRecord.h"
 
+uint ClientRecord::total_num = 0;
+uint ClientRecord::in_computing_num = 0;
+uint ClientRecord::breakdown_num = 0;
+
 // constructor
-ClientRecord::ClientRecord(uint id) : id_(id), status_(kFree), 
-									  ptask_(nullptr)
+ClientRecord::ClientRecord(uint id) : 
+	id_(id), status_(kIdle), ptask_(nullptr)
 {
 	heartbeat_ = s_clock();
-	cout << "client[" << id_ << "] is added to server." << endl;
+	total_num++;
 }
 
-ClientRecord::ClientRecord() : id_(0), status_(kFree), ptask_(nullptr)
+ClientRecord::ClientRecord() : id_(0), status_(kIdle), ptask_(nullptr)
 {
 	heartbeat_ = s_clock();
-	cout << "client[" << id_ << "] is added to server." << endl;
+	total_num++;
 }
 
 uint ClientRecord::get_id() const{ return id_; }
@@ -27,11 +31,7 @@ void ClientRecord::set_status(ClientStatus status) { status_ = status; }
 Task* ClientRecord::get_task() const { return ptask_; }
 void ClientRecord::set_task(Task *ptask) { ptask_ = ptask; }
 
-void ClientRecord::set_breakdown() { set_status(kBreakdown); }
-void ClientRecord::set_free() { set_status(kFree); }
-void ClientRecord::set_in_computing() { set_status(kInComputing); }
-
-bool ClientRecord::is_free() { return kFree == status_; }
+bool ClientRecord::is_idle() { return kIdle == status_; }
 bool ClientRecord::is_in_computing() { return kInComputing == status_; }
 bool ClientRecord::is_breakdown() { return kBreakdown == status_; }
 
@@ -43,3 +43,24 @@ bool ClientRecord::is_timeout()
 	return (s_clock() - get_heartbeat() > MAX_HEARTBEAT_TIMEOUT); 
 }
 
+void ClientRecord::set_in_computing() { 
+	set_status(kInComputing); 
+	in_computing_num++;
+}
+
+void ClientRecord::set_breakdown() { 
+	set_status(kBreakdown); 
+	breakdown_num++;
+	if (is_in_computing())
+		in_computing_num--;
+}
+
+void ClientRecord::set_idle() { 
+	set_status(kIdle); 
+	in_computing_num--;
+}
+
+void ClientRecord::reset_idle() {
+	set_status(kIdle);
+	breakdown_num--;
+}

@@ -76,16 +76,6 @@ private:
 
 	string ip_;
 	string port_;
-
-	std::atomic<int> total_task_num;
-	std::atomic<int> completed_task_num;
-	std::atomic<int> in_computing_task_num;
-	std::atomic<int> undo_task_num;
-
-	std::atomic<int> total_client_num;
-	std::atomic<int> in_computing_client_num;
-	std::atomic<int> free_client_num;
-	std::atomic<int> breakdown_client_num;
 	
 	bool exit_flag;
 public:

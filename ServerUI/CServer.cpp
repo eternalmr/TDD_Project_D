@@ -17,10 +17,6 @@ CServer::CServer(const string &ip, const string &port) :
 	command_sender(context, ZMQ_PUB),
 	result_collector(context, ZMQ_PULL),
 	ip_(ip), port_(port), clients({}),
-	total_task_num(0), completed_task_num(0),
-	in_computing_task_num(0), undo_task_num(0),
-	total_client_num(0), in_computing_client_num(0),
-	free_client_num(0), breakdown_client_num(0),
 	exit_flag(false)
 {
 	bind_sockets_to_ip();
@@ -99,7 +95,6 @@ string CServer::get_ip_address(string ip, string port)
 void CServer::add_new_client(uint id)
 {
 	clients.insert(ClientMap::value_type(id, ClientRecord(id)));
-	total_client_num++;
 }
 
 void CServer::add_new_task(uint i)
@@ -107,7 +102,6 @@ void CServer::add_new_task(uint i)
 	Task *pTask = new Task(i);
 	all_tasks.push_back(pTask);
 	undo_tasks.push_back(pTask);
-	total_task_num++;
 }
 
 void CServer::add_tasks(int num)
@@ -213,7 +207,6 @@ void CServer::mark_breakdown_client() //TODO:添加测试
 			continue;
 
 		pClient->set_breakdown();
-		breakdown_client_num++;
 		str.Format(TEXT("Client[%d] is breakdown!\r\n"), pClient->get_id());
 		AddLog(str, TLP_ERROR);
 
@@ -226,9 +219,8 @@ void CServer::reset_task_to_not_start(Task* pTask)
 	if (pTask == nullptr || pTask->is_finished()) 
 		return;
 
-	pTask->set_not_start();
+	pTask->reset_to_not_start();
 	undo_tasks.push_front(pTask);
-	in_computing_task_num--;
 
 	CString str;
 	str.Format(TEXT("Reset task[%d] status to not start!\r\n"), pTask->get_id());
@@ -254,11 +246,6 @@ void CServer::distribute_tasks()
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
-		//while (undo_tasks.empty())
-		//{
-		//	std::this_thread::sleep_for(std::chrono::seconds(1));
-		//}
-
 		try {
 			id = get_free_client();
 		}
@@ -273,17 +260,6 @@ void CServer::distribute_tasks()
 	OutputDebugString(TEXT("任务分配线程已退出。"));
 }
 
-//Task* CServer::get_undo_task()
-//{
-//	Task *ptask = nullptr;
-//	for (int i = 0; i < all_tasks.size(); i++) {//TODO : 可以优化不用每次从头开始查找
-//		if (all_tasks[i]->is_not_start()) {
-//			ptask = all_tasks[i];
-//			break;
-//		}
-//	}
-//	return ptask;
-//}
 
 Task* CServer::get_undo_task()
 {
@@ -311,9 +287,13 @@ uint CServer::get_free_client()
 	if (is_not_connect_to_client(id)) { //new client
 		add_new_client(id);
 	}
-	else { // already in clients pool
-		clients[id].set_free();
+	else if (clients[id].is_in_computing()){ // already in clients pool
+		clients[id].set_idle();
 	}
+	else if (clients[id].is_breakdown()) {
+		clients[id].reset_idle();
+	}
+
 	return id;
 }
 
@@ -329,9 +309,6 @@ void CServer::assign_task_to_client(uint id, Task* p_task)
 	s_send(task_assigner, std::to_string(workload));
 	p_task->set_in_computing();
 	clients[id].set_in_computing();
-
-	in_computing_task_num++;
-	in_computing_client_num++;
 
 	CString str;
 	str.Format(TEXT("Task[%d] is assigned to client[%d]\r\n"),
@@ -360,9 +337,6 @@ void CServer::collect_result()
 		
 		std::tie(task_id, result) = decode_result(raw_result);
 		all_tasks[task_id - 1]->set_finished();
-		in_computing_task_num--;
-		completed_task_num++;
-		in_computing_client_num--;
 
 		str.Format(TEXT("Task[%d] is accomplished, result is %d\r\n"), task_id, result);
 		AddLog(str, TLP_NORMAL);
@@ -380,20 +354,20 @@ void CServer::start_threads()
 	result_thread.detach();
 }
 
-void CServer::get_task_num_info(int &nTotal, int &nCompleted, int &nIncomputing, int &nUndo)
+void CServer::get_task_num_info(int &nTotal, int &nFinished, int &nIncomputing, int &nUndo)
 {
 	nTotal = Task::total_num;
-	nCompleted = completed_task_num;
-	nIncomputing = in_computing_task_num;
-	nUndo = nTotal - nCompleted - nIncomputing;
+	nFinished = Task::finished_num;
+	nIncomputing = Task::in_computing_num;
+	nUndo = nTotal - nFinished - nIncomputing;
 }
 
-void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, int &nBreakdown)
+void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nIdle, int &nBreakdown)
 {
-	nTotal = total_client_num;
-	nIncomputing = in_computing_client_num;
-	nBreakdown = breakdown_client_num;
-	nFree = nTotal - nIncomputing - nBreakdown;
+	nTotal = ClientRecord::total_num;
+	nIncomputing = ClientRecord::in_computing_num;
+	nBreakdown = ClientRecord::breakdown_num;
+	nIdle = nTotal - nIncomputing - nBreakdown;
 }
 
 void CServer::exit()

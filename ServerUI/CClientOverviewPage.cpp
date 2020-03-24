@@ -73,6 +73,8 @@ void CClientOverviewPage::UpdateClientInfo()
 	CString str;
 	int totalNum, freeNum, inComputingNum, breakdownNum;
 
+	//void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nFree, int &nBreakdown)
+
 	server.get_client_num_info(totalNum, inComputingNum, freeNum, breakdownNum);
 
 	str.Format(TEXT("节点总数：\r\n %d"), totalNum);

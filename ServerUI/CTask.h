@@ -30,7 +30,7 @@ private:
 	void set_id(uint id);
 
 public:
-	int;
+	//int;
 
 private:
 	uint progress_;

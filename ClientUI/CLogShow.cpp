@@ -49,7 +49,11 @@ void CLogShow::Dump(CDumpContext& dc) const
 {
 	CRichEditCtrl::Dump(dc);
 }
+#endif
+#endif //_DEBUG
 
+
+// CTLogEdit 消息处理程序
 void CLogShow::SetLogLineColor(long lPos, LOG_LEVEL tlp)
 {
 	SetSel(lPos, lPos);
@@ -127,10 +131,3 @@ int CLogShow::ShowLogOnBoard()
 	OutputDebugString(TEXT("log线程已退出。"));
 	return 0;
 }
-
-
-#endif
-#endif //_DEBUG
-
-
-// CTLogEdit 消息处理程序

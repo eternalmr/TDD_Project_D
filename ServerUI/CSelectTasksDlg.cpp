@@ -40,7 +40,6 @@ END_MESSAGE_MAP()
 
 void CSelectTasksDlg::OnBnClickedOk()
 {
-
 	CDialogEx::OnOK();
 }
 
@@ -51,13 +50,13 @@ void CSelectTasksDlg::OnBnClickedButton1()
 	CMainFrame *pMain = (CMainFrame*)AfxGetMainWnd();
 	CTaskDlg* pTaskDlg = (CTaskDlg*)pMain->m_RightWindowSplitter.GetPane(0, 0);
 
-	int num = 10; // TODO: Add new tasks according to selection
+	int num = 1; // TODO: Add new tasks according to selection
 	for (int i = 0; i < num; i++) {
 		server.add_new_task(i + 1);
 	}
 	pTaskDlg->detailPage.ShowLoadedTaskItems();
 
-	MessageBox(TEXT("已添加10个新任务"));
+	MessageBox(TEXT("已添加1个新任务"));
 }
 
 

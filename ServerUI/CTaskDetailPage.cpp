@@ -188,7 +188,7 @@ void CTaskDetailPage::UpdateTaskItemInfo()
 	CString str;
 	for (int i = 0; i < m_LoadedTaskNum ; i++)
 	{
-		progress = server.all_tasks[i].get_simulation_progress();
+		progress = server.all_tasks[i]->get_simulation_progress();
 		m_TaskItems[i].m_ProgessBar.SetPos(progress);
 		str.Format(TEXT("%d"), progress);
 		str = CString("计算状态：") + str + CString("%");

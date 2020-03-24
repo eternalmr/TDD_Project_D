@@ -25,6 +25,7 @@ public:
 	void unbind_sockets_to_ip();
 
 	string get_ip_address();
+	string get_ip_address(string ip, string port);
 
 	void receive_heartbeat();
 	std::tuple<int, string> decode_signal(string &raw_signal);
@@ -38,9 +39,9 @@ public:
 	void add_new_client(uint id);
 	void add_new_task(uint i);
 
-	void distrubute_tasks();
+	void distribute_tasks();
 
-	void assign_task_to(uint id, Task* undo_task_pointer);
+	void assign_task_to_client(uint id, Task* undo_task_pointer);
 
 	uint get_free_client();
 
@@ -91,7 +92,7 @@ private:
 	bool exit_flag;
 public:
 	ClientMap clients;
-	std::vector<Task> all_tasks;
+	std::vector<Task*> all_tasks;
 	std::deque<Task*> undo_tasks;
 
 	std::thread heartbeat_thread;

@@ -7,6 +7,12 @@
 #include "MainFrm.h"
 #include "CDisplayView.h"
 
+
+string heartbeat_ipaddress = "tcp://" + default_client_ip + ":" + heartbeat_port;
+string command_ipaddress = "tcp://" + default_client_ip + ":" + command_port;
+string task_ipaddress = "tcp://" + default_client_ip + ":" + task_port;
+string result_ipaddress = "tcp://" + default_client_ip + ":" + result_port;
+
 CClient::CClient(uint id, const string &ip, const string &port) :
 	id_(id), context(1),
 	heartbeat_sender(context, ZMQ_PUSH),
@@ -57,18 +63,18 @@ void CClient::set_ip_address(const string ip)
 
 void CClient::connect_to_ip_address()
 {
-	heartbeat_sender.connect("tcp://localhost:1217");
-	task_requester.connect("tcp://localhost:5560");
-	result_sender.connect("tcp://localhost:5558");
-	command_receiver.connect("tcp://localhost:5555");
+	heartbeat_sender.connect(heartbeat_ipaddress);
+	task_requester.connect(task_ipaddress);
+	result_sender.connect(result_ipaddress);
+	command_receiver.connect(command_ipaddress);
 }
 
 void CClient::disconnect_to_ip_address()
 {
-	heartbeat_sender.disconnect("tcp://localhost:1217");
-	task_requester.disconnect("tcp://localhost:5560");
-	result_sender.disconnect("tcp://localhost:5558");
-	command_receiver.disconnect("tcp://localhost:5555");
+	heartbeat_sender.disconnect(heartbeat_ipaddress);
+	task_requester.disconnect(heartbeat_ipaddress);
+	result_sender.disconnect(result_ipaddress);
+	command_receiver.disconnect(command_ipaddress);
 }
 
 string CClient::get_ip_address()

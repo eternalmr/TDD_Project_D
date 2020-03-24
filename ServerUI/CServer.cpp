@@ -3,6 +3,8 @@
 #include "CClientRecord.h"
 #include "CLogShow.h"
 
+#define NO_MORE_TASK -1
+
 string heartbeat_ipaddress = "tcp://" + default_server_ip + ":" + heartbeat_port;
 string command_ipaddress = "tcp://" + default_server_ip + ":" + command_port;
 string task_ipaddress = "tcp://" + default_server_ip + ":" + task_port;
@@ -252,14 +254,12 @@ void CServer::distribute_tasks()
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
-		//while ( undo_tasks.size == 0)
+		//while (undo_tasks.empty())
 		//{
-		//	wait();
+		//	std::this_thread::sleep_for(std::chrono::seconds(1));
 		//}
 
 		undo_task_pointer = get_undo_task_new();
-		if (!undo_task_pointer)
-			continue; // all task is completed and stored, than break
 
 		try {
 			id = get_free_client();
@@ -268,6 +268,7 @@ void CServer::distribute_tasks()
 			OutputDebugString(CA2T(e.what()));
 			continue;
 		}
+
 		assign_task_to_client(id, undo_task_pointer);
 	}// end of while
 	OutputDebugString(TEXT("任务分配线程已退出。"));
@@ -313,12 +314,18 @@ uint CServer::get_free_client()
 	}
 	else { // already in clients pool
 		clients[id].set_free();
-	}		
+		in_computing_client_num--;
+	}
 	return id;
 }
 
 void CServer::assign_task_to_client(uint id, Task* p_task)
 {
+	if (p_task == nullptr) {
+		s_send(task_assigner, std::to_string(NO_MORE_TASK));
+		return;
+	}
+
 	clients[id].set_task(p_task);
 	int workload = p_task->get_id();
 	s_send(task_assigner, std::to_string(workload));

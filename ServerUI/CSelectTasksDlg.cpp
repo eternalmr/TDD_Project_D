@@ -50,7 +50,7 @@ void CSelectTasksDlg::OnBnClickedButton1()
 	CMainFrame *pMain = (CMainFrame*)AfxGetMainWnd();
 	CTaskDlg* pTaskDlg = (CTaskDlg*)pMain->m_RightWindowSplitter.GetPane(0, 0);
 
-	int num = 1; // TODO: Add new tasks according to selection
+	int num = 10; // TODO: Add new tasks according to selection
 	for (int i = 0; i < num; i++) {
 		server.add_new_task(i + 1);
 	}

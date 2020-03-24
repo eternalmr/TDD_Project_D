@@ -7,6 +7,7 @@
 #include "MainFrm.h"
 #include "CDisplayView.h"
 
+#define NO_MORE_TASK -1
 
 string heartbeat_ipaddress = "tcp://" + default_client_ip + ":" + heartbeat_port;
 string command_ipaddress = "tcp://" + default_client_ip + ":" + command_port;
@@ -136,26 +137,20 @@ void CClient::receive_tasks()
 		//收到消息后，client重新将still_has_task标记置为true
 
 		while (server_has_no_pending_tasks) {
-			OutputDebugString(TEXT("server has no pending tasks\r\n"));
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::this_thread::sleep_for(std::chrono::seconds(1));
 		}
 
 		try {
 			new_task_id = get_new_task_from_server();
+			if (new_task_id == NO_MORE_TASK) continue;
 		}
 		catch (zmq::error_t &e) {
 			OutputDebugString(CA2T(e.what()));
-			continue;
+			break;
 		}
 		catch (...) {
 			OutputDebugString(TEXT("Unknown exception occur in CClient::receive_tasks"));
-			continue;
-		}
-
-		if (new_task_id == -1) {
-			server_has_no_pending_tasks = true;
-			OutputDebugString(TEXT("no new task"));
-			continue;
+			break;
 		}
 
 		put_task_into_queue(new_task_id);
@@ -187,8 +182,17 @@ int CClient::get_new_task_from_server()
 	s_send(task_requester, std::to_string(id_));
 	string new_task = s_recv(task_requester);
 	int new_task_id = std::atoi(new_task.c_str());
-	str.Format(TEXT("Receive a new task: %d \r\n"), new_task_id);
-	AddLog(str, TLP_NORMAL);
+
+	if (new_task_id == NO_MORE_TASK) {
+		server_has_no_pending_tasks = true;
+		str.Format(TEXT("Server has no pending task right now\r\n"));
+		AddLog(str, TLP_DETAIL);
+	}
+	else {
+		str.Format(TEXT("Receive a new task: %d \r\n"), new_task_id);
+		AddLog(str, TLP_NORMAL);
+	}
+
 	return new_task_id;
 }
 

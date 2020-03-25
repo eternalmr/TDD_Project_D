@@ -26,7 +26,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	,exit_flag(false),task_finished(false)
 	,server_has_no_pending_tasks(true)
 {
-	connect_to_ip_address();
+	//connect_to_ip_address();
 	subscribe_specific_signal();
 	GetSystemTimes(&IdleTime, &KernelTime, &UserTime);
 }

@@ -14,9 +14,18 @@ protected: // 仅从序列化创建
 
 // 特性
 public:
+	int m_ClientID;
+	int m_HeartbeatPort;
+	int m_ControlPort;
+	int m_TaskPort;
+	int m_ResultPort;
+	CString ipAddress;
+
 
 // 操作
 public:
+	void ReadConfigFile();
+
 
 // 重写
 public:

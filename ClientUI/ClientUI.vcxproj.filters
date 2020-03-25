@@ -54,6 +54,9 @@
     <ClInclude Include="CClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CClientConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientUI.cpp">
@@ -81,6 +84,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CClientConfig.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

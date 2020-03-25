@@ -92,7 +92,7 @@ string CServer::get_ip_address(string ip, string port)
 	return "tcp://" + ip + ":" + port;
 }
 
-void CServer::set_ip_address(string ip)
+void CServer::set_ip(string ip)
 {
 	ip_ = ip;
 }

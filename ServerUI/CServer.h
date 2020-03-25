@@ -27,7 +27,7 @@ public:
 	string get_ip_address();
 	string get_ip_address(string ip, string port);
 
-	void set_ip_address(string ip);
+	void set_ip(string ip);
 
 	void receive_heartbeat();
 	std::tuple<int, string> decode_signal(string &raw_signal);

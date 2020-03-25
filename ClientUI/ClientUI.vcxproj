@@ -195,6 +195,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CClient.h" />
+    <ClInclude Include="CClientConfig.h" />
     <ClInclude Include="CDisplayView.h" />
     <ClInclude Include="ClientUI.h" />
     <ClInclude Include="ClientUIDoc.h" />
@@ -210,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CClient.cpp" />
+    <ClCompile Include="CClientConfig.cpp" />
     <ClCompile Include="CDisplayView.cpp" />
     <ClCompile Include="ClientUI.cpp" />
     <ClCompile Include="ClientUIDoc.cpp" />

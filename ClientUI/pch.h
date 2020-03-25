@@ -16,6 +16,7 @@
 #include "zhelpers.hpp"
 #include <string>
 #include <thread>
+#include <afxcontrolbars.h>
 
 using std::string;
 using std::cout;

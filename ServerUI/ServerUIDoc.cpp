@@ -54,7 +54,7 @@ BOOL CServerUIDoc::OnNewDocument()
 	server.control_port = m_ControlPort;
 	server.task_port = m_TaskPort;
 	server.result_port = m_ResultPort;
-	server.set_ip_address(string(CT2A(ipAddress)));
+	server.set_ip(string(CT2A(ipAddress)));
 	server.bind_sockets_to_ip();
 
 	return TRUE;

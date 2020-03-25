@@ -9,6 +9,7 @@
 #include "MainFrm.h"
 #include "CLogView.h"
 #include "CDisplayView.h"
+#include "CClientConfig.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,6 +24,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
+	ON_COMMAND(ID_CLIENT_SET, &CMainFrame::OnClientSet)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -155,4 +157,11 @@ void CMainFrame::OnDestroy()
 	client.exit();
 	//client.disconnect_to_ip_address();
 
+}
+
+
+void CMainFrame::OnClientSet()
+{
+	CClientConfig dlg;
+	dlg.DoModal();
 }

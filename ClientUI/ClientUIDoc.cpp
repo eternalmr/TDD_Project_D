@@ -38,14 +38,48 @@ CClientUIDoc::~CClientUIDoc()
 {
 }
 
+void CClientUIDoc::ReadConfigFile()
+{
+	CString configNameStr("client configuration");
+	CString filePath(".\\client.config");
+
+	int result = GetPrivateProfileInt(configNameStr, CString("HeartbeatPort"), 5555, filePath);
+	m_HeartbeatPort = result;
+
+	result = GetPrivateProfileInt(configNameStr, CString("ClientID"), 1, filePath);
+	m_ClientID = result;
+
+	result = GetPrivateProfileInt(configNameStr, CString("ControlPort"), 5556, filePath);
+	m_ControlPort = result;
+
+	result = GetPrivateProfileInt(configNameStr, CString("TaskPort"), 5557, filePath);
+	m_TaskPort = result;
+
+	result = GetPrivateProfileInt(configNameStr, CString("ResultPort"), 5558, filePath);
+	m_ResultPort = result;
+
+	GetPrivateProfileString(configNameStr, CString("IPAddress"), CString("127.0.0.1"), ipAddress.GetBuffer(MAX_PATH), MAX_PATH, filePath);
+}
+
 BOOL CClientUIDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	// TODO: 在此添加重新初始化代码
+	// 在此添加重新初始化代码
 	// (SDI 文档将重用该文档)
 	SetTitle(TEXT("并行推演管控客户端"));
+
+	ReadConfigFile();
+
+	// 将相关数据导入到client对应数据结构中去
+	client.set_id(m_ClientID);
+	client.heartbeat_port = m_HeartbeatPort;
+	client.control_port = m_ControlPort;
+	client.task_port = m_TaskPort;
+	client.result_port = m_ResultPort;
+	client.set_ip(string(CT2A(ipAddress)));
+	client.connect_to_ip_address();
 
 	return TRUE;
 }

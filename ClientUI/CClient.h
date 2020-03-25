@@ -26,7 +26,7 @@ public:
 
 	void set_id(uint id);
 	uint get_id();
-	void set_ip_address(const string ip);
+	void set_ip(const string ip);
 
 	void connect_to_ip_address();
 	void disconnect_to_ip_address();
@@ -37,6 +37,7 @@ public:
 	void execute_control_command(SignalSet control_signal);
 
 	string get_ip_address();
+	string get_ip_address(string ip, string port);
 
 	void send_heartbeat();
 	void receive_command();
@@ -96,9 +97,6 @@ private:
 	std::condition_variable new_task_notifier;
 	std::condition_variable task_finished_notifier;
 	std::atomic<bool> task_finished;
-	//bool  task_finished;
-
-
 
 public:
 	int start_flag;
@@ -112,6 +110,11 @@ public:
 	std::thread task_thread;
 	std::thread simulation_thread;
 	std::thread control_thread;
+
+	int heartbeat_port;
+	int control_port;
+	int task_port;
+	int result_port;
 };
 
 typedef CClient::SignalSet Command;

@@ -14,6 +14,11 @@ protected: // 仅从序列化创建
 // 特性
 public:
 	CPtrList m_TaskItems;
+	int m_HeartbeatPort;
+	int m_ControlPort;
+	int m_TaskPort;
+	int m_ResultPort;
+	CString ipAddress;
 	//BOOL IsTasksLoaded;
 
 // 操作
@@ -34,6 +39,7 @@ public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
+
 #endif
 
 protected:
@@ -41,6 +47,9 @@ protected:
 // 生成的消息映射函数
 protected:
 	DECLARE_MESSAGE_MAP()
+
+public:
+	void ReadConfigFile();
 
 #ifdef SHARED_HANDLERS
 	// 用于为搜索处理程序设置搜索内容的 Helper 函数

@@ -19,7 +19,7 @@ CServer::CServer(const string &ip, const string &port) :
 	ip_(ip), port_(port), clients({}),
 	exit_flag(false)
 {
-	bind_sockets_to_ip();
+	//bind_sockets_to_ip();
 }
 
 CServer::~CServer()
@@ -45,10 +45,10 @@ CServer& CServer::get_instance()
 
 void CServer::bind_sockets_to_ip()
 {
-	heartbeat_receiver.bind(heartbeat_ipaddress);
-	command_sender.bind(command_ipaddress);
-	task_assigner.bind(task_ipaddress);
-	result_collector.bind(result_ipaddress);
+	heartbeat_receiver.bind(get_ip_address(ip_, std::to_string(heartbeat_port)));
+	command_sender.bind(get_ip_address(ip_, std::to_string(control_port)));
+	task_assigner.bind(get_ip_address(ip_, std::to_string(task_port)));
+	result_collector.bind(get_ip_address(ip_, std::to_string(result_port)));
 }
 
 void CServer::unbind_sockets_to_ip()
@@ -90,6 +90,11 @@ string CServer::get_ip_address()
 string CServer::get_ip_address(string ip, string port)
 {
 	return "tcp://" + ip + ":" + port;
+}
+
+void CServer::set_ip_address(string ip)
+{
+	ip_ = ip;
 }
 
 void CServer::add_new_client(uint id)

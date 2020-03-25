@@ -27,6 +27,8 @@ public:
 	string get_ip_address();
 	string get_ip_address(string ip, string port);
 
+	void set_ip_address(string ip);
+
 	void receive_heartbeat();
 	std::tuple<int, string> decode_signal(string &raw_signal);
 	std::tuple<int, int, int> decode_signal_new(string &raw_signal);
@@ -88,5 +90,9 @@ public:
 	std::thread task_thread;
 	std::thread result_thread;
 
+	int heartbeat_port;
+	int control_port;
+	int task_port;
+	int result_port;
 };
 

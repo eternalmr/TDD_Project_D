@@ -46,6 +46,17 @@ BOOL CServerUIDoc::OnNewDocument()
 	// 在此添加重新初始化代码
 	SetTitle(TEXT("并行管控系统服务器端"));
 
+	// 读入配置文件
+	ReadConfigFile();
+
+	// 将相关数据导入到server对应数据结构中去
+	server.heartbeat_port = m_HeartbeatPort;
+	server.control_port = m_ControlPort;
+	server.task_port = m_TaskPort;
+	server.result_port = m_ResultPort;
+	server.set_ip_address(string(CT2A(ipAddress)));
+	server.bind_sockets_to_ip();
+
 	return TRUE;
 }
 
@@ -136,3 +147,22 @@ void CServerUIDoc::Dump(CDumpContext& dc) const
 
 
 // CServerUIDoc 命令
+void CServerUIDoc::ReadConfigFile()
+{
+	CString configNameStr("server configuration");
+	CString filePath(".\\server.config");
+
+	int result = GetPrivateProfileInt(configNameStr, CString("HeartbeatPort1"), 5555, filePath);
+	m_HeartbeatPort = result;
+
+	result = GetPrivateProfileInt(configNameStr, CString("ControlPort"), 5556, filePath);
+	m_ControlPort = result;
+
+	result = GetPrivateProfileInt(configNameStr, CString("TaskPort"), 5557, filePath);
+	m_TaskPort = result;
+
+	result = GetPrivateProfileInt(configNameStr, CString("ResultPort"), 5558, filePath);
+	m_ResultPort = result;
+
+	GetPrivateProfileString(configNameStr, CString("IPAddress"), CString("127.0.0.1"), ipAddress.GetBuffer(MAX_PATH), MAX_PATH, filePath);
+}

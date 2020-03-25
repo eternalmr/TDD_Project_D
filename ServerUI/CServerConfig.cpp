@@ -5,7 +5,7 @@
 #include "ServerUI.h"
 #include "CServerConfig.h"
 #include "afxdialogex.h"
-
+#include "MainFrm.h"
 
 // CServerConfig 对话框
 
@@ -18,7 +18,8 @@ CServerConfig::CServerConfig(CWnd* pParent /*=nullptr*/)
 	, m_TaskPort(5557)
 	, m_ResultPort(5558)
 {
-
+	CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
+	pDoc = (CServerUIDoc *)pMain->GetActiveDocument();
 }
 
 CServerConfig::~CServerConfig()
@@ -29,13 +30,13 @@ void CServerConfig::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_HEARTBEAT_PORT, m_HeartbeatPort);
-	DDV_MinMaxInt(pDX, m_HeartbeatPort, 1024, 65535);
+	DDV_MinMaxInt(pDX, m_HeartbeatPort, 1024, 65534);
 	DDX_Text(pDX, IDC_CONTROL_PORT, m_ControlPort);
-	DDV_MinMaxInt(pDX, m_ControlPort, 1024, 65535);
+	DDV_MinMaxInt(pDX, m_ControlPort, 1024, 65534);
 	DDX_Text(pDX, IDC_RESULT_PORT, m_ResultPort);
-	DDV_MinMaxInt(pDX, m_ResultPort, 1024, 65535);
+	DDV_MinMaxInt(pDX, m_ResultPort, 1024, 65534);
 	DDX_Text(pDX, IDC_TASK_PORT, m_TaskPort);
-	DDV_MinMaxInt(pDX, m_TaskPort, 1024, 65535);
+	DDV_MinMaxInt(pDX, m_TaskPort, 1024, 65534);
 	DDX_Control(pDX, IDC_IPADDRESS, m_IPAddress);
 }
 
@@ -52,9 +53,7 @@ BOOL CServerConfig::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	//从Doc类中读取IP和Port的设置
 	ReadConfigFile();
-
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -84,25 +83,12 @@ void CServerConfig::OnBnClickedOk()
 
 void CServerConfig::ReadConfigFile()
 {
-	CString configNameStr("server configuration");
-	CString filePath(".\\server.config");
-
-	int result = GetPrivateProfileInt(configNameStr, CString("HeartbeatPort1"), 5555, filePath);
-	m_HeartbeatPort = result;
-
-	result = GetPrivateProfileInt(configNameStr, CString("ControlPort"), 5556, filePath);
-	m_ControlPort = result;
-
-	result = GetPrivateProfileInt(configNameStr, CString("TaskPort"), 5557, filePath);
-	m_TaskPort = result;
-
-	result = GetPrivateProfileInt(configNameStr, CString("ResultPort"), 5558, filePath);
-	m_ResultPort = result;
-
-	CString ipAddress;
-	GetPrivateProfileString(configNameStr, CString("IPAddress"), CString("127.0.0.1"), ipAddress.GetBuffer(MAX_PATH), MAX_PATH, filePath);
-	m_IPAddress.SetAddress(ntohl(inet_addr(CT2A(ipAddress))));
-
+	pDoc->ReadConfigFile();
+	m_HeartbeatPort = pDoc->m_HeartbeatPort;
+	m_ControlPort = pDoc->m_ControlPort;
+	m_TaskPort = pDoc->m_TaskPort;
+	m_ResultPort = pDoc->m_ResultPort;
+	m_IPAddress.SetAddress(ntohl(inet_addr(CT2A(pDoc->ipAddress))));
 	UpdateData(FALSE);
 }
 

@@ -152,7 +152,7 @@ void CServerUIDoc::ReadConfigFile()
 	CString configNameStr("server configuration");
 	CString filePath(".\\server.config");
 
-	int result = GetPrivateProfileInt(configNameStr, CString("HeartbeatPort1"), 5555, filePath);
+	int result = GetPrivateProfileInt(configNameStr, CString("HeartbeatPort"), 5555, filePath);
 	m_HeartbeatPort = result;
 
 	result = GetPrivateProfileInt(configNameStr, CString("ControlPort"), 5556, filePath);

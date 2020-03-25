@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "ServerUIDoc.h"
 
 // CServerConfig 对话框
 
@@ -26,6 +27,8 @@ public:
 	int m_ResultPort;
 	int m_TaskPort;
 	CIPAddressCtrl m_IPAddress;
+
+	CServerUIDoc* pDoc;
 
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();

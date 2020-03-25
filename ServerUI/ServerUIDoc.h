@@ -3,8 +3,6 @@
 //
 #pragma once
 
-
-
 class CServerUIDoc : public CDocument
 {
 protected: // 仅从序列化创建

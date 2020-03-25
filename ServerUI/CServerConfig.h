@@ -27,4 +27,8 @@ public:
 	int m_TaskPort;
 	CIPAddressCtrl m_IPAddress;
 	virtual BOOL OnInitDialog();
+	void ReadConfigFile();
+	afx_msg void OnBnClickedOk();
+
+	BOOL WriteConfig(char* configName);
 };

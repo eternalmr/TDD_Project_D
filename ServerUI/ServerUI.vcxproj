@@ -204,6 +204,7 @@
     <ClInclude Include="CSelectTasksDlg.h" />
     <ClInclude Include="CSelectView.h" />
     <ClInclude Include="CServer.h" />
+    <ClInclude Include="CServerConfig.h" />
     <ClInclude Include="CTabSheet.h" />
     <ClInclude Include="CTask.h" />
     <ClInclude Include="CTaskDetailPage.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="CSelectTasksDlg.cpp" />
     <ClCompile Include="CSelectView.cpp" />
     <ClCompile Include="CServer.cpp" />
+    <ClCompile Include="CServerConfig.cpp" />
     <ClCompile Include="CTabSheet.cpp" />
     <ClCompile Include="CTask.cpp" />
     <ClCompile Include="CTaskDetailPage.cpp" />

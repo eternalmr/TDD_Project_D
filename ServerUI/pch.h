@@ -19,6 +19,7 @@
 #include <string>
 #include <thread>
 #include <afxcontrolbars.h>
+#include <afxcontrolbars.h>
 
 using std::string;
 using std::cout;

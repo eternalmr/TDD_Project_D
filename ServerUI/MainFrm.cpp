@@ -13,6 +13,7 @@
 #include "CLogView.h"
 #include "CClientDlg.h"
 #include "CTaskDlg.h"
+#include "CServerConfig.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -33,6 +34,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
+	ON_COMMAND(ID_CONFIG_SET, &CMainFrame::OnSetConfig)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -306,4 +308,11 @@ void CMainFrame::OnDestroy()
 	// 在此处添加消息处理程序代码
 	logger.m_bRun = FALSE;
 	server.exit();
+}
+
+
+void CMainFrame::OnSetConfig()
+{
+	CServerConfig dlg;
+	dlg.DoModal();
 }

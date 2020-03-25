@@ -22,6 +22,7 @@
 #define IDD_DISPLAYVIEW                 310
 #define IDD_LOGVIEW                     311
 #define IDI_CLIENT                      312
+#define IDD_CONFIG                      313
 #define IDI_TASK                        314
 #define IDD_TASK                        315
 #define IDD_CLIENT                      317
@@ -52,14 +53,19 @@
 #define IDC_BTN_STOP_CLIENT             1012
 #define IDC_CLIENT_NAME                 1013
 #define IDC_CLIENT_STATUS               1014
+#define IDC_IPADDRESS                   1014
 #define IDC_CLIENT_CPU                  1015
 #define IDC_LOAD                        1015
 #define IDC_CLIENT_MEMORY               1016
+#define IDC_HEARTBEAT_PORT              1016
 #define IDC_TOTAL_TASK_NUM              1017
 #define IDC_BTN_START_CLIENT2           1017
 #define IDC_BTN_CONTINUE_CLIENT         1017
+#define IDC_CONTROL_PORT                1017
 #define IDC_COMPLETED_TASK_NUM          1018
+#define IDC_TASK_PORT                   1018
 #define IDC_INCOMPUTING_TASK_NUM        1019
+#define IDC_RESULT_PORT                 1019
 #define IDC_UNDO_TASK_NUM               1020
 #define IDC_BUTTON2                     1021
 #define IDC_INCOMPUTING_CLIENT_NUM_BTN  1021
@@ -67,14 +73,16 @@
 #define IDC_FREE_CLIENT_NUM_BTN         1022
 #define IDC_BUTTON4                     1023
 #define IDC_BREAKDOWN_CLIENT_NUM_BTN    1023
+#define ID_32771                        32771
+#define ID_CONFIG_SET                   32772
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        333
-#define _APS_NEXT_COMMAND_VALUE         32771
+#define _APS_NEXT_COMMAND_VALUE         32773
 #define _APS_NEXT_CONTROL_VALUE         1020
-#define _APS_NEXT_SYMED_VALUE           312
+#define _APS_NEXT_SYMED_VALUE           319
 #endif
 #endif

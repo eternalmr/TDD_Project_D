@@ -462,6 +462,7 @@ void CClient::execute_control_command(SignalSet control_signal)
 	case kNewTask: {
 		server_has_no_pending_tasks = false;
 		AddLog(TEXT("Sever has new tasks\r\n"), TLP_NORMAL);
+		break;
 	}
 	default: {
 		AddLog(TEXT("Unknown command\r\n"), TLP_NORMAL);

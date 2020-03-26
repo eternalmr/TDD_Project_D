@@ -13,6 +13,7 @@
 #define IDC_PROGRESS                    1000
 #define IDC_RICHEDIT21                  1001
 #define IDC_BUTTON1                     1004
+#define IDC_RECEIVE_TASK_BTN            1004
 #define IDC_BUTTON2                     1005
 #define IDC_BUTTON3                     1006
 #define IDC_BUTTON4                     1007

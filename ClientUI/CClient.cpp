@@ -17,6 +17,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	,simulation_progress(0),current_task_id(NO_TASK)
 	,exit_flag(false),task_finished(false)
 	,server_has_no_pending_tasks(true)
+	,not_receive_new_tasks(false)
 {
 	//connect_to_ip_address();
 	subscribe_specific_signal();
@@ -81,10 +82,12 @@ void CClient::subscribe_specific_signal()
 	const char *continue_filter = "continue";
 	const char *pause_filter = "pause";
 	const char *stop_filter = "stop";
+	const char *task_filter = "newTask";
 	command_receiver.setsockopt(ZMQ_SUBSCRIBE,    start_filter, strlen(start_filter));
 	command_receiver.setsockopt(ZMQ_SUBSCRIBE, continue_filter, strlen(continue_filter));
 	command_receiver.setsockopt(ZMQ_SUBSCRIBE,    pause_filter, strlen(pause_filter));
 	command_receiver.setsockopt(ZMQ_SUBSCRIBE,     stop_filter, strlen(stop_filter));
+	command_receiver.setsockopt(ZMQ_SUBSCRIBE,	   task_filter, strlen(task_filter));
 }
 
 void CClient::send_heartbeat()
@@ -125,7 +128,7 @@ void CClient::receive_tasks()
 		//当server从没有任务，到收到新任务，从pub端口向client发一条消息
 		//收到消息后，client重新将still_has_task标记置为true
 
-		while (server_has_no_pending_tasks) {
+		while (server_has_no_pending_tasks || not_receive_new_tasks) {
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 		}
 
@@ -143,6 +146,7 @@ void CClient::receive_tasks()
 
 		if (new_task_id == NO_TASK) {
 			current_task_id = NO_TASK;
+			server_has_no_pending_tasks = true;
 			continue;
 		}
 
@@ -155,9 +159,15 @@ void CClient::receive_tasks()
 
 void CClient::wait_simulation_finish()
 {
+	//task_finished = false;
+	//while (!task_finished) {
+	//	std::this_thread::yield();
+	//}
+
 	task_finished = false;
-	while (!task_finished) {
-		std::this_thread::yield();
+	std::unique_lock<std::mutex> locker(sim_mtx);
+	while (!task_finished && !exit_flag) {
+		sim_finished_notifier.wait(locker);
 	}
 }
 
@@ -232,6 +242,7 @@ void CClient::wrap_simulation_process()
 void CClient::set_task_status_to_finished()
 {
 	task_finished = true;
+	sim_finished_notifier.notify_one();
 }
 
 void CClient::save_result_to_database(int result)
@@ -245,7 +256,7 @@ void CClient::save_result_to_database(int result)
 
 void CClient::reset_current_task_to_undo()
 {
-	//TODO
+	set_simulation_progress(0);
 }
 
 void CClient::clear_temp_simulation_data()
@@ -274,7 +285,7 @@ int CClient::start_simulation(int task_id)
 	int result = task_id;
 
 	stop_flag = false;
-	set_progress(0);
+	set_simulation_progress(0);
 
 	while (!start_flag) {
 		std::this_thread::yield();
@@ -291,7 +302,7 @@ int CClient::start_simulation(int task_id)
 
 		result++;
 		Sleep(SIM_DELAY);
-		set_progress((result-task_id) * 100 / 5);
+		set_simulation_progress((result-task_id) * 100 / 5);
 
 		if (has_reached_endpoint(task_id, result)) {
 			stop_flag = true;
@@ -343,12 +354,12 @@ double CClient::get_memoery_status()
 	return memory_status;
 }
 
-uint CClient::get_progress()
+uint CClient::get_simulation_progress()
 {
 	return simulation_progress;
 }
 
-void CClient::set_progress(uint percent)
+void CClient::set_simulation_progress(uint percent)
 {
 	simulation_progress = percent;
 }
@@ -382,9 +393,7 @@ CClient::SignalSet CClient::listen_from_server()
 		command = s_recv(command_receiver);
 	}
 	catch (zmq::error_t &e) {
-		//e.what();
-		CString str(e.what());
-		OutputDebugString(str);
+		OutputDebugString(CA2T(e.what()));
 		return kUnknown;
 	}
 	catch (...)
@@ -404,18 +413,23 @@ CClient::SignalSet CClient::listen_from_server()
 	if (command == "continue" || 
 		command == "continue_" + std::to_string(id_))
 		return kContinue;
+	if (command == "newTask" ||
+		command == "newTask_" + std::to_string(id_))
+		return kNewTask;
 	return kUnknown;
 }
 
 bool CClient::is_irrelevant(const SignalSet &signal) const
 {
-	if ((signal == kStart) && (!start_flag && !pause_flag))
+	if ((signal == kStart) && (!start_flag) && (!pause_flag))
 		return false;
-	if ((signal == kPause) && (start_flag && !pause_flag))
+	if ((signal == kPause) && start_flag && (!pause_flag))
 		return false;
 	if ((signal == kStop) && start_flag)
 		return false;
-	if ((signal == kContinue) && (start_flag && pause_flag))
+	if ((signal == kContinue) && start_flag && pause_flag)
+		return false;
+	if ((signal == kNewTask))
 		return false;
 	return true;
 }
@@ -444,6 +458,10 @@ void CClient::execute_control_command(SignalSet control_signal)
 		stop_flag = true;
 		AddLog(TEXT("Stop simulation\r\n"), TLP_NORMAL);
 		break;
+	}
+	case kNewTask: {
+		server_has_no_pending_tasks = false;
+		AddLog(TEXT("Sever has new tasks\r\n"), TLP_NORMAL);
 	}
 	default: {
 		AddLog(TEXT("Unknown command\r\n"), TLP_NORMAL);

@@ -45,8 +45,10 @@ private:
 	enum TimerSet { ClientInfoUpdateTimer };
 public:
 	afx_msg void OnDestroy();
-	afx_msg void OnBnClickedHasTask();
-	afx_msg void OnBnClickedStopGettingTask();
+	//afx_msg void OnBnClickedHasTask();
+	//afx_msg void OnBnClickedStopGettingTask();
+	afx_msg void OnBnClickedReceiveTaskBtn();
+	CButton m_ReceiveTaskBtn;
 };
 
 

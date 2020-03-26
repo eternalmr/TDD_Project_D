@@ -55,8 +55,8 @@ void CSelectTasksDlg::OnBnClickedButton1()
 		server.add_new_task(i + 1);
 	}
 	pTaskDlg->detailPage.ShowLoadedTaskItems();
-
-	MessageBox(TEXT("已添加1个新任务"));
+	server.send_command_to_all_client("newTask");
+	MessageBox(TEXT("已添加10个新任务"));
 }
 
 
@@ -71,6 +71,6 @@ void CSelectTasksDlg::OnBnClickedButton2()
 		server.add_new_task(i + 1);
 	}
 	//pTaskDlg->detailPage.ShowLoadedTaskItems();
-
+	server.send_command_to_all_client("newTask");
 	MessageBox(TEXT("又添加10个新任务"));
 }

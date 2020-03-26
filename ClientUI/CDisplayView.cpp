@@ -27,13 +27,13 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CPU_STATUS, m_cpuStatus);
 	DDX_Control(pDX, IDC_CLIENT_ID, m_clientName);
 	DDX_Control(pDX, IDC_CURRENT_TASK, m_currentTask);
+	DDX_Control(pDX, IDC_RECEIVE_TASK_BTN, m_ReceiveTaskBtn);
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
-	ON_BN_CLICKED(IDC_BUTTON1, &CDisplayView::OnBnClickedHasTask)
-	ON_BN_CLICKED(IDC_BUTTON2, &CDisplayView::OnBnClickedStopGettingTask)
+	ON_BN_CLICKED(IDC_RECEIVE_TASK_BTN, &CDisplayView::OnBnClickedReceiveTaskBtn)
 END_MESSAGE_MAP()
 
 
@@ -106,7 +106,7 @@ void CDisplayView::UpdateClientInfo()
 	}
 	m_currentTask.SetWindowTextW(str);
 
-	m_progressBar.SetPos(client.get_progress());
+	m_progressBar.SetPos(client.get_simulation_progress());
 }
 
 
@@ -120,14 +120,16 @@ void CDisplayView::OnDestroy()
 	OutputDebugString(TEXT("已终止client更新计时器\r\n"));
 }
 
-
-void CDisplayView::OnBnClickedHasTask() //server有新任务
+void CDisplayView::OnBnClickedReceiveTaskBtn()
 {
-	client.server_has_no_pending_tasks = false;
-}
-
-
-void CDisplayView::OnBnClickedStopGettingTask() //server没有新任务
-{
-	client.server_has_no_pending_tasks = true;
+	if (client.not_receive_new_tasks) {
+		client.not_receive_new_tasks = false;
+		MessageBox(TEXT("开始接收任务"));
+		m_ReceiveTaskBtn.SetWindowTextW(TEXT("暂停接收任务"));
+	}
+	else {
+		client.not_receive_new_tasks = true;
+		MessageBox(TEXT("暂停始接收任务"));
+		m_ReceiveTaskBtn.SetWindowTextW(TEXT("开始接收任务"));
+	}
 }

@@ -12,7 +12,7 @@ class CClient {
 public:
 	enum SignalSet {
 		kStart = 111, kStop = 222, kPause = 333,
-		kContinue = 444, kUnknown = 555
+		kContinue = 444, kUnknown = 555, kNewTask
 	};
 	
 private:
@@ -61,8 +61,8 @@ public:
 	double get_cpu_status();
 	double get_memoery_status();
 
-	uint get_progress();
-	void set_progress(uint percent);
+	uint get_simulation_progress();
+	void set_simulation_progress(uint percent);
 
 	uint get_task_id();
 
@@ -92,9 +92,9 @@ private:
 
 	FILETIME IdleTime, KernelTime, UserTime;
 
-	std::mutex queue_mtx, mu2;
+	std::mutex queue_mtx, sim_mtx;
 	std::condition_variable new_task_notifier;
-	std::condition_variable task_finished_notifier;
+	std::condition_variable sim_finished_notifier;
 	std::atomic<bool> task_finished;
 
 public:
@@ -103,6 +103,7 @@ public:
 	bool stop_flag;
 	bool exit_flag;
 	bool server_has_no_pending_tasks;
+	bool not_receive_new_tasks;
 
 	std::thread heartbeat_thread;
 	std::thread task_thread;

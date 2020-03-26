@@ -12,6 +12,7 @@ IMPLEMENT_DYNCREATE(CClientDlg, CFormView)
 
 CClientDlg::CClientDlg()
 	: CFormView(IDD_CLIENT)
+	,m_bDlgIsCreated(FALSE)
 {
 
 }
@@ -56,12 +57,14 @@ void CClientDlg::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// 在此添加专用代码和/或调用基类
+	m_bDlgIsCreated = TRUE;
+
 	CRect rect;
 	GetClientRect(&rect);
-
 	m_tab.MoveWindow(0, 0, rect.Width(), rect.Height());
-	m_tab.AddPage(TEXT("节点概况"), &overviewPage, IDD_CLIENT_OVERVIEW, true);
-	m_tab.AddPage(TEXT("节点详情"), &detailPage, IDD_CLIENT_DETAIL, true);
+
+	m_tab.AddPage(TEXT("节点概况"), &m_overviewPage, IDD_CLIENT_OVERVIEW, true);
+	m_tab.AddPage(TEXT("节点详情"), &m_detailPage, IDD_CLIENT_DETAIL, true);
 	m_tab.CreatePage();
 	m_tab.Show(0);
 }
@@ -71,6 +74,13 @@ void CClientDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CFormView::OnSize(nType, cx, cy);
 
-	// TODO: 在此处添加消息处理程序代码
+	if (m_bDlgIsCreated) {
+		CRect rect;
+		GetClientRect(&rect);
+		m_tab.MoveWindow(0, 0, rect.Width(), rect.Height());
+		m_overviewPage.MoveWindow(0, 21, rect.Width()-4, rect.Height()-23);
+		m_detailPage.MoveWindow(0, 21, rect.Width()-4, rect.Height()-23);
+	}
+
 	ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。
 }

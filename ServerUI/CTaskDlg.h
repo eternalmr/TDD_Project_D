@@ -32,13 +32,15 @@ protected:
 
 private:
 	CTabSheet m_tab;
-	CTaskOverviewPage overviewPage;
+	CTaskOverviewPage m_overviewPage;
+
 
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 
-	CTaskDetailPage detailPage;
+	CTaskDetailPage m_detailPage;
+	BOOL m_bDlgIsCreated;
 };
 
 

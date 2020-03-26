@@ -31,8 +31,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	CTabSheet m_tab;
-	CClientOverviewPage overviewPage;
-	CClientDetailPage detailPage;
+	CClientOverviewPage m_overviewPage;
+	CClientDetailPage m_detailPage;
+	BOOL m_bDlgIsCreated;
+
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnSize(UINT nType, int cx, int cy);

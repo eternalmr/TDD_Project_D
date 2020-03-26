@@ -28,28 +28,27 @@ public:
 	uint get_id();
 	void set_ip(const string ip);
 
-	void connect_to_ip_address();
-	void disconnect_to_ip_address();
+	void connect_sockets_to_ip();
+	void disconnect_sockets_to_ip();
 	void subscribe_specific_signal();
 
 	SignalSet listen_from_server();
 	bool is_irrelevant(const SignalSet &signal) const;
 	void execute_control_command(SignalSet control_signal);
 
-	string get_ip_address();
-	string get_ip_address(string ip, string port);
+	string get_ip_address(string port);
 
 	void send_heartbeat();
-	void receive_command();
+	void receive_control_command();
 	void receive_tasks();
-
 	void wait_simulation_finish();
+	void start_threads();
 
 	void put_task_into_queue(int new_task_id);
 
 	int get_new_task_from_server();
 
-	void wrap_simulation_process(int task_num);
+	void wrap_simulation_process();
 
 	void set_task_status_to_finished();
 
@@ -99,10 +98,9 @@ private:
 	std::atomic<bool> task_finished;
 
 public:
-	int start_flag;
-	int pause_flag;
-	int stop_flag;
-
+	bool start_flag;
+	bool pause_flag;
+	bool stop_flag;
 	bool exit_flag;
 	bool server_has_no_pending_tasks;
 

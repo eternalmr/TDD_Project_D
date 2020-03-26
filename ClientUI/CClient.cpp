@@ -3,16 +3,8 @@
 #include "CClient.h"
 #include "CLogShow.h"
 #include "resource.h"
-#include "ClientUI.h"
-#include "MainFrm.h"
-#include "CDisplayView.h"
 
 #define NO_TASK 0
-
-string heartbeat_ipaddress = "tcp://" + default_client_ip + ":" + heartbeat_port;
-string command_ipaddress = "tcp://" + default_client_ip + ":" + command_port;
-string task_ipaddress = "tcp://" + default_client_ip + ":" + task_port;
-string result_ipaddress = "tcp://" + default_client_ip + ":" + result_port;
 
 CClient::CClient(uint id, const string &ip, const string &port) :
 	id_(id), context(1),
@@ -21,7 +13,7 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	result_sender(context, ZMQ_PUSH),
 	command_receiver(context, ZMQ_SUB),
 	ip_(ip), port_(port),
-	start_flag(0), pause_flag(0), stop_flag(0)
+	start_flag(false), pause_flag(false), stop_flag(false)
 	,simulation_progress(0),current_task_id(NO_TASK)
 	,exit_flag(false),task_finished(false)
 	,server_has_no_pending_tasks(true)
@@ -62,30 +54,25 @@ void CClient::set_ip(const string ip)
 	ip_ = ip;
 }
 
-void CClient::connect_to_ip_address()
+void CClient::connect_sockets_to_ip()
 {
-	heartbeat_sender.connect(get_ip_address(ip_,std::to_string(heartbeat_port)));
-	task_requester.connect(get_ip_address(ip_, std::to_string(task_port)));
-	result_sender.connect(get_ip_address(ip_, std::to_string(result_port)));
-	command_receiver.connect(get_ip_address(ip_, std::to_string(control_port)));
+	heartbeat_sender.connect(get_ip_address(std::to_string(heartbeat_port)));
+	task_requester.connect(get_ip_address(std::to_string(task_port)));
+	result_sender.connect(get_ip_address(std::to_string(result_port)));
+	command_receiver.connect(get_ip_address(std::to_string(control_port)));
 }
 
-void CClient::disconnect_to_ip_address()
+void CClient::disconnect_sockets_to_ip()
 {
-	heartbeat_sender.disconnect(get_ip_address(ip_, std::to_string(heartbeat_port)));
-	task_requester.disconnect(get_ip_address(ip_, std::to_string(task_port)));
-	result_sender.disconnect(get_ip_address(ip_, std::to_string(result_port)));
-	command_receiver.disconnect(get_ip_address(ip_, std::to_string(control_port)));
+	heartbeat_sender.disconnect(get_ip_address(std::to_string(heartbeat_port)));
+	task_requester.disconnect(get_ip_address(std::to_string(task_port)));
+	result_sender.disconnect(get_ip_address(std::to_string(result_port)));
+	command_receiver.disconnect(get_ip_address(std::to_string(control_port)));
 }
 
-string CClient::get_ip_address()
+string CClient::get_ip_address(string port)
 {
-	return "tcp://" + ip_ + ":" + port_;
-}
-
-string CClient::get_ip_address(string ip, string port)
-{
-	return "tcp://" + ip + ":" + port;
+	return "tcp://" + ip_ + ":" + port;
 }
 
 void CClient::subscribe_specific_signal()
@@ -114,7 +101,7 @@ void CClient::send_heartbeat()
 	OutputDebugString(TEXT("心跳线程已退出。"));
 }
 
-void CClient::receive_command()
+void CClient::receive_control_command()
 {
 	Command cmd;
 	while (!exit_flag) {
@@ -174,6 +161,18 @@ void CClient::wait_simulation_finish()
 	}
 }
 
+void CClient::start_threads()
+{
+	heartbeat_thread = std::thread(&CClient::send_heartbeat, this);
+	task_thread = std::thread(&CClient::receive_tasks, this);
+	simulation_thread = std::thread(&CClient::wrap_simulation_process, this);
+	control_thread = std::thread(&CClient::receive_control_command, this);
+
+	task_thread.detach();
+	control_thread.detach();
+	simulation_thread.detach();
+}
+
 void CClient::put_task_into_queue(int new_task_id)
 {
 	std::unique_lock<std::mutex> locker(queue_mtx);
@@ -202,7 +201,7 @@ int CClient::get_new_task_from_server()
 	return new_task_id;
 }
 
-void CClient::wrap_simulation_process(int task_num)
+void CClient::wrap_simulation_process()
 {
 	int result;
 
@@ -274,7 +273,7 @@ int CClient::start_simulation(int task_id)
 {
 	int result = task_id;
 
-	stop_flag = 0;
+	stop_flag = false;
 	set_progress(0);
 
 	while (!start_flag) {
@@ -285,7 +284,7 @@ int CClient::start_simulation(int task_id)
 		if (stop_flag || exit_flag) 
 			return -1;//interrupt simulation
 
-		if (start_flag == 1 && pause_flag == 1) {
+		if (start_flag && pause_flag ) {
 			std::this_thread::yield();
 			continue;
 		}
@@ -295,7 +294,7 @@ int CClient::start_simulation(int task_id)
 		set_progress((result-task_id) * 100 / 5);
 
 		if (has_reached_endpoint(task_id, result)) {
-			stop_flag = 1;
+			stop_flag = true;
 			break;
 		}
 	}
@@ -372,7 +371,7 @@ void CClient::exit()
 	result_sender.setsockopt(ZMQ_RCVTIMEO, 0);
 	command_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
 
-	stop_flag = 1;
+	stop_flag = true;
 	exit_flag = true;
 }
 
@@ -410,13 +409,13 @@ CClient::SignalSet CClient::listen_from_server()
 
 bool CClient::is_irrelevant(const SignalSet &signal) const
 {
-	if ((signal == kStart) && (start_flag == 0 && pause_flag == 0))
+	if ((signal == kStart) && (!start_flag && !pause_flag))
 		return false;
-	if ((signal == kPause) && (start_flag == 1 && pause_flag == 0))
+	if ((signal == kPause) && (start_flag && !pause_flag))
 		return false;
-	if ((signal == kStop) && (start_flag == 1))
+	if ((signal == kStop) && start_flag)
 		return false;
-	if ((signal == kContinue) && (start_flag == 1 && pause_flag == 1))
+	if ((signal == kContinue) && (start_flag && pause_flag))
 		return false;
 	return true;
 }
@@ -425,24 +424,24 @@ void CClient::execute_control_command(SignalSet control_signal)
 {
 	switch (control_signal) {
 	case kStart: {
-		start_flag = 1;
+		start_flag = true;
 		AddLog(TEXT("Start simulation\r\n"), TLP_NORMAL);
 		break;
 	}
 	case kContinue: {
-		pause_flag = 0;
+		pause_flag = false;
 		AddLog(TEXT("Continue simulation\r\n"), TLP_NORMAL);
 		break;
 	}
 	case kPause: {
-		pause_flag = 1;
+		pause_flag = true;
 		AddLog(TEXT("Pause simulation\r\n"), TLP_NORMAL);
 		break;
 	}
 	case kStop: {
-		start_flag = 0;
-		pause_flag = 0;
-		stop_flag = 1;
+		start_flag = false;
+		pause_flag = false;
+		stop_flag = true;
 		AddLog(TEXT("Stop simulation\r\n"), TLP_NORMAL);
 		break;
 	}

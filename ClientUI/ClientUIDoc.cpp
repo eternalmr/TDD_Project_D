@@ -79,7 +79,7 @@ BOOL CClientUIDoc::OnNewDocument()
 	client.task_port = m_TaskPort;
 	client.result_port = m_ResultPort;
 	client.set_ip(string(CT2A(ipAddress)));
-	client.connect_to_ip_address();
+	client.connect_sockets_to_ip();
 
 	return TRUE;
 }

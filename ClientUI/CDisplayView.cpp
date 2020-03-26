@@ -4,15 +4,12 @@
 #include "pch.h"
 #include "ClientUI.h"
 #include "CDisplayView.h"
-#include "CUserDefineMsg.h"
-#include "MainFrm.h"
 
 
 IMPLEMENT_DYNCREATE(CDisplayView, CFormView)
 
 CDisplayView::CDisplayView()
 	: CFormView(IDD_DISPLAYVIEW)
-	, m_clientName(_T("推演节点："))
 {
 	
 }
@@ -28,18 +25,15 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PROGRESS, m_progressBar);
 	DDX_Control(pDX, IDC_MEMORY_STATUS, m_memoryStatus);
 	DDX_Control(pDX, IDC_CPU_STATUS, m_cpuStatus);
-	DDX_Text(pDX, IDC_CLIENT_ID, m_clientName);
+	DDX_Control(pDX, IDC_CLIENT_ID, m_clientName);
 	DDX_Control(pDX, IDC_CURRENT_TASK, m_currentTask);
-	DDX_Control(pDX, IDC_CONFIRMID_BTN, m_confirmIdBtn);
-	DDX_Control(pDX, IDC_CLIENTID_EDIT, m_ClientIdInput);
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_CONFIRMID_BTN, &CDisplayView::OnBnClickedConfirmidBtn)
 	ON_WM_DESTROY()
-	ON_BN_CLICKED(IDC_BUTTON1, &CDisplayView::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &CDisplayView::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON1, &CDisplayView::OnBnClickedHasTask)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDisplayView::OnBnClickedStopGettingTask)
 END_MESSAGE_MAP()
 
 
@@ -62,10 +56,15 @@ void CDisplayView::Dump(CDumpContext& dc) const
 void CDisplayView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
-	m_ClientIdInput.SetWindowTextW(TEXT("1"));
-	m_progressBar.SetRange(0, 100);
 
+	CString str;
+	str.Format(TEXT("推演节点%d："), client.get_id());
+	m_clientName.SetWindowTextW(str);
+
+	m_progressBar.SetRange(0, 100);
 	SetTimer(ClientInfoUpdateTimer, 1000, NULL);//启动CPU、内存状态刷新计时器
+
+	client.start_threads();//启动心跳、任务、控制、仿真线程
 }
 
 
@@ -111,27 +110,6 @@ void CDisplayView::UpdateClientInfo()
 }
 
 
-void CDisplayView::OnBnClickedConfirmidBtn()
-{
-	UpdateData(TRUE);
-	CString str;
-	m_ClientIdInput.GetWindowTextW(str);
-	client.set_id(_ttoi(str));
-
-	m_clientName = CString(TEXT("推演节点：")) + str;
-	client.task_thread = std::thread(&CClient::receive_tasks, &client);
-	client.simulation_thread = std::thread(&CClient::wrap_simulation_process, &client, 0);
-	client.control_thread = std::thread(&CClient::receive_command, &client);
-
-	client.task_thread.detach();
-	client.control_thread.detach();
-	client.simulation_thread.detach();
-
-	UpdateData(FALSE);
-	m_confirmIdBtn.ShowWindow(FALSE);
-	m_ClientIdInput.ShowWindow(FALSE);
-}
-
 
 void CDisplayView::OnDestroy()
 {
@@ -143,13 +121,13 @@ void CDisplayView::OnDestroy()
 }
 
 
-void CDisplayView::OnBnClickedButton1() //server有新任务
+void CDisplayView::OnBnClickedHasTask() //server有新任务
 {
 	client.server_has_no_pending_tasks = false;
 }
 
 
-void CDisplayView::OnBnClickedButton2() //server没有新任务
+void CDisplayView::OnBnClickedStopGettingTask() //server没有新任务
 {
 	client.server_has_no_pending_tasks = true;
 }

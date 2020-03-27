@@ -121,13 +121,6 @@ void CClient::receive_tasks()
 
 	while (!exit_client)
 	{
-		//判断server是否还有任务；
-		//用一个标记位still_has_task来标记
-		//若有则发出任务请求，没有则wait在此
-		//（若是没有任务了，server则返回一条no_task的消息）
-		//当server从没有任务，到收到新任务，从pub端口向client发一条消息
-		//收到消息后，client重新将still_has_task标记置为true
-
 		while (server_has_no_pending_tasks || not_receive_new_tasks) {
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 		}
@@ -159,11 +152,6 @@ void CClient::receive_tasks()
 
 void CClient::wait_simulation_finish()
 {
-	//task_finished = false;
-	//while (!task_finished) {
-	//	std::this_thread::yield();
-	//}
-
 	task_finished = false;
 	std::unique_lock<std::mutex> locker(sim_mtx);
 	while (!task_finished && !exit_client) {
@@ -471,16 +459,6 @@ void CClient::execute_control_command(SignalSet control_signal)
 	}
 	}//end of switch
 }
-
-//bool CClient::is_not_reach(int max_num, int &count)
-//{
-//	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
-//}
-
-//bool CClient::simulation_is_not_finished(int	task_num, int &count)
-//{
-//	return task_num == 0 ? true : count++ < task_num;
-//}
 
 
 bool CClient::simulation_is_not_finish()

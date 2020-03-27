@@ -73,6 +73,8 @@
 #define IDC_FREE_CLIENT_NUM_BTN         1022
 #define IDC_BUTTON4                     1023
 #define IDC_BREAKDOWN_CLIENT_NUM_BTN    1023
+#define IDC_LIST2                       1035
+#define IDC_TASK_LIST                   1035
 #define ID_32771                        32771
 #define ID_CONFIG_SET                   32772
 
@@ -80,9 +82,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        333
+#define _APS_NEXT_RESOURCE_VALUE        334
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           319
 #endif
 #endif

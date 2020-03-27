@@ -88,9 +88,16 @@ void CTaskOverviewPage::OnBnClickedContinue()
 
 void CTaskOverviewPage::OnBnClickedStop()
 {
+	int ReturnID = MessageBox(TEXT("确定要终止计算中的任务吗？"), 
+								TEXT("终止任务"), MB_OKCANCEL);
+
+	//TODO: 判断是否有计算任务仍然在执行
+	if (ReturnID == IDCANCEL) {
+		return;
+	}
+
 	server.send_command_to_all_client("stop");
 	AddLog(TEXT("结束仿真\r\n"), TLP_NORMAL);
-	MessageBox(TEXT("结束任务"));
 }
 
 void CTaskOverviewPage::OnBnClickedLoad()
@@ -111,7 +118,7 @@ BOOL CTaskOverviewPage::OnInitDialog()
 
 	// 在此添加额外的初始化
 	UpdateTaskInfo();
-	
+
 	m_ThreadBtn.EnableWindow(FALSE);
 	m_StartBtn.EnableWindow(FALSE);
 	m_StopBtn.EnableWindow(FALSE);

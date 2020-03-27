@@ -137,6 +137,10 @@ BOOL CServerUIApp::InitInstance()
 	server.heartbeat_thread.detach();
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
+	int nWidth = 960;
+	int nHeight = 600;
+	m_pMainWnd->MoveWindow(0, 0, nWidth, nHeight);//设置窗口大小
+	m_pMainWnd->CenterWindow();           //居中窗口
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	return TRUE;

@@ -13,9 +13,9 @@ CClient::CClient(uint id, const string &ip, const string &port) :
 	result_sender(context, ZMQ_PUSH),
 	command_receiver(context, ZMQ_SUB),
 	ip_(ip), port_(port),
-	start_flag(false), pause_flag(false), stop_flag(false)
+	start_task(false), pause_task(false), stop_task(false)
 	,simulation_progress(0),current_task_id(NO_TASK)
-	,exit_flag(false),task_finished(false)
+	,exit_client(false),task_finished(false)
 	,server_has_no_pending_tasks(true)
 	,not_receive_new_tasks(false)
 {
@@ -94,7 +94,7 @@ void CClient::send_heartbeat()
 {
 	string signal;
 
-	while (!exit_flag) {
+	while (!exit_client) {
 		signal = std::to_string(id_) + "_" 
 			   + std::to_string(current_task_id) + "_" 
 			   + std::to_string(simulation_progress);
@@ -107,7 +107,7 @@ void CClient::send_heartbeat()
 void CClient::receive_control_command()
 {
 	Command cmd;
-	while (!exit_flag) {
+	while (!exit_client) {
 		cmd = listen_from_server();
 		if (is_irrelevant(cmd)) continue;
 		execute_control_command(cmd);
@@ -119,7 +119,7 @@ void CClient::receive_tasks()
 {
 	int new_task_id;
 
-	while (!exit_flag)
+	while (!exit_client)
 	{
 		//判断server是否还有任务；
 		//用一个标记位still_has_task来标记
@@ -166,7 +166,7 @@ void CClient::wait_simulation_finish()
 
 	task_finished = false;
 	std::unique_lock<std::mutex> locker(sim_mtx);
-	while (!task_finished && !exit_flag) {
+	while (!task_finished && !exit_client) {
 		sim_finished_notifier.wait(locker);
 	}
 }
@@ -215,7 +215,7 @@ void CClient::wrap_simulation_process()
 {
 	int result;
 
-	while (!exit_flag) {
+	while (!exit_client) {
 		try {
 			current_task_id = get_task_from_queue();
 		}
@@ -225,18 +225,22 @@ void CClient::wrap_simulation_process()
 		}
 		
 		result = start_simulation(current_task_id);
-
-		if (result == -1) { 
-			reset_current_task_to_undo();
-			clear_temp_simulation_data();
-			AddLog(TEXT("current task has been interrupted"), TLP_ERROR);
-			continue;
-		}
-
-		save_result_to_database(result);
+		try_to_save_result(result);
 		set_task_status_to_finished();
 	}//end of while
 	OutputDebugString(TEXT("仿真线程已退出"));
+}
+
+void CClient::try_to_save_result(int result)
+{
+	if (result == -1) {
+		reset_current_task();
+		clear_temp_simulation_data();
+		AddLog(TEXT("current task has been interrupted\r\n"), TLP_ERROR);
+	}
+	else {
+		save_result_to_database(result);
+	}
 }
 
 void CClient::set_task_status_to_finished()
@@ -254,7 +258,7 @@ void CClient::save_result_to_database(int result)
 	AddLog(str, TLP_NORMAL);
 }
 
-void CClient::reset_current_task_to_undo()
+void CClient::reset_current_task()
 {
 	set_simulation_progress(0);
 }
@@ -267,11 +271,11 @@ void CClient::clear_temp_simulation_data()
 uint CClient::get_task_from_queue()
 {
 	std::unique_lock<std::mutex> locker(queue_mtx);
-	while (task_queue.empty() && !exit_flag) {
+	while (task_queue.empty() && !exit_client) {
 		new_task_notifier.wait(locker);
 	}
 
-	if (exit_flag)
+	if (exit_client)
 		throw "exit process";
 
 	uint task_id = task_queue.front();
@@ -284,18 +288,18 @@ int CClient::start_simulation(int task_id)
 {
 	int result = task_id;
 
-	stop_flag = false;
+	stop_task = false;
 	set_simulation_progress(0);
 
-	while (!start_flag) {
+	while (!start_task) {
 		std::this_thread::yield();
 	}
 
-	while (true) {
-		if (stop_flag || exit_flag) 
+	while (simulation_is_not_finish()) {
+		if (stop_task || exit_client) 
 			return -1;//interrupt simulation
 
-		if (start_flag && pause_flag ) {
+		if (start_task && pause_task ) {
 			std::this_thread::yield();
 			continue;
 		}
@@ -303,11 +307,6 @@ int CClient::start_simulation(int task_id)
 		result++;
 		Sleep(SIM_DELAY);
 		set_simulation_progress((result-task_id) * 100 / 5);
-
-		if (has_reached_endpoint(task_id, result)) {
-			stop_flag = true;
-			break;
-		}
 	}
 
 	return result;
@@ -382,8 +381,8 @@ void CClient::exit()
 	result_sender.setsockopt(ZMQ_RCVTIMEO, 0);
 	command_receiver.setsockopt(ZMQ_RCVTIMEO, 0);
 
-	stop_flag = true;
-	exit_flag = true;
+	stop_task = true;
+	exit_client = true;
 }
 
 CClient::SignalSet CClient::listen_from_server()
@@ -421,13 +420,13 @@ CClient::SignalSet CClient::listen_from_server()
 
 bool CClient::is_irrelevant(const SignalSet &signal) const
 {
-	if ((signal == kStart) && (!start_flag) && (!pause_flag))
+	if ((signal == kStart) && (!start_task) && (!pause_task))
 		return false;
-	if ((signal == kPause) && start_flag && (!pause_flag))
+	if ((signal == kPause) && start_task && (!pause_task))
 		return false;
-	if ((signal == kStop) && start_flag)
+	if ((signal == kStop) && start_task)
 		return false;
-	if ((signal == kContinue) && start_flag && pause_flag)
+	if ((signal == kContinue) && start_task && pause_task)
 		return false;
 	if ((signal == kNewTask))
 		return false;
@@ -438,24 +437,24 @@ void CClient::execute_control_command(SignalSet control_signal)
 {
 	switch (control_signal) {
 	case kStart: {
-		start_flag = true;
+		start_task = true;
 		AddLog(TEXT("Start simulation\r\n"), TLP_NORMAL);
 		break;
 	}
 	case kContinue: {
-		pause_flag = false;
+		pause_task = false;
 		AddLog(TEXT("Continue simulation\r\n"), TLP_NORMAL);
 		break;
 	}
 	case kPause: {
-		pause_flag = true;
+		pause_task = true;
 		AddLog(TEXT("Pause simulation\r\n"), TLP_NORMAL);
 		break;
 	}
 	case kStop: {
-		start_flag = false;
-		pause_flag = false;
-		stop_flag = true;
+		stop_task = true;
+		start_task = false;
+		pause_task = false;
 		AddLog(TEXT("Stop simulation\r\n"), TLP_NORMAL);
 		break;
 	}
@@ -470,18 +469,18 @@ void CClient::execute_control_command(SignalSet control_signal)
 	}//end of switch
 }
 
-bool CClient::is_not_reach(int max_num, int &count)
-{
-	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
-}
+//bool CClient::is_not_reach(int max_num, int &count)
+//{
+//	return max_num == REPEAT_FOREVER ? true : count++ < max_num;
+//}
 
-bool CClient::simulation_is_not_finished(int	task_num, int &count)
-{
-	return task_num == 0 ? true : count++ < task_num;
-}
+//bool CClient::simulation_is_not_finished(int	task_num, int &count)
+//{
+//	return task_num == 0 ? true : count++ < task_num;
+//}
 
 
-bool CClient::has_reached_endpoint(int input, int result)
+bool CClient::simulation_is_not_finish()
 {
-	return (result - input == 5);
+	return (100 != get_simulation_progress());
 }

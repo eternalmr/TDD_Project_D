@@ -76,11 +76,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
 	SetTitle(TEXT(" By 湖南麟淇"));
-	
-	int nWidth = 960;
-	int nHeight = 600;
-	MoveWindow(0, 0, nWidth, nHeight);//设置窗口大小
-	CenterWindow();           //居中窗口
 
 	return 0;
 }
@@ -190,26 +185,21 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
 
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
-	// TODO: 在此添加专用代码和/或调用基类
-	CRect rect;
-	GetClientRect(&rect); //获得用户窗口的矩形坐标
-	int w = rect.Width();
-	int h = rect.Height();
-
 	m_bWholeWndIsSplitted = m_WholeWindowSplitter.CreateStatic(this, 1, 2);     // 切分成左右两部分
 	
 	if (!m_bWholeWndIsSplitted)
 		return m_bWholeWndIsSplitted;
 	
-	m_bRightWndIsSplitted = m_RightWindowSplitter.CreateStatic(&m_WholeWindowSplitter, 2, 1, // 将右侧分为上下两部分
-											WS_CHILD | WS_VISIBLE, 
+	m_bRightWndIsSplitted = m_RightWindowSplitter.CreateStatic(
+										&m_WholeWindowSplitter, 2, 1, // 将右侧分为上下两部分
+										WS_CHILD | WS_VISIBLE, 
 										m_WholeWindowSplitter.IdFromRowCol(0, 1));
 	if (!m_bRightWndIsSplitted)
 		return m_bRightWndIsSplitted;
 
-	m_WholeWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(int(0.15*w), h), pContext);//左侧是CSelectView的实例，大小为200X600
-	m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(int(0.85*w), int(0.6*h)), pContext);//右上是CDisplayView的实例，大小为760X600
-	m_RightWindowSplitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(int(0.85*w), int(0.4*h)), pContext);//右下是CLogView的实例，大小为760X600
+	m_WholeWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(0,0), pContext);
+	m_RightWindowSplitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(0,0), pContext);
+	m_RightWindowSplitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(0,0), pContext);
 
 	// 保存分割窗口的指针
 	m_pSelectView = m_WholeWindowSplitter.GetPane(0, 0);
@@ -228,6 +218,10 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 	GetClientRect(&rect); //获得用户窗口的矩形坐标
 	int w = rect.Width();
 	int h = rect.Height();
+
+	//CString str;
+	//str.Format(TEXT("w: %d, h: %d"), w, h);
+	//MessageBox(str);
 
 	if (m_bWholeWndIsSplitted) {
 		m_WholeWindowSplitter.SetColumnInfo(0, int(0.15*w), 10);

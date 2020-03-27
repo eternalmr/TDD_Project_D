@@ -50,10 +50,12 @@ public:
 
 	void wrap_simulation_process();
 
+	void try_to_save_result(int result);
+
 	void set_task_status_to_finished();
 
 	void save_result_to_database(int result);
-	void reset_current_task_to_undo();
+	void reset_current_task();
 	void clear_temp_simulation_data();
 	uint get_task_from_queue();
 
@@ -69,9 +71,9 @@ public:
 	void exit();
 
 private:
-	bool is_not_reach(int max_num, int &count); 
-	bool simulation_is_not_finished(int task_num, int &count);
-	bool has_reached_endpoint(int input, int result);
+	//bool is_not_reach(int max_num, int &count); 
+	//bool simulation_is_not_finished(int task_num, int &count);
+	bool simulation_is_not_finish();
 	unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime);
 
 	uint simulation_progress;
@@ -98,10 +100,10 @@ private:
 	std::atomic<bool> task_finished;
 
 public:
-	bool start_flag;
-	bool pause_flag;
-	bool stop_flag;
-	bool exit_flag;
+	bool start_task;
+	bool pause_task;
+	bool stop_task;
+	bool exit_client;
 	bool server_has_no_pending_tasks;
 	bool not_receive_new_tasks;
 

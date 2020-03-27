@@ -78,8 +78,8 @@ void CTaskDlg::OnSize(UINT nType, int cx, int cy)
 		CRect rect;
 		GetClientRect(&rect);
 		m_tab.MoveWindow(0, 0, rect.Width(), rect.Height());
-		m_overviewPage.MoveWindow(0, 21, rect.Width()-4, rect.Height()-23);
-		m_detailPage.MoveWindow(0, 21, rect.Width()-4, rect.Height()-23);
+		m_overviewPage.MoveWindow(0, 21, rect.Width(), rect.Height()-21);
+		m_detailPage.MoveWindow(0, 21, rect.Width(), rect.Height()-21);
 	}
 
 	ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。

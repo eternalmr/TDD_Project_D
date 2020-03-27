@@ -79,7 +79,7 @@ private:
 	string ip_;
 	string port_;
 	
-	bool exit_flag;
+	bool exit_server;
 public:
 	ClientMap clients;
 	std::vector<Task*> all_tasks;

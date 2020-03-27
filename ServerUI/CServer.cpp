@@ -17,7 +17,7 @@ CServer::CServer(const string &ip, const string &port) :
 	command_sender(context, ZMQ_PUB),
 	result_collector(context, ZMQ_PULL),
 	ip_(ip), port_(port), clients({}),
-	exit_flag(false)
+	exit_server(false)
 {
 	//bind_sockets_to_ip();
 }
@@ -123,7 +123,7 @@ void CServer::receive_heartbeat()
 	uint simulation_progress;
 	string raw_signal;
 
-	while (!exit_flag) {
+	while (!exit_server) {
 		try {
 			raw_signal = my_recv(heartbeat_receiver);
 		}
@@ -247,7 +247,7 @@ void CServer::distribute_tasks()
 	Task* undo_task_pointer;
 	uint id;
 
-	while (!exit_flag) {//TODO : simulation is finished
+	while (!exit_server) {//TODO : simulation is finished
 		// update tasks and clients status
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
@@ -327,7 +327,7 @@ void CServer::collect_result()
 	string raw_result;
 	CString str;
 
-	while (!exit_flag) {
+	while (!exit_server) {
 		try {
 			raw_result = my_recv(result_collector);
 		}
@@ -377,7 +377,7 @@ void CServer::get_client_num_info(int &nTotal, int &nIncomputing, int &nIdle, in
 
 void CServer::exit()
 {
-	exit_flag = true;
+	exit_server = true;
 
 	heartbeat_receiver.setsockopt(ZMQ_LINGER, 0);
 	task_assigner.setsockopt(ZMQ_LINGER, 0);

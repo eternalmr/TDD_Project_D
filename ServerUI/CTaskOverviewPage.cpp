@@ -98,6 +98,8 @@ void CTaskOverviewPage::OnBnClickedStop()
 	}
 	//TODO: Server要回收所有计算中的任务
 	server.start_simulation = false;
+	//TODO: 重设client的状态
+	server.reclaim_in_computing_task();
 	server.send_command_to_all_client("stop");
 	AddLog(TEXT("结束仿真\r\n"), TLP_NORMAL);
 }

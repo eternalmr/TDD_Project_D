@@ -415,5 +415,11 @@ std::string CServer::my_recv(zmq::socket_t & socket)
 
 void CServer::reclaim_in_computing_task()
 {
-
+	ClientRecord *pClient;
+	for (auto &client : clients) {
+		pClient = &(client.second);
+		if (!pClient->is_in_computing())
+			continue;
+		reset_task_to_not_start(pClient->get_task());
+	}
 }

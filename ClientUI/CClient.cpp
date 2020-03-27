@@ -220,8 +220,8 @@ void CClient::wrap_simulation_process()
 			current_task_id = get_task_from_queue();
 		}
 		catch (...) {
-			OutputDebugString(TEXT("终止仿真..."));
-			break;
+			OutputDebugString(TEXT("任务获取失败..."));
+			continue;
 		}
 		
 		result = start_simulation(current_task_id);
@@ -261,6 +261,7 @@ void CClient::save_result_to_database(int result)
 void CClient::reset_current_task()
 {
 	set_simulation_progress(0);
+	current_task_id = NO_TASK;
 }
 
 void CClient::clear_temp_simulation_data()

@@ -438,6 +438,7 @@ void CClient::execute_control_command(SignalSet control_signal)
 	switch (control_signal) {
 	case kStart: {
 		start_task = true;
+		not_receive_new_tasks = false;
 		AddLog(TEXT("Start simulation\r\n"), TLP_NORMAL);
 		break;
 	}
@@ -455,6 +456,7 @@ void CClient::execute_control_command(SignalSet control_signal)
 		stop_task = true;
 		start_task = false;
 		pause_task = false;
+		not_receive_new_tasks = true;
 		AddLog(TEXT("Stop simulation\r\n"), TLP_NORMAL);
 		break;
 	}

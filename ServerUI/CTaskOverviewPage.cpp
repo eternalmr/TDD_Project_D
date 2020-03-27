@@ -66,9 +66,10 @@ void CTaskOverviewPage::OnBnClickedThreadBtn()
 
 void CTaskOverviewPage::OnBnClickedStart()
 {
-	server.send_command_to_all_client("start");
 	AddLog(TEXT("开始仿真\r\n"), TLP_NORMAL);
 	MessageBox(TEXT("开始任务"));
+	server.start_simulation = true;
+	server.send_command_to_all_client("start");
 }
 
 void CTaskOverviewPage::OnBnClickedPause()
@@ -95,7 +96,8 @@ void CTaskOverviewPage::OnBnClickedStop()
 	if (ReturnID == IDCANCEL) {
 		return;
 	}
-
+	//TODO: Server要回收所有计算中的任务
+	server.start_simulation = false;
 	server.send_command_to_all_client("stop");
 	AddLog(TEXT("结束仿真\r\n"), TLP_NORMAL);
 }

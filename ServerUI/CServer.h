@@ -66,6 +66,8 @@ public:
 
 	std::string my_recv(zmq::socket_t &socket);
 
+	void reclaim_in_computing_task();
+
 private:
 	bool is_not_reach(int max_num, int &count);
 
@@ -78,8 +80,9 @@ private:
 
 	string ip_;
 	string port_;
-	
+
 	bool exit_server;
+
 public:
 	ClientMap clients;
 	std::vector<Task*> all_tasks;
@@ -89,6 +92,8 @@ public:
 	std::thread sim_thread;
 	std::thread task_thread;
 	std::thread result_thread;
+
+	bool start_simulation;
 
 	int heartbeat_port;
 	int control_port;

@@ -17,7 +17,7 @@ CServer::CServer(const string &ip, const string &port) :
 	command_sender(context, ZMQ_PUB),
 	result_collector(context, ZMQ_PULL),
 	ip_(ip), port_(port), clients({}),
-	exit_server(false)
+	exit_server(false),start_simulation(false)
 {
 	//bind_sockets_to_ip();
 }
@@ -249,6 +249,10 @@ void CServer::distribute_tasks()
 
 	while (!exit_server) {//TODO : simulation is finished
 		// update tasks and clients status
+		while (!start_simulation) {
+			std::this_thread::yield();
+		}
+
 		mark_breakdown_client(); //TODO : 根据单一责任原理，这个函数应该移出这里
 
 		try {
@@ -407,4 +411,9 @@ std::string CServer::my_recv(zmq::socket_t & socket)
 	}
 
 	return std::string(static_cast<char*>(message.data()), message.size());
+}
+
+void CServer::reclaim_in_computing_task()
+{
+
 }

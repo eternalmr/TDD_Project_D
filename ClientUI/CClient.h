@@ -36,7 +36,7 @@ public:
 	bool is_irrelevant(const SignalSet &signal) const;
 	void execute_control_command(SignalSet control_signal);
 
-	string get_ip_address(string port);
+	string get_ip_address(int port);
 
 	void send_heartbeat();
 	void receive_control_command();

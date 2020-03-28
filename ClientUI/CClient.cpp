@@ -57,23 +57,23 @@ void CClient::set_ip(const string ip)
 
 void CClient::connect_sockets_to_ip()
 {
-	heartbeat_sender.connect(get_ip_address(std::to_string(heartbeat_port)));
-	task_requester.connect(get_ip_address(std::to_string(task_port)));
-	result_sender.connect(get_ip_address(std::to_string(result_port)));
-	command_receiver.connect(get_ip_address(std::to_string(control_port)));
+	heartbeat_sender.connect(get_ip_address(heartbeat_port));
+	task_requester.connect(get_ip_address(task_port));
+	result_sender.connect(get_ip_address(result_port));
+	command_receiver.connect(get_ip_address(control_port));
 }
 
 void CClient::disconnect_sockets_to_ip()
 {
-	heartbeat_sender.disconnect(get_ip_address(std::to_string(heartbeat_port)));
-	task_requester.disconnect(get_ip_address(std::to_string(task_port)));
-	result_sender.disconnect(get_ip_address(std::to_string(result_port)));
-	command_receiver.disconnect(get_ip_address(std::to_string(control_port)));
+	heartbeat_sender.disconnect(get_ip_address(heartbeat_port));
+	task_requester.disconnect(get_ip_address(task_port));
+	result_sender.disconnect(get_ip_address(result_port));
+	command_receiver.disconnect(get_ip_address(control_port));
 }
 
-string CClient::get_ip_address(string port)
+string CClient::get_ip_address(int port)
 {
-	return "tcp://" + ip_ + ":" + port;
+	return "tcp://" + ip_ + ":" + std::to_string(port);
 }
 
 void CClient::subscribe_specific_signal()

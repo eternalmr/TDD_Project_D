@@ -24,8 +24,8 @@ public:
 	void bind_sockets_to_ip();
 	void unbind_sockets_to_ip();
 
-	string get_ip_address();
-	string get_ip_address(string ip, string port);
+	//string get_ip_address();
+	string get_ip_address(int port);
 
 	void set_ip(string ip);
 

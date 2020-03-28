@@ -5,11 +5,6 @@
 
 #define NO_TASK 0
 
-string heartbeat_ipaddress = "tcp://" + default_server_ip + ":" + heartbeat_port;
-string command_ipaddress = "tcp://" + default_server_ip + ":" + command_port;
-string task_ipaddress = "tcp://" + default_server_ip + ":" + task_port;
-string result_ipaddress = "tcp://" + default_server_ip + ":" + result_port;
-
 CServer::CServer(const string &ip, const string &port) :
 	context(1),
 	heartbeat_receiver(context, ZMQ_PULL),
@@ -45,51 +40,46 @@ CServer& CServer::get_instance()
 
 void CServer::bind_sockets_to_ip()
 {
-	heartbeat_receiver.bind(get_ip_address(ip_, std::to_string(heartbeat_port)));
-	command_sender.bind(get_ip_address(ip_, std::to_string(control_port)));
-	task_assigner.bind(get_ip_address(ip_, std::to_string(task_port)));
-	result_collector.bind(get_ip_address(ip_, std::to_string(result_port)));
+	heartbeat_receiver.bind(get_ip_address(heartbeat_port));
+	command_sender.bind(get_ip_address(control_port));
+	task_assigner.bind(get_ip_address(task_port));
+	result_collector.bind(get_ip_address(result_port));
 }
 
 void CServer::unbind_sockets_to_ip()
 {
 	try {
-		heartbeat_receiver.unbind(heartbeat_ipaddress);
+		heartbeat_receiver.unbind(get_ip_address(heartbeat_port));
 	}
 	catch (zmq::error_t &e) {
 		OutputDebugString(CA2T(e.what()));
 	}
 
 	try {
-		command_sender.unbind(command_ipaddress);
+		command_sender.unbind(get_ip_address(control_port));
 	}
 	catch (zmq::error_t &e) {
 		OutputDebugString(CA2T(e.what()));
 	}
 
 	try {
-		task_assigner.unbind(task_ipaddress); 
+		task_assigner.unbind(get_ip_address(task_port)); 
 	}
 	catch (zmq::error_t &e) {
 		OutputDebugString(CA2T(e.what()));
 	}
 
 	try {
-		result_collector.unbind(result_ipaddress);
+		result_collector.unbind(get_ip_address(result_port));
 	}
 	catch (zmq::error_t &e) {
 		OutputDebugString(CA2T(e.what()));
 	}
 }
 
-string CServer::get_ip_address()
+string CServer::get_ip_address(int port)
 {
-	return "tcp://" + ip_ + ":" + port_;
-}
-
-string CServer::get_ip_address(string ip, string port)
-{
-	return "tcp://" + ip + ":" + port;
+	return "tcp://" + ip_ + ":" + std::to_string(port);
 }
 
 void CServer::set_ip(string ip)

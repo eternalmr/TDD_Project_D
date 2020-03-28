@@ -55,7 +55,11 @@ BOOL CServerUIDoc::OnNewDocument()
 	server.task_port = m_TaskPort;
 	server.result_port = m_ResultPort;
 	server.set_ip(string(CT2A(ipAddress)));
+
+	// TODO: 在这里启动合理吗？
 	server.bind_sockets_to_ip();
+	server.sim_thread = std::thread(&CServer::start_threads, &server);
+	AddLog(TEXT("任务线程已启动。\r\n"), TLP_NORMAL);
 
 	return TRUE;
 }

@@ -9,8 +9,6 @@
 #include "CSelectTasksDlg.h"
 
 
-
-
 // CTaskOverviewPage 对话框
 IMPLEMENT_DYNAMIC(CTaskOverviewPage, CDialogEx)
 
@@ -38,7 +36,6 @@ void CTaskOverviewPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LOAD, m_LoadBtn);
 	DDX_Control(pDX, IDC_START, m_StartBtn);
 	DDX_Control(pDX, IDC_STOP, m_StopBtn);
-	DDX_Control(pDX, IDC_THREAD, m_ThreadBtn);
 	DDX_Control(pDX, IDC_PAUSE, m_PauseBtn);
 	DDX_Control(pDX, IDC_CONTINUE, m_ContinueBtn);
 }
@@ -57,13 +54,6 @@ END_MESSAGE_MAP()
 
 
 // CTaskOverviewPage 消息处理程序
-void CTaskOverviewPage::OnBnClickedThreadBtn()
-{
-	server.sim_thread = std::thread(&CServer::start_threads, &server);
-	AddLog(TEXT("启动线程\r\n"), TLP_NORMAL);
-	MessageBox(TEXT("启动线程"));
-}
-
 void CTaskOverviewPage::OnBnClickedStart()
 {
 	AddLog(TEXT("开始仿真\r\n"), TLP_NORMAL);
@@ -99,8 +89,8 @@ void CTaskOverviewPage::OnBnClickedStop()
 	//TODO: Server要回收所有计算中的任务
 	server.start_simulation = false;
 	//TODO: 重设client的状态
-	server.reclaim_in_computing_task();
 	server.send_command_to_all_client("stop");
+	server.reclaim_in_computing_task();
 	AddLog(TEXT("结束仿真\r\n"), TLP_NORMAL);
 }
 

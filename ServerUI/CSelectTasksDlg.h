@@ -26,4 +26,7 @@ public:
 	afx_msg void OnBnClickedButton2();
 	CListCtrl m_TaskSelectList;
 	virtual BOOL OnInitDialog();
+
+
+	void AddSelectedTaskIntoTaskQueue();
 };

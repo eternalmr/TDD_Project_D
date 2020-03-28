@@ -22,12 +22,12 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedStart();
-	afx_msg void OnBnClickedThreadBtn();
 	afx_msg void OnBnClickedPause();
 	afx_msg void OnBnClickedContinue();
 	afx_msg void OnBnClickedStop();
 	afx_msg void OnBnClickedLoad();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnDestroy();
 
 	void UpdateTaskInfo();
 
@@ -35,16 +35,15 @@ public:
 	CButton m_CompletedTaskNum;
 	CButton m_IncomputingTaskNum;
 	CButton m_UndoTaskNum;
+
+	CButton m_LoadBtn;
+	CButton m_StartBtn;
+	CButton m_StopBtn;
+	CButton m_PauseBtn;
+	CButton m_ContinueBtn;
+
 	CProgressCtrl m_ProgressBar;
 
 private:
 	enum TimerType { UpdateTaskInfoTimer };
-public:
-	CButton m_LoadBtn;
-	CButton m_StartBtn;
-	CButton m_StopBtn;
-	CButton m_ThreadBtn;
-	CButton m_PauseBtn;
-	CButton m_ContinueBtn;
-	afx_msg void OnDestroy();
 };

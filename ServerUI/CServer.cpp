@@ -5,13 +5,13 @@
 
 #define NO_TASK 0
 
-CServer::CServer(const string &ip, const string &port) :
+CServer::CServer():
 	context(1),
 	heartbeat_receiver(context, ZMQ_PULL),
 	task_assigner(context, ZMQ_REP),
 	command_sender(context, ZMQ_PUB),
 	result_collector(context, ZMQ_PULL),
-	ip_(ip), port_(port), clients({}),
+	clients({}),
 	exit_server(false),start_simulation(false)
 {
 	//bind_sockets_to_ip();

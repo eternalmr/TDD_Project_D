@@ -14,8 +14,7 @@ typedef std::map<uint, ClientRecord> ClientMap;
 
 class CServer {
 private:
-	CServer(const string &ip = default_server_ip, 
-		const string &port = default_server_port);
+	CServer();
 	~CServer();
 
 public:

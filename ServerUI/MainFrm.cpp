@@ -214,14 +214,12 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
 	CFrameWnd::OnSize(nType, cx, cy);
 
+	if (nType == SIZE_MINIMIZED) return;
+
 	CRect rect;
 	GetClientRect(&rect); //获得用户窗口的矩形坐标
 	int w = rect.Width();
 	int h = rect.Height();
-
-	//CString str;
-	//str.Format(TEXT("w: %d, h: %d"), w, h);
-	//MessageBox(str);
 
 	if (m_bWholeWndIsSplitted) {
 		m_WholeWindowSplitter.SetColumnInfo(0, int(0.15*w), 10);

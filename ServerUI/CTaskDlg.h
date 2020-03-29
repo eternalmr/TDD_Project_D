@@ -40,7 +40,6 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 
 	CTaskDetailPage m_detailPage;
-	BOOL m_bDlgIsCreated;
 };
 
 

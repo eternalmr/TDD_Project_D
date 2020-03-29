@@ -33,7 +33,6 @@ private:
 	CTabSheet m_tab;
 	CClientOverviewPage m_overviewPage;
 	CClientDetailPage m_detailPage;
-	BOOL m_bDlgIsCreated;
 
 public:
 	virtual void OnInitialUpdate();

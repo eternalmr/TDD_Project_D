@@ -216,21 +216,16 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 
 	if (nType == SIZE_MINIMIZED) return;
 
-	CRect rect;
-	GetClientRect(&rect); //获得用户窗口的矩形坐标
-	int w = rect.Width();
-	int h = rect.Height();
-
 	if (m_bWholeWndIsSplitted) {
-		m_WholeWindowSplitter.SetColumnInfo(0, int(0.15*w), 10);
-		m_WholeWindowSplitter.SetColumnInfo(1, int(0.85*w), 10);
-		m_WholeWindowSplitter.SetRowInfo(0, h, 10);
+		m_WholeWindowSplitter.SetColumnInfo(0, int(0.15*cx), 10);
+		m_WholeWindowSplitter.SetColumnInfo(1, int(0.85*cx), 10);
+		m_WholeWindowSplitter.SetRowInfo(0, cy, 10);
 	}
 
 	if (m_bRightWndIsSplitted) {
-		m_RightWindowSplitter.SetColumnInfo(0, int(0.85*w), 10);
-		m_RightWindowSplitter.SetRowInfo(0, int(0.6*h), 10);
-		m_RightWindowSplitter.SetRowInfo(1, int(0.4*h), 10);
+		m_RightWindowSplitter.SetColumnInfo(0, int(0.85*cx), 10);
+		m_RightWindowSplitter.SetRowInfo(0, int(0.6*cy), 10);
+		m_RightWindowSplitter.SetRowInfo(1, int(0.4*cy), 10);
 	}
 
 	RecalcLayout();

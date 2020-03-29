@@ -47,12 +47,8 @@ BOOL CTaskDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// 在此添加额外的初始化
-	m_LoadedTaskNum = server.all_tasks.size();
-
 	ShowLoadedTaskItems();
 
-	int itemHeight = 80;
-	SetScrollRange(SB_VERT, 0, itemHeight * m_LoadedTaskNum, TRUE); //TODO:设置一个合理的上限
 	SetTimer(UpdateTaskInfoTimer, 1000, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -65,6 +61,9 @@ void CTaskDetailPage::ShowLoadedTaskItems()
 	CString str;
 	int itemHeight = 80;
 	int itemWidth = 600;
+
+	m_LoadedTaskNum = server.all_tasks.size();
+	SetScrollRange(SB_VERT, 0, itemHeight * m_LoadedTaskNum, TRUE); //TODO:设置一个合理的上限
 
 	for (int i = 0; i < m_LoadedTaskNum; i++)
 	{

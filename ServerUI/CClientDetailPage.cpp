@@ -31,6 +31,7 @@ void CClientDetailPage::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CClientDetailPage, CDialogEx)
 	ON_WM_VSCROLL()
 	ON_WM_MOUSEWHEEL()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -159,5 +160,21 @@ void CClientDetailPage::ShowConnectedClientItems()
 		m_ClientItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);
 		m_ClientItems[i].m_ClientName.SetWindowTextW(str);
 		m_ClientItems[i].ShowWindow(SW_SHOWNORMAL);
+	}
+}
+
+
+void CClientDetailPage::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	// 在此处添加消息处理程序代码
+	if (::IsWindow(m_ClientItems[0].GetSafeHwnd()))
+	{
+		int itemHeight = cy / 3;
+		int itemWidth = cx;
+		for (int i = 0; i < m_ConnectedClientNum; i++) {
+			m_ClientItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);
+		}
 	}
 }

@@ -39,6 +39,7 @@ BEGIN_MESSAGE_MAP(CTaskDetailPage, CDialogEx)
 	ON_WM_TIMER()
 
 	ON_WM_DESTROY()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -214,4 +215,20 @@ void CTaskDetailPage::OnDestroy()
 	// TODO: 在此处添加消息处理程序代码
 	KillTimer(UpdateTaskInfoTimer);
 	OutputDebugString(TEXT("任务信息更新计时器已停止。\r\n"));
+}
+
+
+void CTaskDetailPage::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	// TODO: 当载入任务数量过多是，变化界面会很卡
+	if (::IsWindow(m_TaskItems[0].GetSafeHwnd()))
+	{
+		int itemHeight = cy / 4;
+		int itemWidth = cx;
+		for (int i = 0; i < m_LoadedTaskNum ; i++) {
+			m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);
+		}
+	}
 }

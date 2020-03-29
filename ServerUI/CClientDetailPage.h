@@ -34,4 +34,6 @@ public:
 
 private:
 	int m_ConnectedClientNum;
+public:
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

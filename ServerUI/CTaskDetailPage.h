@@ -28,6 +28,8 @@ public:
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnDestroy();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 
 	void ShowLoadedTaskItems();
 	void UpdateTaskItemInfo();
@@ -37,6 +39,4 @@ public:
 private:
 	int m_LoadedTaskNum;
 	enum TimerType{ UpdateTaskInfoTimer };
-public:
-	afx_msg void OnDestroy();
 };

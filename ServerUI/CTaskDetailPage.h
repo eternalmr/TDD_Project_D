@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CTaskItem.h"
 
-#define MAX_TASK_NUM 100
+#define MAX_TASK_NUM 1000
 
 // CTaskDetailPage 对话框
 
@@ -29,7 +29,6 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
-	void CreateTaskItems();
 	void ShowLoadedTaskItems();
 	void UpdateTaskItemInfo();
 

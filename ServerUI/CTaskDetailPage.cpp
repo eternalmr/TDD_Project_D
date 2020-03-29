@@ -47,28 +47,16 @@ BOOL CTaskDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// 在此添加额外的初始化
-	CreateTaskItems();
+	m_LoadedTaskNum = server.all_tasks.size();
+
 	ShowLoadedTaskItems();
 
 	int itemHeight = 80;
-	SetScrollRange(SB_VERT, 0, itemHeight * 10, TRUE); //TODO:设置一个合理的上限
+	SetScrollRange(SB_VERT, 0, itemHeight * m_LoadedTaskNum, TRUE); //TODO:设置一个合理的上限
 	SetTimer(UpdateTaskInfoTimer, 1000, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
-}
-
-
-void CTaskDetailPage::CreateTaskItems()
-{
-	int itemHeight = 80;
-	int itemWidth = 600;
-
-	m_LoadedTaskNum = server.all_tasks.size();
-	for (int i = 0; i < m_LoadedTaskNum; i++)
-	{
-
-	}
 }
 
 
@@ -78,7 +66,6 @@ void CTaskDetailPage::ShowLoadedTaskItems()
 	int itemHeight = 80;
 	int itemWidth = 600;
 
-	m_LoadedTaskNum = server.all_tasks.size();
 	for (int i = 0; i < m_LoadedTaskNum; i++)
 	{
 		str.Format(TEXT("第%d个任务"), i + 1);

@@ -33,6 +33,7 @@
 #define IDD_TASK_ITEM                   327
 #define IDD_CLIENT_ITEM                 329
 #define IDD_SELECT_TASKS                331
+#define IDI_ICON1                       334
 #define IDC_START                       1000
 #define IDC_PAUSE                       1001
 #define IDC_TASK_TAB                    1002
@@ -73,7 +74,6 @@
 #define IDC_FREE_CLIENT_NUM_BTN         1022
 #define IDC_BUTTON4                     1023
 #define IDC_BREAKDOWN_CLIENT_NUM_BTN    1023
-#define IDC_LIST2                       1035
 #define IDC_TASK_LIST                   1035
 #define ID_32771                        32771
 #define ID_CONFIG_SET                   32772
@@ -82,7 +82,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        334
+#define _APS_NEXT_RESOURCE_VALUE        335
 #define _APS_NEXT_COMMAND_VALUE         32773
 #define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           319

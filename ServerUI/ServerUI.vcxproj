@@ -260,6 +260,7 @@
   <ItemGroup>
     <Image Include="res\client.ico" />
     <Image Include="res\icon2.ico" />
+    <Image Include="res\logo.ico" />
     <Image Include="res\ServerUI.ico" />
     <Image Include="res\ServerUIDoc.ico" />
     <Image Include="res\task.ico" />

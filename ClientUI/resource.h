@@ -10,6 +10,7 @@
 #define IDD_LOGVIEW                     310
 #define IDD_DISPLAYVIEW                 311
 #define IDD_CONFIG                      313
+#define IDI_ICON1                       315
 #define IDC_PROGRESS                    1000
 #define IDC_RICHEDIT21                  1001
 #define IDC_BUTTON1                     1004
@@ -42,7 +43,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        315
+#define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32773
 #define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           312

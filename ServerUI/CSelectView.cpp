@@ -54,7 +54,7 @@ void CSelectView::OnInitialUpdate()
 	icons[0] = AfxGetApp()->LoadIconW(IDI_CLIENT);//若有多个图标，则设置一个数组
 	icons[1] = AfxGetApp()->LoadIconW(IDI_TASK);//若有多个图标，则设置一个数组
 
-	m_imageList.Create(32, 32, ILC_COLOR32, 2, 2);
+	m_imageList.Create(30, 30, ILC_COLOR32, 2, 2);
 	m_imageList.Add(icons[0]);
 	m_imageList.Add(icons[1]);
 	m_treeCtrl = &GetTreeCtrl();

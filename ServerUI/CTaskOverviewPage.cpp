@@ -52,6 +52,25 @@ BEGIN_MESSAGE_MAP(CTaskOverviewPage, CDialogEx)
 END_MESSAGE_MAP()
 
 
+BOOL CTaskOverviewPage::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// 在此添加额外的初始化
+	UpdateTaskInfo();
+	if (server.undo_tasks.empty()) {
+		m_StartBtn.EnableWindow(FALSE);
+		m_StopBtn.EnableWindow(FALSE);
+		m_ContinueBtn.EnableWindow(FALSE);
+		m_PauseBtn.EnableWindow(FALSE);
+	}
+
+	SetTimer(UpdateTaskInfoTimer, 1000, NULL);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 异常: OCX 属性页应返回 FALSE
+}
+
 // CTaskOverviewPage 消息处理程序
 void CTaskOverviewPage::OnBnClickedStart()
 {
@@ -101,26 +120,6 @@ void CTaskOverviewPage::OnBnClickedLoad()
 	m_StopBtn.EnableWindow(TRUE);
 	m_ContinueBtn.EnableWindow(TRUE);
 	m_PauseBtn.EnableWindow(TRUE);
-}
-
-
-BOOL CTaskOverviewPage::OnInitDialog()
-{
-	CDialogEx::OnInitDialog();
-
-	// 在此添加额外的初始化
-	UpdateTaskInfo();
-	if (server.undo_tasks.empty())	{
-		m_StartBtn.EnableWindow(FALSE);
-		m_StopBtn.EnableWindow(FALSE);
-		m_ContinueBtn.EnableWindow(FALSE);
-		m_PauseBtn.EnableWindow(FALSE);
-	}
-
-	SetTimer(UpdateTaskInfoTimer, 1000, NULL);
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // 异常: OCX 属性页应返回 FALSE
 }
 
 

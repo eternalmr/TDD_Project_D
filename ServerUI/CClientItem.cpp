@@ -108,11 +108,11 @@ void CClientItem::UpdateClientInfo()
 	//str = CString("状态： 计算中（任务1）") + str + CString("%");
 	//m_ClientStatus.SetWindowTextW(str);
 
-	str.Format(TEXT("%d"), RandNum(50,60));
+	str.Format(TEXT("%d"), RandNum(20,60));
 	str = CString("CPU：") + str + CString("%");
 	m_ClientCPU.SetWindowTextW(str);
 
-	str.Format(TEXT("%d"), RandNum(70,80));
+	str.Format(TEXT("%d"), RandNum(40,80));
 	str = CString("内存：") + str + CString("%");
 	m_ClientMemory.SetWindowTextW(str);
 

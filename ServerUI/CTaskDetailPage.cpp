@@ -59,17 +59,23 @@ BOOL CTaskDetailPage::OnInitDialog()
 void CTaskDetailPage::ShowLoadedTaskItems()
 {
 	CString str;
-	int itemHeight = 80;
-	int itemWidth = 600;
+	CRect rect;
+
+	GetClientRect(&rect);
+	int itemHeight = rect.Height()/4;
+	int itemWidth = rect.Width()-20;
+
+	str.Format(TEXT("w: %d, h: %d\r\n"), itemWidth, itemHeight);
+	OutputDebugString(str);
 
 	m_LoadedTaskNum = server.all_tasks.size();
-	SetScrollRange(SB_VERT, 0, itemHeight * m_LoadedTaskNum, TRUE); //TODO:设置一个合理的上限
+	SetScrollRange(SB_VERT, 0, itemHeight * m_LoadedTaskNum, TRUE); 
 
 	for (int i = 0; i < m_LoadedTaskNum; i++)
 	{
 		str.Format(TEXT("第%d个任务"), i + 1);
 		m_TaskItems[i].Create(IDD_TASK_ITEM, this);
-		m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);//TODO：确定合适的大小
+		m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);
 		m_TaskItems[i].m_id = i+1;
 		m_TaskItems[i].m_TaskName.SetWindowTextW(str);
 		m_TaskItems[i].m_ProgessBar.SetRange(0, 100);

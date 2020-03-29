@@ -42,8 +42,6 @@ BOOL CClientDetailPage::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// 在此添加额外的初始化
-	SetScrollRange(SB_VERT, 0, 1000, TRUE);//TODO: 合理设置scroll的上限
-
 	ShowConnectedClientItems();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -140,11 +138,19 @@ BOOL CClientDetailPage::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CClientDetailPage::ShowConnectedClientItems()
 {
-	int itemHeight = 120;
-	int itemWidth = 500;
 	CString str;
+	CRect rect;
+
+	GetClientRect(&rect);
+	int itemHeight = rect.Height() / 3;
+	int itemWidth = rect.Width() - 20;
+
+	str.Format(TEXT("w: %d, h: %d\r\n"), itemWidth, itemHeight);
+	OutputDebugString(str);
 
 	m_ConnectedClientNum = server.clients.size();
+	SetScrollRange(SB_VERT, 0, itemHeight * m_ConnectedClientNum, TRUE);
+
 	for (int i = 0; i < m_ConnectedClientNum; i++)
 	{
 		str.Format(TEXT("节点%d："), i+1);

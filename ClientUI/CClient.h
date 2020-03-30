@@ -16,9 +16,7 @@ public:
 	};
 	
 private:
-	CClient(uint id = 1, const string &ip = default_client_ip, 
-		const string &port = default_client_port);
-
+	CClient();
 	~CClient();
 
 public:
@@ -35,48 +33,32 @@ public:
 	SignalSet listen_from_server();
 	bool is_irrelevant(const SignalSet &signal) const;
 	void execute_control_command(SignalSet control_signal);
-
 	string get_ip_address(int port);
-
 	void send_heartbeat();
 	void receive_control_command();
 	void receive_tasks();
 	void wait_simulation_finish();
 	void start_threads();
-
 	void put_task_into_queue(int new_task_id);
-
 	int get_new_task_from_server();
-
 	void wrap_simulation_process();
-
 	void try_to_save_result(int result);
-
 	void set_task_status_to_finished();
-
 	void save_result_to_database(int result);
 	void reset_current_task();
 	void clear_temp_simulation_data();
 	uint get_task_from_queue();
-
 	int start_simulation(int input);
 	double get_cpu_status();
 	double get_memoery_status();
-
 	uint get_simulation_progress();
 	void set_simulation_progress(uint percent);
-
 	uint get_task_id();
-
 	void exit();
 
 private:
-	//bool is_not_reach(int max_num, int &count); 
-	//bool simulation_is_not_finished(int task_num, int &count);
 	bool simulation_is_not_finish();
 	unsigned long long FileTimeSub(FILETIME ftEndTime, FILETIME ftStartTime);
-
-	uint simulation_progress;
 
 private:
 	uint id_;
@@ -88,6 +70,7 @@ private:
 
 	std::queue<int> task_queue;
 	uint current_task_id;
+	uint simulation_progress;
 
 	string ip_;
 	string port_;

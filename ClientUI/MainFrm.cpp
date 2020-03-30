@@ -93,17 +93,11 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
-	CRect rect;
-	GetClientRect(&rect);
-	int w = rect.Width();
-	int h = rect.Height();
-
 	m_isSplitted = m_splitter.CreateStatic(this, 2, 1);
 
-	if (m_isSplitted)
-	{
-		m_splitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(w, (int)(0.5*h)), pContext);//左侧是CSelectView的实例，大小为200X600
-		m_splitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(w, (int)(0.5*h)), pContext);//右侧是CDisplayView的实例，大小为600X600
+	if (m_isSplitted) {
+		m_splitter.CreateView(0, 0, RUNTIME_CLASS(CDisplayView), CSize(0, 0), pContext);//左侧是CSelectView的实例，大小为200X600
+		m_splitter.CreateView(1, 0, RUNTIME_CLASS(CLogView), CSize(0,0), pContext);//右侧是CDisplayView的实例，大小为600X600
 	}
 	
 	//保存上下分割后的两个子窗口的指针
@@ -111,7 +105,6 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	m_pLogView = m_splitter.GetPane(1, 0);
 
 	return m_isSplitted;
-	//return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
 
 
@@ -148,12 +141,8 @@ void CMainFrame::OnDestroy()
 	CFrameWnd::OnDestroy();
 
 	// 在此处添加消息处理程序代码
-	//MessageBox(TEXT("执行退出线程等操作"));
-
 	logger.m_bRun = FALSE;
 	client.exit();
-	//client.disconnect_to_ip_address();
-
 }
 
 

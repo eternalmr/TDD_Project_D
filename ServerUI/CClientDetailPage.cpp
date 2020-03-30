@@ -152,8 +152,7 @@ void CClientDetailPage::ShowConnectedClientItems()
 	m_ConnectedClientNum = server.clients.size();
 	SetScrollRange(SB_VERT, 0, itemHeight * m_ConnectedClientNum, TRUE);
 
-	for (int i = 0; i < m_ConnectedClientNum; i++)
-	{
+	for (int i = 0; i < m_ConnectedClientNum; i++) {
 		str.Format(TEXT("节点%d："), i+1);
 		m_ClientItems[i].m_id = i + 1; //TODO: 将对应client的id号赋给这里更合适
 		m_ClientItems[i].Create(IDD_CLIENT_ITEM, this);
@@ -169,8 +168,7 @@ void CClientDetailPage::OnSize(UINT nType, int cx, int cy)
 	CDialogEx::OnSize(nType, cx, cy);
 
 	// 在此处添加消息处理程序代码
-	if (::IsWindow(m_ClientItems[0].GetSafeHwnd()))
-	{
+	if (::IsWindow(m_ClientItems[0].GetSafeHwnd())) {
 		int itemHeight = cy / 3;
 		int itemWidth = cx;
 		for (int i = 0; i < m_ConnectedClientNum; i++) {

@@ -6,13 +6,12 @@
 
 #define NO_TASK 0
 
-CClient::CClient(uint id, const string &ip, const string &port) :
-	id_(id), context(1),
+CClient::CClient() :
+	context(1),
 	heartbeat_sender(context, ZMQ_PUSH),
 	task_requester(context, ZMQ_REQ),
 	result_sender(context, ZMQ_PUSH),
 	command_receiver(context, ZMQ_SUB),
-	ip_(ip), port_(port),
 	start_task(false), pause_task(false), stop_task(false)
 	,simulation_progress(0),current_task_id(NO_TASK)
 	,exit_client(false),task_finished(false)
@@ -208,7 +207,7 @@ void CClient::wrap_simulation_process()
 			current_task_id = get_task_from_queue();
 		}
 		catch (...) {
-			OutputDebugString(TEXT("任务获取失败..."));
+			OutputDebugString(TEXT("任务获取失败...\r\n"));
 			continue;
 		}
 		
@@ -224,7 +223,7 @@ void CClient::try_to_save_result(int result)
 	if (result == -1) {
 		reset_current_task();
 		clear_temp_simulation_data();
-		AddLog(TEXT("current task has been interrupted\r\n"), TLP_ERROR);
+		AddLog(TEXT("Current task has been interrupted\r\n"), TLP_ERROR);
 	}
 	else {
 		save_result_to_database(result);

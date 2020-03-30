@@ -44,7 +44,7 @@ BOOL CServerUIDoc::OnNewDocument()
 		return FALSE;
 
 	// 在此添加重新初始化代码
-	SetTitle(TEXT("并行管控系统服务器端"));
+	SetTitle(TEXT("并行推演管控系统服务端"));
 
 	// 读入配置文件
 	ReadConfigFile();
@@ -59,7 +59,7 @@ BOOL CServerUIDoc::OnNewDocument()
 	// TODO: 在这里启动合理吗？
 	server.bind_sockets_to_ip();
 	server.sim_thread = std::thread(&CServer::start_threads, &server);
-	AddLog(TEXT("任务线程已启动。\r\n"), TLP_NORMAL);
+	AddLog(TEXT("线程已启动。\r\n"), TLP_NORMAL);
 
 	return TRUE;
 }

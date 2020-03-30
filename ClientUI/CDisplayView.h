@@ -29,26 +29,20 @@ protected:
 public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnDestroy();
+	afx_msg void OnBnClickedReceiveTaskBtn();
 
 	void UpdateClientInfo();
 
-//	CButton m_confirmIdBtn;
 	CProgressCtrl m_progressBar;
 	CStatic m_memoryStatus;
 	CStatic m_cpuStatus;
 	CStatic m_clientName;
 	CStatic m_currentTask;
-//	CEdit m_ClientIdInput;
+	CButton m_ReceiveTaskBtn;
 
 private:
-//	int m_client_id;
 	enum TimerSet { ClientInfoUpdateTimer };
-public:
-	afx_msg void OnDestroy();
-	//afx_msg void OnBnClickedHasTask();
-	//afx_msg void OnBnClickedStopGettingTask();
-	afx_msg void OnBnClickedReceiveTaskBtn();
-	CButton m_ReceiveTaskBtn;
 };
 
 

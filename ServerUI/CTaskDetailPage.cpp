@@ -222,12 +222,12 @@ void CTaskDetailPage::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
 
-	// TODO: 当载入任务数量过多是，变化界面会很卡
+	//TODO: 当载入任务数量过多是，变化界面会有点卡
 	if (::IsWindow(m_TaskItems[0].GetSafeHwnd()))
 	{
 		int itemHeight = cy / 4;
 		int itemWidth = cx;
-		for (int i = 0; i < m_LoadedTaskNum ; i++) {
+		for (int i = 0; i < m_LoadedTaskNum; i++) {
 			m_TaskItems[i].MoveWindow(0, itemHeight * i + 1 * i, itemWidth, itemHeight);
 		}
 	}

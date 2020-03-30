@@ -27,6 +27,7 @@ void CDisplayView::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDisplayView, CFormView)
 
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -48,3 +49,21 @@ void CDisplayView::Dump(CDumpContext& dc) const
 
 // CDisplayView 消息处理程序
 
+
+
+void CDisplayView::OnSize(UINT nType, int cx, int cy)
+{
+	CFormView::OnSize(nType, cx, cy);
+
+	// 在此处添加消息处理程序代码
+	//ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。
+}
+
+
+void CDisplayView::OnInitialUpdate()
+{
+	CFormView::OnInitialUpdate();
+
+	// TODO: 在此添加专用代码和/或调用基类
+	ShowScrollBar(SB_BOTH, FALSE);//垂直水平方向的滚动条都不显示。
+}

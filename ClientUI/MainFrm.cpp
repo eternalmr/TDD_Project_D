@@ -59,7 +59,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
-	SetTitle(TEXT("by 湖南麟淇"));
+	SetTitle(TEXT("By 湖南麟淇"));
 
 	return 0;
 }
@@ -119,13 +119,10 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 {
 	CFrameWnd::OnSize(nType, cx, cy);
 
-	CRect rect;
-	GetClientRect(&rect);
-
 	if (m_isSplitted) {
-		m_splitter.SetColumnInfo(0, rect.Width(), 10);
-		m_splitter.SetRowInfo(0, int(rect.Height()*0.6), 10);
-		m_splitter.SetRowInfo(1, int(rect.Height()*0.4), 10);
+		m_splitter.SetColumnInfo(0, cx, 10);
+		m_splitter.SetRowInfo(0, int(cy*0.6), 10);
+		m_splitter.SetRowInfo(1, int(cy*0.4), 10);
 		m_splitter.RecalcLayout();
 	}
 }
